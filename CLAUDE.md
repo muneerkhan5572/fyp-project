@@ -31,6 +31,11 @@ npm / npx only — do not use yarn, pnpm, or bun.
 - Strictly follow the existing folder structure — don't introduce new top-level patterns without asking.
 - Use the latest stable versions/patterns for all tools in the stack — no legacy APIs.
 
+# Environment Variables
+- Never read `process.env` directly in code.
+- Always import env vars from `env.ts`, which manages and validates them via `@t3-oss/env-nextjs`.
+- Any new env var must be added to the schema in `env.ts` first, then imported from there wherever needed.
+
 # Code Style
 - No comments in code — code should be self-explanatory through naming and structure.
 - Modular code: small, single-responsibility files/functions.
