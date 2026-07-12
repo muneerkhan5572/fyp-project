@@ -29,11 +29,11 @@ pre-push:
 post-checkout:
   commands:
     install-deps:
-      run: npm ci
+      run: npm install
       glob: "package-lock.json"
 
 post-merge:
   commands:
     install-deps:
-      run: npm ci
+      run: npm install
       glob: "package-lock.json"
