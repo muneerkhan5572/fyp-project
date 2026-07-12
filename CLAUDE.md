@@ -6,6 +6,8 @@ Ecommerce app with sales prediction (final year project).
 # Rules
 - Do not commit yourself. Always write a commit message. I'll commit manually.
 - Strictly follow the folder structure. Do not create mess.
+- Use Next.js actions instead of APIs.
+- Use Next.js APIs in case actions are not enough to work with.
 
 # Stack
 - TS
@@ -13,7 +15,9 @@ Ecommerce app with sales prediction (final year project).
 - Tailwind
 - Shadcn
 - Zod
+- Tanstack table
 - Tanstack form
+
 
 # Package Manager
 - npm
