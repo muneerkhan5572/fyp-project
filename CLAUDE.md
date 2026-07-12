@@ -15,6 +15,10 @@ Ecommerce app with sales prediction (final year project).
 - Zod
 - Tanstack form
 
+# Package Manager
+- npm
+- npx
+
 # Commands
 - `npm run dev` — start dev server
 - `npm run build` — production build

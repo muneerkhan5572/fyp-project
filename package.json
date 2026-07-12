@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome check",
-    "format": "biome format --write"
+    "biome:check": "biome check . --write --no-errors-on-unmatched",
+    "biome:migrate": "biome migrate --write --no-errors-on-unmatched",
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.2.10",
@@ -15,12 +16,15 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "^2.5.3",
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "lefthook": "^2.1.10",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
