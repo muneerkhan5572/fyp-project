@@ -4,11 +4,11 @@ rules:
   scope-enum:
     - 2
     - always
-    - - api
-      - web
-      - database
-      - services
-      - trpc
-      - logger
-      - typescript-config
+    - - auth
+      - db
+      - email
+      - ui
+      - app
+      - config
+      - deps
       - root
