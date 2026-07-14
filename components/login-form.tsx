@@ -1,4 +1,10 @@
+"use client";
+
+import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
+import { useState } from "react";
+import { login } from "@/app/actions/auth";
+import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +16,30 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { loginSchema } from "@/lib/validations/auth";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: { email: "", password: "" },
+    validators: { onChange: loginSchema, onSubmit: loginSchema },
+    onSubmit: async ({ value }) => {
+      setServerError(null);
+      const result = await login(value);
+      if (result?.error) {
+        setServerError(result.error);
+      }
+    },
+  });
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,34 +50,52 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
             <FieldGroup>
+              <form.Field name="email">
+                {(field) => (
+                  <TextField
+                    autoComplete="email"
+                    field={field}
+                    label="Email"
+                    placeholder="m@example.com"
+                    type="email"
+                  />
+                )}
+              </form.Field>
+              <form.Field name="password">
+                {(field) => (
+                  <TextField
+                    autoComplete="current-password"
+                    field={field}
+                    label="Password"
+                    labelSuffix={
+                      <Link
+                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                        href="/forgot-password"
+                      >
+                        Forgot your password?
+                      </Link>
+                    }
+                    type="password"
+                  />
+                )}
+              </form.Field>
+              {serverError ? <FieldError>{serverError}</FieldError> : null}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  placeholder="m@example.com"
-                  required
-                  type="email"
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Link
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                    href="/forgot-password"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input id="password" required type="password" />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-                <Button type="button" variant="outline">
-                  Login with Google
-                </Button>
+                <form.Subscribe selector={(state) => state.isSubmitting}>
+                  {(isSubmitting) => (
+                    <Button disabled={isSubmitting} type="submit">
+                      {isSubmitting ? "Logging in..." : "Login"}
+                    </Button>
+                  )}
+                </form.Subscribe>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/signup">Sign up</Link>

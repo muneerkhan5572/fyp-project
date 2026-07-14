@@ -1,4 +1,10 @@
+"use client";
+
+import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
+import { useState } from "react";
+import { forgotPassword } from "@/app/actions/auth";
+import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,14 +16,35 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { forgotPasswordSchema } from "@/lib/validations/auth";
 
 export function ForgotPasswordForm({
   ...props
 }: React.ComponentProps<typeof Card>) {
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: { email: "" },
+    validators: {
+      onChange: forgotPasswordSchema,
+      onSubmit: forgotPasswordSchema,
+    },
+    onSubmit: async ({ value }) => {
+      setServerError(null);
+      setSuccessMessage(null);
+      const result = await forgotPassword(value);
+      if (result?.error) {
+        setServerError(result.error);
+      } else if (result?.success) {
+        setSuccessMessage(result.success);
+      }
+    },
+  });
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -28,19 +55,39 @@ export function ForgotPasswordForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
           <FieldGroup>
+            <form.Field name="email">
+              {(field) => (
+                <TextField
+                  autoComplete="email"
+                  field={field}
+                  label="Email"
+                  placeholder="m@example.com"
+                  type="email"
+                />
+              )}
+            </form.Field>
+            {serverError ? <FieldError>{serverError}</FieldError> : null}
+            {successMessage ? (
+              <FieldDescription className="text-center">
+                {successMessage}
+              </FieldDescription>
+            ) : null}
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                id="email"
-                placeholder="m@example.com"
-                required
-                type="email"
-              />
-            </Field>
-            <Field>
-              <Button type="submit">Send reset link</Button>
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button disabled={isSubmitting} type="submit">
+                    {isSubmitting ? "Sending..." : "Send reset link"}
+                  </Button>
+                )}
+              </form.Subscribe>
               <FieldDescription className="text-center">
                 Remember your password? <Link href="/login">Sign in</Link>
               </FieldDescription>

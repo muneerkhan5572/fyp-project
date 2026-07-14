@@ -31,6 +31,16 @@ npm / npx only — do not use yarn, pnpm, or bun.
 - Strictly follow the existing folder structure — don't introduce new top-level patterns without asking.
 - Use the latest stable versions/patterns for all tools in the stack — no legacy APIs.
 
+# Authentication
+- Auth is email/password with stateless JWT sessions (jose HS256) in an httpOnly/secure/SameSite=Lax cookie. Postgres + Drizzle, bcrypt hashing.
+- Core lives in `lib/auth/` (`dal.ts`, `session.ts`, `jwt.ts`, `password.ts`, `tokens.ts`), server actions in `app/actions/auth.ts`, shared Zod schemas in `lib/validations/auth.ts`, route guard in root `proxy.ts`.
+- Every new page and server action MUST integrate with this system:
+  - Protected page → `await verifySession()` at the top of the Server Component, then `getCurrentUser()` for user data (never expose the password hash — use the DTO it returns). Also add the route prefix to `protectedRoutes` in `proxy.ts`.
+  - Auth-only page (visible only when logged out) → add its prefix to `authRoutes` in `proxy.ts`.
+  - Server action that reads/mutates user data → call `verifySession()` (and any role check) inside the action; treat it like a public endpoint.
+  - The `proxy.ts` check is optimistic/defense-in-depth only — the authoritative check is always the DAL (`verifySession`/`getCurrentUser`) close to the data. Never rely on the proxy or client-side checks alone.
+- New forms → TanStack Form + a shared Zod schema, reusing `components/form/text-field.tsx` and the `FieldError` primitive.
+
 # Environment Variables
 - Never read `process.env` directly in code.
 - Always import env vars from `env.ts`, which manages and validates them via `@t3-oss/env-nextjs`.

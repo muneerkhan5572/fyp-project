@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ecommerce App
+
+E-commerce app with sales prediction (final year project), built with Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Drizzle ORM, and Postgres.
+
+## Prerequisites
+
+- Node.js 20+ and npm
+- Docker (for the local Postgres database)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Environment variables
+
+Copy the example env file and fill in the values:
+
+```bash
+cp .env.example .env
+```
+
+Generate a `SESSION_SECRET` (32+ characters):
+
+```bash
+openssl rand -base64 32
+```
+
+To send password-reset emails, set the `SMTP_*` variables to real credentials
+(any SMTP provider works; for local testing use a service like Mailtrap or
+Ethereal).
+
+### 2. Start Postgres
+
+```bash
+docker compose up -d
+```
+
+This starts Postgres using the `POSTGRES_*` values from `.env`. `DATABASE_URL`
+must point at the same database.
+
+### 3. Run database migrations
+
+```bash
+npm run db:migrate
+```
+
+Other database commands:
+
+- `npm run db:generate` — generate a new migration from schema changes
+- `npm run db:push` — push the schema directly (useful in early development)
+
+### 4. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Email/password authentication with stateless JWT sessions.
 
-## Learn More
+- **Sessions:** a JWT (signed with `jose`, HS256) stored in an httpOnly, secure,
+  `SameSite=Lax` cookie. Passwords are hashed with bcrypt.
+- **Routes:**
+  - `/signup`, `/login`, `/forgot-password`, `/reset-password` — auth pages
+    (grouped under `app/(auth)/`)
+  - `/dashboard` — protected; requires a valid session
+- **Guards:**
+  - `proxy.ts` performs optimistic cookie-based redirects (unauthenticated users
+    are sent to `/login` from protected routes; authenticated users are sent to
+    `/dashboard` from auth pages).
+  - `lib/auth/dal.ts` (`verifySession`, `getCurrentUser`) performs the
+    authoritative session check close to the data, and is used by protected
+    pages and server actions.
+- **Password reset:** `forgotPassword` emails a one-hour, single-use reset link
+  (a random token; only its hash is stored). `resetPassword` validates the token
+  and updates the password.
 
-To learn more about Next.js, take a look at the following resources:
+### Key directories
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `app/actions/auth.ts` — server actions (login, signup, forgot/reset password, logout)
+- `lib/auth/` — session, JWT, password hashing, tokens, data access layer
+- `lib/db/` — Drizzle client and schema
+- `lib/validations/auth.ts` — shared Zod schemas (client + server)
+- `lib/email/` — Nodemailer transport and reset email
+- `components/*-form.tsx` — TanStack Form + shadcn forms
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` — start the dev server
+- `npm run build` — production build
+- `npm run biome:check` — lint/format with Biome
+- `npm run ts:check` — TypeScript type check
+- `npm run db:generate` / `db:migrate` / `db:push` — Drizzle migrations

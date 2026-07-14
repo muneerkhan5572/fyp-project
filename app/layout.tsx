@@ -38,6 +38,7 @@ export default function RootLayout({
         inter.variable,
       )}
       lang="en"
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider

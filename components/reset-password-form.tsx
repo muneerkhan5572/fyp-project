@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useState } from "react";
-import { signup } from "@/app/actions/auth";
+import { resetPassword } from "@/app/actions/auth";
 import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,17 +19,23 @@ import {
   FieldError,
   FieldGroup,
 } from "@/components/ui/field";
-import { signupSchema } from "@/lib/validations/auth";
+import { resetPasswordSchema } from "@/lib/validations/auth";
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+export function ResetPasswordForm({
+  token,
+  ...props
+}: React.ComponentProps<typeof Card> & { token: string }) {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm({
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
-    validators: { onChange: signupSchema, onSubmit: signupSchema },
+    defaultValues: { token, password: "", confirmPassword: "" },
+    validators: {
+      onChange: resetPasswordSchema,
+      onSubmit: resetPasswordSchema,
+    },
     onSubmit: async ({ value }) => {
       setServerError(null);
-      const result = await signup(value);
+      const result = await resetPassword(value);
       if (result?.error) {
         setServerError(result.error);
       }
@@ -39,9 +45,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card {...props}>
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <CardTitle>Reset your password</CardTitle>
         <CardDescription>
-          Enter your information below to create your account
+          Enter a new password for your account.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -53,33 +59,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           }}
         >
           <FieldGroup>
-            <form.Field name="name">
-              {(field) => (
-                <TextField
-                  autoComplete="name"
-                  field={field}
-                  label="Full Name"
-                  placeholder="John Doe"
-                />
-              )}
-            </form.Field>
-            <form.Field name="email">
-              {(field) => (
-                <TextField
-                  autoComplete="email"
-                  field={field}
-                  label="Email"
-                  placeholder="m@example.com"
-                  type="email"
-                />
-              )}
-            </form.Field>
             <form.Field name="password">
               {(field) => (
                 <TextField
                   autoComplete="new-password"
                   field={field}
-                  label="Password"
+                  label="New Password"
                   type="password"
                 />
               )}
@@ -99,12 +84,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <form.Subscribe selector={(state) => state.isSubmitting}>
                 {(isSubmitting) => (
                   <Button disabled={isSubmitting} type="submit">
-                    {isSubmitting ? "Creating account..." : "Create Account"}
+                    {isSubmitting ? "Resetting..." : "Reset password"}
                   </Button>
                 )}
               </form.Subscribe>
-              <FieldDescription className="px-6 text-center">
-                Already have an account? <Link href="/login">Sign in</Link>
+              <FieldDescription className="text-center">
+                Remember your password? <Link href="/login">Sign in</Link>
               </FieldDescription>
             </Field>
           </FieldGroup>
