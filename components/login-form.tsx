@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
-import { useState } from "react";
+import { toast } from "sonner";
 import { login } from "@/app/actions/auth";
 import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { loginSchema } from "@/lib/validations/auth";
 
@@ -26,16 +21,13 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [serverError, setServerError] = useState<string | null>(null);
-
   const form = useForm({
     defaultValues: { email: "", password: "" },
     validators: { onChange: loginSchema, onSubmit: loginSchema },
     onSubmit: async ({ value }) => {
-      setServerError(null);
       const result = await login(value);
       if (result?.error) {
-        setServerError(result.error);
+        toast.error(result.error);
       }
     },
   });
@@ -87,7 +79,6 @@ export function LoginForm({
                   />
                 )}
               </form.Field>
-              {serverError ? <FieldError>{serverError}</FieldError> : null}
               <Field>
                 <form.Subscribe selector={(state) => state.isSubmitting}>
                   {(isSubmitting) => (

@@ -3,6 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { forgotPassword } from "@/app/actions/auth";
 import { TextField } from "@/components/form/text-field";
 import { Button } from "@/components/ui/button";
@@ -13,18 +14,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
 
 export function ForgotPasswordForm({
   ...props
 }: React.ComponentProps<typeof Card>) {
-  const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const form = useForm({
@@ -34,11 +29,10 @@ export function ForgotPasswordForm({
       onSubmit: forgotPasswordSchema,
     },
     onSubmit: async ({ value }) => {
-      setServerError(null);
       setSuccessMessage(null);
       const result = await forgotPassword(value);
       if (result?.error) {
-        setServerError(result.error);
+        toast.error(result.error);
       } else if (result?.success) {
         setSuccessMessage(result.success);
       }
@@ -74,7 +68,6 @@ export function ForgotPasswordForm({
                 />
               )}
             </form.Field>
-            {serverError ? <FieldError>{serverError}</FieldError> : null}
             {successMessage ? (
               <FieldDescription className="text-center">
                 {successMessage}
