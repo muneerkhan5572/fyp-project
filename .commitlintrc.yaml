@@ -7,8 +7,12 @@ rules:
     - - auth
       - db
       - email
+      - form
       - ui
+      - validation
       - app
+      - dashboard
       - config
       - deps
+      - scripts
       - root
