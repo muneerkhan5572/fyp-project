@@ -4,7 +4,7 @@ E-commerce app with sales prediction (final year project), built with Next.js (A
 
 ## Prerequisites
 
-- Node.js 20+ and npm
+- Node.js 20+ and pnpm
 - Docker (for the local Postgres database)
 
 ## Getting Started
@@ -39,18 +39,18 @@ must point at the same database.
 ### 3. Run database migrations
 
 ```bash
-npm run db:migrate
+pnpm db:migrate
 ```
 
 Other database commands:
 
-- `npm run db:generate` — generate a new migration from schema changes
-- `npm run db:push` — push the schema directly (useful in early development)
+- `pnpm db:generate` — generate a new migration from schema changes
+- `pnpm db:push` — push the schema directly (useful in early development)
 
 ### 4. Start the dev server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -87,8 +87,8 @@ Email/password authentication with stateless JWT sessions.
 
 ## Scripts
 
-- `npm run dev` — start the dev server
-- `npm run build` — production build
-- `npm run biome:check` — lint/format with Biome
-- `npm run ts:check` — TypeScript type check
-- `npm run db:generate` / `db:migrate` / `db:push` — Drizzle migrations
+- `pnpm dev` — start the dev server
+- `pnpm build` — production build
+- `pnpm biome:check` — lint/format with Biome
+- `pnpm ts:check` — TypeScript type check
+- `pnpm db:generate` / `db:migrate` / `db:push` — Drizzle migrations

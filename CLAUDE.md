@@ -13,13 +13,13 @@ E-commerce app with sales prediction (final year project).
 - TanStack Form
 
 # Package Manager
-npm / npx only — do not use yarn, pnpm, or bun.
+pnpm only — do not use npm, yarn, or bun. Use `pnpm exec`/`pnpm dlx` instead of `npx`.
 
 # Commands
-- `npm run dev` — start dev server
-- `npm run build` — production build
-- `npm run lint` — biome check
-- `npm run format` — biome format --write
+- `pnpm dev` — start dev server
+- `pnpm build` — production build
+- `pnpm lint` — biome check
+- `pnpm format` — biome format --write
 
 # Workflow Rules
 - Never run `git commit` yourself. Always prepare/stage changes and give me a commit message to review — I commit manually.

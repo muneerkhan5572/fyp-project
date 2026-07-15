@@ -1,16 +1,16 @@
 commit-msg:
   commands:
     lint-commit-message:
-      run: npx commitlint --edit {1}
+      run: pnpm exec commitlint --edit {1}
 
 pre-commit:
   parallel: true
   commands:
     ts:check:
-      run: npm run ts:check
+      run: pnpm ts:check
       stage_fixed: true
     biome:check:
-      run: npm run biome:check
+      run: pnpm biome:check
       stage_fixed: true
     file:size:check:
       run: sh scripts/hooks/file-size-check.sh
@@ -24,16 +24,16 @@ pre-commit:
 pre-push:
   commands:
     build:
-      run: npm run build
+      run: pnpm build
 
 post-checkout:
   commands:
     install-deps:
-      run: npm install
-      glob: "package-lock.json"
+      run: pnpm install
+      glob: "pnpm-lock.yaml"
 
 post-merge:
   commands:
     install-deps:
-      run: npm install
-      glob: "package-lock.json"
+      run: pnpm install
+      glob: "pnpm-lock.yaml"
