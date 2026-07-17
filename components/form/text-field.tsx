@@ -13,6 +13,9 @@ type TextFieldProps = {
   placeholder?: string;
   autoComplete?: string;
   labelSuffix?: React.ReactNode;
+  min?: number | string;
+  step?: number | string;
+  inputMode?: React.ComponentProps<typeof Input>["inputMode"];
 };
 
 export function TextField({
@@ -22,6 +25,9 @@ export function TextField({
   placeholder,
   autoComplete,
   labelSuffix,
+  min,
+  step,
+  inputMode,
 }: TextFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -44,10 +50,13 @@ export function TextField({
           autoComplete={autoComplete}
           className={isPassword ? "pr-7" : undefined}
           id={field.name}
+          inputMode={inputMode}
+          min={min}
           name={field.name}
           onBlur={field.handleBlur}
           onChange={(event) => field.handleChange(event.target.value)}
           placeholder={placeholder}
+          step={step}
           type={isPassword && showPassword ? "text" : type}
           value={field.state.value}
         />
