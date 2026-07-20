@@ -9,14 +9,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { PackageIcon, PlusIcon, SearchIcon } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableFilter } from "@/components/data-table/data-table-filter";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import { createProductColumns } from "@/components/products/columns";
+import {
+  createProductColumns,
+  type ProductWithClassification,
+} from "@/components/products/columns";
 import { ProductDeleteDialog } from "@/components/products/product-delete-dialog";
 import { ProductFormDialog } from "@/components/products/product-form-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -26,14 +30,13 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
-import type { Product } from "@/lib/db/schema";
 
 const UNCATEGORIZED = "__uncategorized__";
 const ALL_CATEGORIES = "__all__";
 
 type ProductsTableProps = {
   datasetId: string;
-  products: Product[];
+  products: ProductWithClassification[];
   categories: string[];
 };
 
@@ -48,16 +51,19 @@ export function ProductsTable({
   const [globalFilter, setGlobalFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(ALL_CATEGORIES);
   const [createOpen, setCreateOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] =
+    useState<ProductWithClassification | null>(null);
+  const [deletingProduct, setDeletingProduct] =
+    useState<ProductWithClassification | null>(null);
 
   const columns = useMemo(
     () =>
       createProductColumns({
+        datasetId,
         onEdit: setEditingProduct,
         onDelete: setDeletingProduct,
       }),
-    [],
+    [datasetId],
   );
 
   const filteredProducts = useMemo(() => {
@@ -95,14 +101,22 @@ export function ProductsTable({
             </EmptyMedia>
             <EmptyTitle>No products yet</EmptyTitle>
             <EmptyDescription>
-              Add your first product to start building this dataset's catalog.
+              Add your first product, or import a CSV for bulk data.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button onClick={() => setCreateOpen(true)}>
-              <PlusIcon />
-              Add product
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => setCreateOpen(true)}>
+                <PlusIcon />
+                Add product
+              </Button>
+              <Link
+                className={buttonVariants({ variant: "outline" })}
+                href={`/dashboard/${datasetId}/import`}
+              >
+                Import CSV
+              </Link>
+            </div>
           </EmptyContent>
         </Empty>
       ) : (

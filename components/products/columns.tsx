@@ -2,6 +2,8 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreVerticalIcon } from "lucide-react";
+import Link from "next/link";
+import { ClassificationBadge } from "@/components/analytics/classification-badge";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { ProductClassification } from "@/lib/analytics/velocity";
 import type { Product } from "@/lib/db/schema";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -18,20 +21,34 @@ const currency = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
+export type ProductWithClassification = Product & {
+  classification: ProductClassification;
+};
+
 type CreateProductColumnsOptions = {
-  onEdit: (product: Product) => void;
-  onDelete: (product: Product) => void;
+  datasetId: string;
+  onEdit: (product: ProductWithClassification) => void;
+  onDelete: (product: ProductWithClassification) => void;
 };
 
 export function createProductColumns({
+  datasetId,
   onEdit,
   onDelete,
-}: CreateProductColumnsOptions): ColumnDef<Product>[] {
+}: CreateProductColumnsOptions): ColumnDef<ProductWithClassification>[] {
   return [
     {
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => (
+        <Link
+          className="underline-offset-2 hover:underline"
+          href={`/dashboard/${datasetId}/products/${row.original.id}`}
+        >
+          {row.original.name}
+        </Link>
       ),
     },
     {
@@ -75,6 +92,15 @@ export function createProductColumns({
       ),
       cell: ({ row }) => (
         <div className="text-right">{row.original.stock ?? "—"}</div>
+      ),
+    },
+    {
+      accessorKey: "classification",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => (
+        <ClassificationBadge classification={row.original.classification} />
       ),
     },
     {

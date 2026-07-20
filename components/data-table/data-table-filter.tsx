@@ -19,6 +19,9 @@ type DataTableFilterProps = {
   value: string;
   onValueChange: (value: string) => void;
   options: DataTableFilterOption[];
+  id?: string;
+  placeholder?: string;
+  "aria-invalid"?: boolean;
 };
 
 // A single-select dropdown filter. Deliberately built on DropdownMenu
@@ -29,15 +32,25 @@ export function DataTableFilter({
   value,
   onValueChange,
   options,
+  id,
+  placeholder = "Select...",
+  "aria-invalid": ariaInvalid,
 }: DataTableFilterProps) {
   const current = options.find((option) => option.value === value);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button className="justify-between gap-2" variant="outline" />}
+        render={
+          <Button
+            aria-invalid={ariaInvalid}
+            className="justify-between gap-2"
+            id={id}
+            variant="outline"
+          />
+        }
       >
-        <span className="truncate">{current?.label ?? "Select..."}</span>
+        <span className="truncate">{current?.label ?? placeholder}</span>
         <ChevronDownIcon className="text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">

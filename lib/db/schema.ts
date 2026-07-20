@@ -1,8 +1,11 @@
 import { sql } from "drizzle-orm";
 import {
+  date,
   index,
   integer,
+  jsonb,
   numeric,
+  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -47,6 +50,19 @@ export const datasets = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
+    slowVelocityThreshold: numeric("slow_velocity_threshold", {
+      precision: 8,
+      scale: 3,
+    })
+      .notNull()
+      .default("0.33"),
+    highVelocityThreshold: numeric("high_velocity_threshold", {
+      precision: 8,
+      scale: 3,
+    })
+      .notNull()
+      .default("3"),
+    velocityWindowDays: integer("velocity_window_days").notNull().default(30),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -93,3 +109,105 @@ export const products = pgTable(
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+
+export const sales = pgTable(
+  "sales",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    datasetId: uuid("dataset_id")
+      .notNull()
+      .references(() => datasets.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    saleDate: date("sale_date", { mode: "string" }).notNull(),
+    quantity: integer("quantity").notNull(),
+    revenue: numeric("revenue", { precision: 14, scale: 2 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("sales_product_id_sale_date_unique").on(
+      table.productId,
+      table.saleDate,
+    ),
+    index("sales_dataset_id_sale_date_idx").on(table.datasetId, table.saleDate),
+  ],
+);
+
+export type Sale = typeof sales.$inferSelect;
+export type NewSale = typeof sales.$inferInsert;
+
+export const trafficRecords = pgTable(
+  "traffic_records",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    datasetId: uuid("dataset_id")
+      .notNull()
+      .references(() => datasets.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    trafficDate: date("traffic_date", { mode: "string" }).notNull(),
+    views: integer("views").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("traffic_records_product_id_traffic_date_unique").on(
+      table.productId,
+      table.trafficDate,
+    ),
+    index("traffic_records_dataset_id_traffic_date_idx").on(
+      table.datasetId,
+      table.trafficDate,
+    ),
+  ],
+);
+
+export type TrafficRecord = typeof trafficRecords.$inferSelect;
+export type NewTrafficRecord = typeof trafficRecords.$inferInsert;
+
+export const importType = pgEnum("import_type", [
+  "products",
+  "sales",
+  "traffic",
+]);
+
+export const importStatus = pgEnum("import_status", [
+  "completed",
+  "completed_with_errors",
+  "failed",
+]);
+
+export type ImportRowError = {
+  row: number;
+  field?: string;
+  message: string;
+};
+
+export const imports = pgTable(
+  "imports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    datasetId: uuid("dataset_id")
+      .notNull()
+      .references(() => datasets.id, { onDelete: "cascade" }),
+    type: importType("type").notNull(),
+    fileName: text("file_name").notNull(),
+    totalRows: integer("total_rows").notNull(),
+    importedRows: integer("imported_rows").notNull(),
+    failedRows: integer("failed_rows").notNull(),
+    errors: jsonb("errors").$type<ImportRowError[]>().notNull().default([]),
+    status: importStatus("status").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [index("imports_dataset_id_idx").on(table.datasetId)],
+);
+
+export type Import = typeof imports.$inferSelect;
+export type NewImport = typeof imports.$inferInsert;

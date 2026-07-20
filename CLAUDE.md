@@ -1,16 +1,21 @@
 @AGENTS.md
 
 # Project
-E-commerce app with sales prediction (final year project).
+Sales prediction / analytics platform (final year project) — **not a storefront**.
+Store owners sign up, organize data into named datasets, upload or manually enter
+products/sales/traffic, and get dashboards, trends, and rule-based slow-mover /
+high-demand classification. AI-based forecasting is deferred; the current scope
+is entirely non-AI CRUD, CSV import, and analytics.
 
 # Stack
 - TypeScript (strict — no `.js`/`.jsx` files)
 - Next.js (App Router)
 - Tailwind CSS
-- shadcn/ui
+- shadcn/ui (built on Base UI, not Radix — see Gotchas)
+- Postgres + Drizzle ORM
 - Zod (validation/schemas)
-- TanStack Table
-- TanStack Form
+- TanStack Table, TanStack Form
+- Recharts (via shadcn `chart`), papaparse (CSV import)
 
 # Package Manager
 pnpm only — do not use npm, yarn, or bun. Use `pnpm exec`/`pnpm dlx` instead of `npx`.
@@ -18,8 +23,10 @@ pnpm only — do not use npm, yarn, or bun. Use `pnpm exec`/`pnpm dlx` instead o
 # Commands
 - `pnpm dev` — start dev server
 - `pnpm build` — production build
-- `pnpm lint` — biome check
-- `pnpm format` — biome format --write
+- `pnpm biome:check` — lint + format (writes fixes)
+- `pnpm ts:check` — TypeScript type check
+- `pnpm db:push` — push schema changes to the database
+- `pnpm db:seed` — seed a demo user/dataset with 12 months of sales/traffic (see README)
 
 # Workflow Rules
 - Never run `git commit` yourself. Always prepare/stage changes and give me a commit message to review — I commit manually.
@@ -40,6 +47,13 @@ pnpm only — do not use npm, yarn, or bun. Use `pnpm exec`/`pnpm dlx` instead o
   - Server action that reads/mutates user data → call `verifySession()` (and any role check) inside the action; treat it like a public endpoint.
   - The `proxy.ts` check is optimistic/defense-in-depth only — the authoritative check is always the DAL (`verifySession`/`getCurrentUser`) close to the data. Never rely on the proxy or client-side checks alone.
 - New forms → TanStack Form + a shared Zod schema, reusing `components/form/text-field.tsx` and the `FieldError` primitive.
+
+# Dataset Scoping
+- All product/sales/traffic/import data belongs to a named **dataset**, scoped by URL: `/dashboard/[datasetId]/...`.
+- `lib/datasets/dal.ts`: `requireDataset(datasetId)` — session + ownership check, calls `notFound()` on a miss. Used at the top of `app/dashboard/[datasetId]/layout.tsx` and every scoped page. `getOwnedDataset(datasetId, userId)` is the non-throwing variant for use inside server actions (return `{ error }` instead of calling `notFound()`).
+- Every new page/action under `[datasetId]` MUST re-derive ownership via one of the above — never trust a `datasetId` param without checking it belongs to the current user.
+- Next.js boundary rule (confirmed against `node_modules/next/dist/docs/`): a segment's `not-found.tsx`/`error.tsx` does **not** wrap that same segment's own `layout.tsx`. Since `requireDataset`'s `notFound()` fires inside `[datasetId]/layout.tsx`, its `not-found.tsx` lives one level up, at `app/dashboard/not-found.tsx`.
+- CSV import (`lib/imports/`) is the bulk-entry path; manual CRUD forms are the row-level fix-up path. Both funnel through the same tables and the same `isUniqueViolation` (`lib/db/errors.ts`) duplicate-detection helper — Drizzle wraps driver errors in `DrizzleQueryError`, so check `error.cause instanceof postgres.PostgresError`, not the raw caught error.
 
 # Environment Variables
 - Never read `process.env` directly in code.

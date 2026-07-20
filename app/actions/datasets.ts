@@ -18,6 +18,8 @@ import {
   deleteDatasetSchema,
   type RenameDatasetInput,
   renameDatasetSchema,
+  type UpdateDatasetThresholdsValues,
+  updateDatasetThresholdsSchema,
 } from "@/lib/validations/datasets";
 
 export type DatasetActionState = {
@@ -140,4 +142,32 @@ export async function deleteDataset(
 
   revalidatePath("/dashboard");
   redirect("/dashboard?all=1");
+}
+
+export async function updateDatasetThresholds(
+  input: UpdateDatasetThresholdsValues,
+): Promise<DatasetActionState> {
+  const { userId } = await verifySession();
+  const parsed = updateDatasetThresholdsSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+
+  const dataset = await getOwnedDataset(parsed.data.id, userId);
+  if (!dataset) {
+    return { error: "Dataset not found." };
+  }
+
+  await db
+    .update(datasets)
+    .set({
+      slowVelocityThreshold: parsed.data.slowVelocityThreshold.toString(),
+      highVelocityThreshold: parsed.data.highVelocityThreshold.toString(),
+      velocityWindowDays: parsed.data.velocityWindowDays,
+    })
+    .where(and(eq(datasets.id, dataset.id), eq(datasets.userId, userId)));
+
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
+  return { success: "Classification thresholds updated." };
 }

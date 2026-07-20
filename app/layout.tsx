@@ -21,8 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ecommerce App",
-  description: "Ecommerce app that predicts sales",
+  title: "Sales Analytics",
+  description:
+    "Upload sales and traffic data, track trends, and classify slow-movers and high-demand products.",
 };
 
 export default function RootLayout({

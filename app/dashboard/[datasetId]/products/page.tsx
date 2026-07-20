@@ -1,4 +1,5 @@
 import { ProductsTable } from "@/components/products/products-table";
+import { classifyProducts } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listCategories, listProducts } from "@/lib/products/dal";
 
@@ -9,10 +10,19 @@ export default async function ProductsPage({
 }) {
   const { datasetId } = await params;
   const dataset = await requireDataset(datasetId);
-  const [products, categories] = await Promise.all([
+  const [rawProducts, categories, classified] = await Promise.all([
     listProducts(dataset.id),
     listCategories(dataset.id),
+    classifyProducts(dataset),
   ]);
+
+  const classificationByProductId = new Map(
+    classified.map((product) => [product.productId, product.classification]),
+  );
+  const products = rawProducts.map((product) => ({
+    ...product,
+    classification: classificationByProductId.get(product.id) ?? "no-data",
+  }));
 
   return (
     <div>
