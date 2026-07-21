@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/dashboard/back-link";
 import { DatasetSettingsGeneral } from "@/components/datasets/dataset-settings-general";
 import { DatasetThresholdsForm } from "@/components/datasets/dataset-thresholds-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +14,8 @@ export default async function DatasetSettingsPage({
 
   return (
     <div>
-      <div>
+      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
+      <div className="mt-2">
         <h1 className="font-semibold text-2xl">Settings</h1>
         <p className="text-muted-foreground text-sm">
           Manage this dataset's name, classification rules, and danger zone.

@@ -8,6 +8,7 @@ import { MoversCard } from "@/components/analytics/movers-card";
 import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
 import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
+import { BackLink } from "@/components/dashboard/back-link";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
@@ -52,7 +53,8 @@ export default async function DatasetOverviewPage({
   if (!maxDate) {
     return (
       <div>
-        <h1 className="font-semibold text-2xl">{dataset.name} overview</h1>
+        <BackLink href="/dashboard" label="All datasets" />
+        <h1 className="mt-2 font-semibold text-2xl">{dataset.name} overview</h1>
         <Empty className="mt-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -84,7 +86,8 @@ export default async function DatasetOverviewPage({
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <BackLink href="/dashboard" label="All datasets" />
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="font-semibold text-2xl">{dataset.name} overview</h1>
           <p className="text-muted-foreground text-sm">

@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/dashboard/back-link";
 import { TrafficTable } from "@/components/traffic/traffic-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -35,7 +36,8 @@ export default async function TrafficPage({
 
   return (
     <div>
-      <div>
+      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
+      <div className="mt-2">
         <h1 className="font-semibold text-2xl">Traffic</h1>
         <p className="text-muted-foreground text-sm">
           Record and review daily page views for this dataset's products.

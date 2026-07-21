@@ -2,12 +2,14 @@ import { notFound } from "next/navigation";
 import { ClassificationBadge } from "@/components/analytics/classification-badge";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { NoDataMessage } from "@/components/analytics/no-data-message";
+import { ProductForecastCard } from "@/components/analytics/product-forecast-card";
 import { RevenueUnitsChart } from "@/components/charts/revenue-units-chart";
 import { TrafficTrendChart } from "@/components/charts/traffic-trend-chart";
+import { BackLink } from "@/components/dashboard/back-link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  getDatasetDateBounds,
+  getProductDateBounds,
   getProductSeries,
 } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
@@ -16,6 +18,7 @@ import {
   type ProductClassification,
 } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
+import { getLatestForecast } from "@/lib/forecasts/dal";
 import { getProduct } from "@/lib/products/dal";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -46,20 +49,26 @@ export default async function ProductDetailPage({
   ) ?? {
     classification: "no-data" as const,
     velocity: 0,
+    historicalVelocity: 0,
+    predictedVelocity: null,
+    velocitySource: "historical" as const,
   };
 
-  const { maxDate } = await getDatasetDateBounds(dataset.id);
+  const { maxDate } = await getProductDateBounds(product.id);
 
   if (!maxDate) {
     return (
       <div>
-        <ProductHeader
-          classification={classification}
-          product={product}
-          windowDays={dataset.velocityWindowDays}
-        />
+        <BackLink href={`/dashboard/${dataset.id}/products`} label="Products" />
+        <div className="mt-2">
+          <ProductHeader
+            classification={classification}
+            product={product}
+            windowDays={dataset.velocityWindowDays}
+          />
+        </div>
         <div className="mt-10">
-          <NoDataMessage message="No sales recorded for this dataset yet." />
+          <NoDataMessage message="No sales recorded for this product yet." />
         </div>
       </div>
     );
@@ -91,10 +100,12 @@ export default async function ProductDetailPage({
   }));
   const hasSales = totals.units > 0 || totals.revenue > 0;
   const hasViews = totals.views > 0;
+  const forecast = await getLatestForecast(dataset.id, product.id);
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <BackLink href={`/dashboard/${dataset.id}/products`} label="Products" />
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <ProductHeader
           classification={classification}
           product={product}
@@ -150,6 +161,21 @@ export default async function ProductDetailPage({
           </CardContent>
         </Card>
       </div>
+
+      <div className="mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Demand forecast</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProductForecastCard
+              actualSeries={dailyTrend}
+              datasetId={dataset.id}
+              forecast={forecast}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -165,7 +191,13 @@ function ProductHeader({
     category: string | null;
     price: string;
   };
-  classification: { classification: ProductClassification; velocity: number };
+  classification: {
+    classification: ProductClassification;
+    velocity: number;
+    historicalVelocity: number;
+    predictedVelocity: number | null;
+    velocitySource: "forecast" | "historical";
+  };
   windowDays: number;
 }) {
   return (
@@ -178,10 +210,20 @@ function ProductHeader({
         ) : null}
         <span>{currency.format(Number(product.price))}</span>
         <ClassificationBadge classification={classification.classification} />
-        <span className="text-xs">
-          velocity: {classification.velocity.toFixed(2)} units/day over last{" "}
-          {windowDays} days
-        </span>
+        {classification.velocitySource === "forecast" &&
+        classification.predictedVelocity !== null ? (
+          <span className="text-xs">
+            predicted velocity: {classification.predictedVelocity.toFixed(2)}{" "}
+            units/day · historical:{" "}
+            {classification.historicalVelocity.toFixed(2)} units/day over last{" "}
+            {windowDays} days
+          </span>
+        ) : (
+          <span className="text-xs">
+            velocity: {classification.velocity.toFixed(2)} units/day over last{" "}
+            {windowDays} days
+          </span>
+        )}
       </div>
     </div>
   );

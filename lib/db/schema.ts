@@ -220,3 +220,42 @@ export const imports = pgTable(
 
 export type Import = typeof imports.$inferSelect;
 export type NewImport = typeof imports.$inferInsert;
+
+export type ForecastPoint = {
+  date: string;
+  predictedQuantity: number;
+  predictedRevenue: number;
+  lowerBound: number;
+  upperBound: number;
+};
+
+export const forecasts = pgTable(
+  "forecasts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    datasetId: uuid("dataset_id")
+      .notNull()
+      .references(() => datasets.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    generatedAt: timestamp("generated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    horizonDays: integer("horizon_days").notNull(),
+    predictions: jsonb("predictions").$type<ForecastPoint[]>().notNull(),
+    modelType: text("model_type").notNull(),
+    rmse: numeric("rmse", { precision: 10, scale: 4 }),
+    mae: numeric("mae", { precision: 10, scale: 4 }),
+  },
+  (table) => [
+    index("forecasts_dataset_id_idx").on(table.datasetId),
+    index("forecasts_product_id_generated_at_idx").on(
+      table.productId,
+      table.generatedAt,
+    ),
+  ],
+);
+
+export type Forecast = typeof forecasts.$inferSelect;
+export type NewForecast = typeof forecasts.$inferInsert;

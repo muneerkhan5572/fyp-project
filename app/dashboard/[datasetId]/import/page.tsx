@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/dashboard/back-link";
 import { UploadFlexibleCard } from "@/components/imports/flexible/upload-flexible-card";
 import { ImportHistoryTable } from "@/components/imports/import-history-table";
 import { UploadCard } from "@/components/imports/upload-card";
@@ -15,7 +16,8 @@ export default async function ImportPage({
 
   return (
     <div>
-      <div>
+      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
+      <div className="mt-2">
         <h1 className="font-semibold text-2xl">Import</h1>
         <p className="text-muted-foreground text-sm">
           Bulk-upload products, sales, or traffic data from a CSV file.

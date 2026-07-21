@@ -23,6 +23,10 @@ export const env = createEnv({
     SMTP_USER: z.string().min(1, { error: "SMTP_USER is required." }),
     SMTP_PASSWORD: z.string().min(1, { error: "SMTP_PASSWORD is required." }),
     SMTP_FROM: z.string().min(1, { error: "SMTP_FROM is required." }),
+    ML_SERVICE_URL: z.url({ error: "ML_SERVICE_URL must be a valid URL." }),
+    ML_SERVICE_API_KEY: z.string().min(1, {
+      error: "ML_SERVICE_API_KEY is required.",
+    }),
   },
   client: {},
   emptyStringAsUndefined: true,
@@ -36,5 +40,7 @@ export const env = createEnv({
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     SMTP_FROM: process.env.SMTP_FROM,
+    ML_SERVICE_URL: process.env.ML_SERVICE_URL,
+    ML_SERVICE_API_KEY: process.env.ML_SERVICE_API_KEY,
   },
 });

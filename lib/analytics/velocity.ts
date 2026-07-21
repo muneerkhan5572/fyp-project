@@ -6,6 +6,7 @@ import { addDaysToDateString } from "@/lib/analytics/range";
 import { db } from "@/lib/db";
 import type { Dataset } from "@/lib/db/schema";
 import { products, sales } from "@/lib/db/schema";
+import { listLatestForecastsForDataset } from "@/lib/forecasts/dal";
 
 export type ProductClassification =
   | "high-demand"
@@ -13,14 +14,37 @@ export type ProductClassification =
   | "normal"
   | "no-data";
 
+export type VelocitySource = "forecast" | "historical";
+
 export type ClassifiedProduct = {
   productId: string;
   name: string;
   sku: string;
   unitsInWindow: number;
   velocity: number;
+  historicalVelocity: number;
+  predictedVelocity: number | null;
+  velocitySource: VelocitySource;
   classification: ProductClassification;
 };
+
+function classify(
+  velocity: number,
+  totalSalesRows: number,
+  slowThreshold: number,
+  highThreshold: number,
+): ProductClassification {
+  if (totalSalesRows === 0) {
+    return "no-data";
+  }
+  if (velocity >= highThreshold) {
+    return "high-demand";
+  }
+  if (velocity < slowThreshold) {
+    return "slow-mover";
+  }
+  return "normal";
+}
 
 export const classifyProducts = cache(
   async (dataset: Dataset): Promise<ClassifiedProduct[]> => {
@@ -41,44 +65,61 @@ export const classifyProducts = cache(
         sku: product.sku,
         unitsInWindow: 0,
         velocity: 0,
-        classification: "no-data",
+        historicalVelocity: 0,
+        predictedVelocity: null,
+        velocitySource: "historical" as const,
+        classification: "no-data" as const,
       }));
     }
 
     const windowStart = addDaysToDateString(maxDate, -(windowDays - 1));
 
-    const rows = await db
-      .select({
-        productId: products.id,
-        name: products.name,
-        sku: products.sku,
-        unitsInWindow: sql<number>`coalesce(sum(case when ${sales.saleDate} between ${windowStart} and ${maxDate} then ${sales.quantity} else 0 end), 0)::int`,
-        totalSalesRows: sql<number>`count(${sales.id})::int`,
-      })
-      .from(products)
-      .leftJoin(sales, eq(sales.productId, products.id))
-      .where(eq(products.datasetId, dataset.id))
-      .groupBy(products.id, products.name, products.sku);
+    const [rows, latestForecasts] = await Promise.all([
+      db
+        .select({
+          productId: products.id,
+          name: products.name,
+          sku: products.sku,
+          unitsInWindow: sql<number>`coalesce(sum(case when ${sales.saleDate} between ${windowStart} and ${maxDate} then ${sales.quantity} else 0 end), 0)::int`,
+          totalSalesRows: sql<number>`count(${sales.id})::int`,
+        })
+        .from(products)
+        .leftJoin(sales, eq(sales.productId, products.id))
+        .where(eq(products.datasetId, dataset.id))
+        .groupBy(products.id, products.name, products.sku),
+      listLatestForecastsForDataset(dataset.id),
+    ]);
 
     return rows.map((row) => {
-      const velocity = row.unitsInWindow / windowDays;
-      let classification: ProductClassification;
-      if (row.totalSalesRows === 0) {
-        classification = "no-data";
-      } else if (velocity >= highThreshold) {
-        classification = "high-demand";
-      } else if (velocity < slowThreshold) {
-        classification = "slow-mover";
-      } else {
-        classification = "normal";
-      }
+      const historicalVelocity = row.unitsInWindow / windowDays;
+      const forecast = latestForecasts.get(row.productId);
+      const predictedVelocity =
+        forecast && forecast.predictions.length > 0
+          ? forecast.predictions.reduce(
+              (sum, point) => sum + point.predictedQuantity,
+              0,
+            ) / forecast.horizonDays
+          : null;
+
+      const velocitySource: VelocitySource =
+        predictedVelocity !== null ? "forecast" : "historical";
+      const velocity = predictedVelocity ?? historicalVelocity;
+
       return {
         productId: row.productId,
         name: row.name,
         sku: row.sku,
         unitsInWindow: row.unitsInWindow,
         velocity,
-        classification,
+        historicalVelocity,
+        predictedVelocity,
+        velocitySource,
+        classification: classify(
+          velocity,
+          row.totalSalesRows,
+          slowThreshold,
+          highThreshold,
+        ),
       };
     });
   },

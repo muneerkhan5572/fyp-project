@@ -54,6 +54,7 @@ export async function MoversCard({
                 </Link>
                 <span className="shrink-0 text-muted-foreground text-xs">
                   {product.velocity.toFixed(2)} units/day
+                  {product.velocitySource === "forecast" ? " (predicted)" : ""}
                 </span>
               </li>
             ))}

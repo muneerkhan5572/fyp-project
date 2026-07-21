@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/dashboard/back-link";
 import { ImportReport } from "@/components/imports/import-report";
 import { requireDataset } from "@/lib/datasets/dal";
 import { getImport } from "@/lib/imports/dal";
@@ -18,7 +19,8 @@ export default async function ImportReportPage({
 
   return (
     <div>
-      <div>
+      <BackLink href={`/dashboard/${dataset.id}/import`} label="Import" />
+      <div className="mt-2">
         <h1 className="font-semibold text-2xl">Import report</h1>
         <p className="text-muted-foreground text-sm">
           Details for this CSV import.

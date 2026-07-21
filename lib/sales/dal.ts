@@ -61,6 +61,19 @@ export const pagedSales = cache(
   },
 );
 
+export const listAllSalesForDataset = cache((datasetId: string) => {
+  return db
+    .select({
+      productId: sales.productId,
+      saleDate: sales.saleDate,
+      quantity: sales.quantity,
+      revenue: sales.revenue,
+    })
+    .from(sales)
+    .where(eq(sales.datasetId, datasetId))
+    .orderBy(asc(sales.saleDate));
+});
+
 export const hasAnySales = cache(async (datasetId: string) => {
   const [row] = await db
     .select({ id: sales.id })

@@ -33,6 +33,21 @@ export const getDatasetDateBounds = cache(async (datasetId: string) => {
   };
 });
 
+export const getProductDateBounds = cache(async (productId: string) => {
+  const [row] = await db
+    .select({
+      minDate: sql<string | null>`min(${sales.saleDate})`,
+      maxDate: sql<string | null>`max(${sales.saleDate})`,
+    })
+    .from(sales)
+    .where(eq(sales.productId, productId));
+
+  return {
+    minDate: row?.minDate ?? null,
+    maxDate: row?.maxDate ?? null,
+  };
+});
+
 export type Kpis = {
   totalRevenue: number;
   totalUnits: number;

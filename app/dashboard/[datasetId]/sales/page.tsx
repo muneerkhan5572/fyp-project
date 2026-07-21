@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/dashboard/back-link";
 import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -35,7 +36,8 @@ export default async function SalesPage({
 
   return (
     <div>
-      <div>
+      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
+      <div className="mt-2">
         <h1 className="font-semibold text-2xl">Sales</h1>
         <p className="text-muted-foreground text-sm">
           Record and review daily sales for this dataset's products.
