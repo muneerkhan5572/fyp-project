@@ -55,6 +55,35 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
         </div>
       </div>
 
+      {importRow.meta?.mode === "flexible" ? (
+        <div className="mt-4 rounded-md border p-3 text-sm">
+          <p>
+            {importRow.meta.productsUpserted} product
+            {importRow.meta.productsUpserted === 1 ? "" : "s"} created or
+            updated.
+          </p>
+          {importRow.meta.namesCollapsed > 0 ? (
+            <p className="mt-1 text-muted-foreground text-xs">
+              No SKU column was mapped, so rows were matched to products by name
+              — {importRow.meta.namesCollapsed} row
+              {importRow.meta.namesCollapsed === 1 ? "" : "s"} shared a name
+              with an earlier row in this file (expected if the same product
+              sold more than once). If two different products share a name,
+              re-import with a SKU column mapped so they don't get merged.
+            </p>
+          ) : null}
+          {importRow.meta.salesRowsAggregated > 0 ? (
+            <p className="mt-1 text-muted-foreground text-xs">
+              {importRow.meta.salesRowsAggregated} row
+              {importRow.meta.salesRowsAggregated === 1 ? "" : "s"} shared the
+              same product and date as another row and were combined into one
+              daily total (this app tracks sales per product per day, not per
+              individual order).
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {importRow.errors.length > 0 ? (
         <div className="mt-6">
           <h2 className="font-medium text-sm">Row errors</h2>

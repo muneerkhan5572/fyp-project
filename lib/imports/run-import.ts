@@ -21,6 +21,9 @@ import {
 const BATCH_SIZE = 1000;
 const MAX_ERRORS = 500;
 
+type DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+type DbExecutor = typeof db | DbTransaction;
+
 export type ImportType = "products" | "sales" | "traffic";
 
 export type RunImportResult = {
@@ -32,7 +35,7 @@ export type RunImportResult = {
   errors: ImportRowError[];
 };
 
-function chunk<T>(items: T[], size: number): T[][] {
+export function chunk<T>(items: T[], size: number): T[][] {
   const chunks: T[][] = [];
   for (let i = 0; i < items.length; i += size) {
     chunks.push(items.slice(i, i + size));
@@ -159,11 +162,15 @@ async function runProductsImport(
   );
 }
 
-async function resolveSkuMap(datasetId: string, skus: string[]) {
+export async function resolveSkuMap(
+  executor: DbExecutor,
+  datasetId: string,
+  skus: string[],
+) {
   if (skus.length === 0) {
     return new Map<string, string>();
   }
-  const rows = await db
+  const rows = await executor
     .select({ id: products.id, sku: products.sku })
     .from(products)
     .where(and(eq(products.datasetId, datasetId), inArray(products.sku, skus)));
@@ -206,6 +213,7 @@ async function runSalesImport(
   });
 
   const skuMap = await resolveSkuMap(
+    db,
     datasetId,
     Array.from(new Set(parsedRows.map(({ data }) => data.sku))),
   );
@@ -309,6 +317,7 @@ async function runTrafficImport(
   });
 
   const skuMap = await resolveSkuMap(
+    db,
     datasetId,
     Array.from(new Set(parsedRows.map(({ data }) => data.sku))),
   );

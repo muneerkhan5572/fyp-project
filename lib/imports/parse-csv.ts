@@ -6,18 +6,17 @@ export type ParsedCsv = {
   rows: Record<string, string>[];
 };
 
-export type ParseCsvResult =
+export type ParseRawResult =
   | { success: true; data: ParsedCsv }
   | { success: false; error: string };
+
+export type ParseCsvResult = ParseRawResult;
 
 function stripBom(content: string): string {
   return content.charCodeAt(0) === 0xfeff ? content.slice(1) : content;
 }
 
-export function parseCsv(
-  content: string,
-  requiredHeaders: string[],
-): ParseCsvResult {
+export function parseRaw(content: string): ParseRawResult {
   const result = Papa.parse<Record<string, string>>(stripBom(content), {
     header: true,
     skipEmptyLines: "greedy",
@@ -35,7 +34,22 @@ export function parseCsv(
   }
 
   const headers = result.meta.fields ?? [];
-  const missing = requiredHeaders.filter((header) => !headers.includes(header));
+
+  return { success: true, data: { headers, rows: result.data } };
+}
+
+export function parseCsv(
+  content: string,
+  requiredHeaders: string[],
+): ParseCsvResult {
+  const parsed = parseRaw(content);
+  if (!parsed.success) {
+    return parsed;
+  }
+
+  const missing = requiredHeaders.filter(
+    (header) => !parsed.data.headers.includes(header),
+  );
   if (missing.length > 0) {
     return {
       success: false,
@@ -43,9 +57,9 @@ export function parseCsv(
     };
   }
 
-  if (result.data.length === 0) {
+  if (parsed.data.rows.length === 0) {
     return { success: false, error: "The CSV file has no data rows." };
   }
 
-  return { success: true, data: { headers, rows: result.data } };
+  return parsed;
 }
