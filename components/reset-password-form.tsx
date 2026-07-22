@@ -23,7 +23,6 @@ export function ResetPasswordForm({
   const form = useForm({
     defaultValues: { token, password: "", confirmPassword: "" },
     validators: {
-      onChange: resetPasswordSchema,
       onSubmit: resetPasswordSchema,
     },
     onSubmit: async ({ value }) => {

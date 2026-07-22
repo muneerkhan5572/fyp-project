@@ -55,7 +55,6 @@ export function SaleFormDialog({
       revenue: sale?.revenue ?? "",
     },
     validators: {
-      onChange: saleFormClientSchema,
       onSubmit: saleFormClientSchema,
     },
     onSubmit: async ({ value }) => {

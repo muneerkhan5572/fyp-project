@@ -24,7 +24,6 @@ export function DatasetCreateDialog() {
   const form = useForm({
     defaultValues: { name: "" },
     validators: {
-      onChange: createDatasetSchema,
       onSubmit: createDatasetSchema,
     },
     onSubmit: async ({ value }) => {

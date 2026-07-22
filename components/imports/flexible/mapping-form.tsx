@@ -153,7 +153,6 @@ export function MappingForm({
   const form = useForm({
     defaultValues: detectedMapping,
     validators: {
-      onChange: importMappingSchema,
       onSubmit: importMappingSchema,
     },
     onSubmit: ({ value }) => {

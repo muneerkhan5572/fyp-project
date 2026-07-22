@@ -29,7 +29,6 @@ export function DatasetThresholdsForm({ dataset }: DatasetThresholdsFormProps) {
       velocityWindowDays: String(dataset.velocityWindowDays),
     },
     validators: {
-      onChange: updateDatasetThresholdsClientSchema,
       onSubmit: updateDatasetThresholdsClientSchema,
     },
     onSubmit: async ({ value }) => {

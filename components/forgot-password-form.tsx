@@ -25,7 +25,6 @@ export function ForgotPasswordForm({
   const form = useForm({
     defaultValues: { email: "" },
     validators: {
-      onChange: forgotPasswordSchema,
       onSubmit: forgotPasswordSchema,
     },
     onSubmit: async ({ value }) => {

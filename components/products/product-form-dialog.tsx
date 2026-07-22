@@ -54,7 +54,6 @@ export function ProductFormDialog({
           : "",
     },
     validators: {
-      onChange: productFormClientSchema,
       onSubmit: productFormClientSchema,
     },
     onSubmit: async ({ value }) => {

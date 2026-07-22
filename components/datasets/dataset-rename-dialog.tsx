@@ -33,7 +33,6 @@ export function DatasetRenameDialog({
   const form = useForm({
     defaultValues: { id: dataset.id, name: dataset.name },
     validators: {
-      onChange: renameDatasetSchema,
       onSubmit: renameDatasetSchema,
     },
     onSubmit: async ({ value }) => {

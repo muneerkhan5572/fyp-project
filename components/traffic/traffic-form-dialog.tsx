@@ -56,7 +56,6 @@ export function TrafficFormDialog({
       views: record ? String(record.views) : "",
     },
     validators: {
-      onChange: trafficFormClientSchema,
       onSubmit: trafficFormClientSchema,
     },
     onSubmit: async ({ value }) => {

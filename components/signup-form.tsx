@@ -19,7 +19,7 @@ import { signupSchema } from "@/lib/validations/auth";
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const form = useForm({
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
-    validators: { onChange: signupSchema, onSubmit: signupSchema },
+    validators: { onSubmit: signupSchema },
     onSubmit: async ({ value }) => {
       const result = await signup(value);
       if (result?.error) {

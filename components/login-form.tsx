@@ -23,7 +23,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const form = useForm({
     defaultValues: { email: "", password: "" },
-    validators: { onChange: loginSchema, onSubmit: loginSchema },
+    validators: { onSubmit: loginSchema },
     onSubmit: async ({ value }) => {
       const result = await login(value);
       if (result?.error) {
