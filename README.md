@@ -6,12 +6,14 @@ upload or manually enter products, sales, and traffic, and get dashboards,
 trends, and rule-based slow-mover / high-demand classification.
 
 Built with Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Drizzle
-ORM, and Postgres. AI-based demand forecasting is out of scope for the current
-version — everything here is deterministic CRUD, CSV import, and analytics.
+ORM, and Postgres, plus a Python/Flask microservice (`ml-service/`) for the AI
+features: demand forecasting, forecast-driven classification, stock-out risk
+alerts, and semantic product search.
 
 ## Prerequisites
 
 - Node.js 20+ and pnpm
+- Python 3.12+ (for `ml-service/`)
 - Docker (for the local Postgres database)
 
 ## Getting Started
@@ -64,7 +66,24 @@ chart, and classification badge populated, and enough rows to exercise
 pagination on the products/sales/traffic tables. Safe to re-run — it upserts
 rather than duplicating. Prints the demo login credentials when done.
 
-### 5. Start the dev server
+### 5. Start the ML service
+
+```bash
+cd ml-service
+python3.12 -m venv venv
+venv/bin/pip install -r requirements.txt
+cp .env.example .env   # set ML_SERVICE_API_KEY to match the value in the app's .env
+venv/bin/python app.py
+```
+
+Runs on `http://localhost:5001` by default (`PORT` in `ml-service/.env`). Flask
+is fully stateless — it never touches Postgres directly; Next.js gathers data
+via Drizzle, POSTs it to Flask, and persists whatever comes back. The app's
+`ML_SERVICE_URL`/`ML_SERVICE_API_KEY` (in `.env`, validated via `env.ts`) must
+point at this service and share its API key. `sentence-transformers` pulls in
+PyTorch, so the first install is slow.
+
+### 6. Start the dev server
 
 ```bash
 pnpm dev
@@ -92,7 +111,18 @@ Open [http://localhost:3000](http://localhost:3000).
   based on sales velocity (units/day) over a trailing window anchored on the
   dataset's own most recent sale date — never today's real-world date, so
   historical datasets still classify correctly. Thresholds and the window
-  length are configurable per dataset.
+  length are configurable per dataset. Uses a product's latest demand
+  forecast when one exists, falling back to historical velocity otherwise.
+- **Demand forecasting** — a Random Forest model (with a Linear Regression
+  baseline for comparison), trained per dataset on sales history, predicts
+  daily quantity/revenue for each product with 10th/90th-percentile
+  confidence bands. Products need at least 28 days of sales history.
+- **Stock-out risk alerts** — walks a product's forecast against its current
+  stock to flag out-of-stock, at-risk (with an estimated stock-out date), or
+  sufficient — shown on the dashboard overview and each product's page.
+- **Semantic product search** — search products by description instead of
+  exact name/SKU match (e.g. "cheap kitchen items"), powered by sentence
+  embeddings and cosine similarity.
 - **Settings** — rename a dataset, tune classification thresholds, or delete
   a dataset (with all of its products/sales/traffic/import history).
 
@@ -155,8 +185,13 @@ Email/password authentication with stateless JWT sessions.
 - `lib/imports/` — CSV parsing, per-row Zod schemas, and the batched
   upsert/validation engine
 - `lib/analytics/` — KPI/trend/top-product/category queries, date-range
-  presets, and the velocity classification engine
+  presets, velocity classification, and stock-out risk
+- `lib/forecasts/` — forecast generation orchestration and data access layer
+- `lib/ml/` — fetch wrappers for the `ml-service` HTTP API (forecasting, search)
 - `lib/db/` — Drizzle client, schema, and shared error helpers
+- `ml-service/` — the Flask microservice: demand forecasting
+  (scikit-learn) and semantic search (sentence-transformers). Stateless,
+  called server-to-server over HTTP with a shared-secret header.
 - `lib/validations/` — shared Zod schemas (client + server)
 - `components/charts/` — shared Recharts-based chart primitives
 - `components/analytics/`, `components/products/`, `components/sales/`,

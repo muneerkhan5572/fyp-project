@@ -32,3 +32,14 @@ class PredictionPoint(BaseModel):
 class SkippedProduct(BaseModel):
     sku: str
     reason: str
+
+
+class SearchProductInput(BaseModel):
+    sku: str
+    name: str
+    category: str | None = None
+
+
+class SearchRequest(BaseModel):
+    products: list[SearchProductInput]
+    query: str

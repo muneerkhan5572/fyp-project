@@ -20,6 +20,7 @@ import {
 } from "@/components/products/columns";
 import { ProductDeleteDialog } from "@/components/products/product-delete-dialog";
 import { ProductFormDialog } from "@/components/products/product-form-dialog";
+import { SemanticSearchInput } from "@/components/products/semantic-search-input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Empty,
@@ -30,6 +31,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const UNCATEGORIZED = "__uncategorized__";
 const ALL_CATEGORIES = "__all__";
@@ -50,6 +52,8 @@ export function ProductsTable({
   ]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(ALL_CATEGORIES);
+  const [searchMode, setSearchMode] = useState<"exact" | "semantic">("exact");
+  const [semanticOrder, setSemanticOrder] = useState<string[] | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [editingProduct, setEditingProduct] =
     useState<ProductWithClassification | null>(null);
@@ -67,14 +71,24 @@ export function ProductsTable({
   );
 
   const filteredProducts = useMemo(() => {
-    if (categoryFilter === ALL_CATEGORIES) {
-      return products;
-    }
+    let result = products;
     if (categoryFilter === UNCATEGORIZED) {
-      return products.filter((product) => !product.category);
+      result = result.filter((product) => !product.category);
+    } else if (categoryFilter !== ALL_CATEGORIES) {
+      result = result.filter((product) => product.category === categoryFilter);
     }
-    return products.filter((product) => product.category === categoryFilter);
-  }, [products, categoryFilter]);
+
+    if (semanticOrder) {
+      const rank = new Map(semanticOrder.map((sku, index) => [sku, index]));
+      result = [...result].sort(
+        (a, b) =>
+          (rank.get(a.sku) ?? Number.POSITIVE_INFINITY) -
+          (rank.get(b.sku) ?? Number.POSITIVE_INFINITY),
+      );
+    }
+
+    return result;
+  }, [products, categoryFilter, semanticOrder]);
 
   const table = useReactTable({
     columns,
@@ -123,14 +137,43 @@ export function ProductsTable({
         <>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              <div className="relative w-full max-w-xs">
-                <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  className="pl-7"
-                  onChange={(event) => setGlobalFilter(event.target.value)}
-                  placeholder="Search name or SKU..."
-                  value={globalFilter}
-                />
+              <div className="flex flex-col gap-1.5">
+                <Tabs
+                  onValueChange={(value) => {
+                    const mode = value as "exact" | "semantic";
+                    setSearchMode(mode);
+                    if (mode === "exact") {
+                      setSemanticOrder(null);
+                    } else {
+                      setGlobalFilter("");
+                    }
+                  }}
+                  value={searchMode}
+                >
+                  <TabsList>
+                    <TabsTrigger value="exact">Exact match</TabsTrigger>
+                    <TabsTrigger value="semantic">By description</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+                {searchMode === "exact" ? (
+                  <div className="relative w-full max-w-xs">
+                    <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      className="pl-7"
+                      onChange={(event) => setGlobalFilter(event.target.value)}
+                      placeholder="Search name or SKU..."
+                      value={globalFilter}
+                    />
+                  </div>
+                ) : (
+                  <SemanticSearchInput
+                    datasetId={datasetId}
+                    onResults={(skus) => {
+                      setSemanticOrder(skus);
+                      setSorting([]);
+                    }}
+                  />
+                )}
               </div>
               <DataTableFilter
                 onValueChange={setCategoryFilter}

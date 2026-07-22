@@ -4,7 +4,8 @@ from pydantic import ValidationError
 import config
 from auth import require_api_key
 from forecasting import generate_forecasts
-from schemas import ForecastRequest
+from schemas import ForecastRequest, SearchRequest
+from semantic_search import search_products
 
 app = Flask(__name__)
 
@@ -24,6 +25,20 @@ def forecast():
 
     result = generate_forecasts(payload)
     return jsonify(result)
+
+
+@app.post("/search")
+@require_api_key
+def search():
+    try:
+        payload = SearchRequest.model_validate(request.get_json(force=True, silent=False))
+    except ValidationError as error:
+        return jsonify({"error": "Invalid request.", "details": error.errors()}), 400
+
+    results = search_products(
+        [product.model_dump() for product in payload.products], payload.query
+    )
+    return jsonify({"results": results})
 
 
 if __name__ == "__main__":
