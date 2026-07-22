@@ -6,6 +6,7 @@ import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { KpiCardsSection } from "@/components/analytics/kpi-cards";
 import { MoversCard } from "@/components/analytics/movers-card";
 import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
+import { StockRiskCard } from "@/components/analytics/stock-risk-card";
 import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
 import { BackLink } from "@/components/dashboard/back-link";
@@ -121,6 +122,9 @@ export default async function DatasetOverviewPage({
         </Suspense>
         <Suspense fallback={<ChartCardSkeleton />}>
           <MoversCard dataset={dataset} kind="slow-mover" />
+        </Suspense>
+        <Suspense fallback={<ChartCardSkeleton />}>
+          <StockRiskCard datasetId={dataset.id} />
         </Suspense>
       </div>
     </div>

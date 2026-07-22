@@ -3,6 +3,7 @@ import { ClassificationBadge } from "@/components/analytics/classification-badge
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { NoDataMessage } from "@/components/analytics/no-data-message";
 import { ProductForecastCard } from "@/components/analytics/product-forecast-card";
+import { StockRiskBadge } from "@/components/analytics/stock-risk-badge";
 import { RevenueUnitsChart } from "@/components/charts/revenue-units-chart";
 import { TrafficTrendChart } from "@/components/charts/traffic-trend-chart";
 import { BackLink } from "@/components/dashboard/back-link";
@@ -13,6 +14,7 @@ import {
   getProductSeries,
 } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
+import { getStockRisk, type StockRiskEntry } from "@/lib/analytics/stock-risk";
 import {
   classifyProducts,
   type ProductClassification,
@@ -54,6 +56,10 @@ export default async function ProductDetailPage({
     velocitySource: "historical" as const,
   };
 
+  const stockRisk = await getStockRisk(dataset.id);
+  const productStockRisk =
+    stockRisk.find((entry) => entry.productId === product.id) ?? null;
+
   const { maxDate } = await getProductDateBounds(product.id);
 
   if (!maxDate) {
@@ -64,6 +70,7 @@ export default async function ProductDetailPage({
           <ProductHeader
             classification={classification}
             product={product}
+            stockRisk={productStockRisk}
             windowDays={dataset.velocityWindowDays}
           />
         </div>
@@ -109,6 +116,7 @@ export default async function ProductDetailPage({
         <ProductHeader
           classification={classification}
           product={product}
+          stockRisk={productStockRisk}
           windowDays={dataset.velocityWindowDays}
         />
         <DateRangeSelect />
@@ -183,6 +191,7 @@ export default async function ProductDetailPage({
 function ProductHeader({
   product,
   classification,
+  stockRisk,
   windowDays,
 }: {
   product: {
@@ -198,6 +207,7 @@ function ProductHeader({
     predictedVelocity: number | null;
     velocitySource: "forecast" | "historical";
   };
+  stockRisk: StockRiskEntry | null;
   windowDays: number;
 }) {
   return (
@@ -210,6 +220,7 @@ function ProductHeader({
         ) : null}
         <span>{currency.format(Number(product.price))}</span>
         <ClassificationBadge classification={classification.classification} />
+        <StockRiskBadge stockRisk={stockRisk} />
         {classification.velocitySource === "forecast" &&
         classification.predictedVelocity !== null ? (
           <span className="text-xs">

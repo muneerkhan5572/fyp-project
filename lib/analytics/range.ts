@@ -27,6 +27,16 @@ export function addDaysToDateString(date: string, days: number): string {
   return utc.toISOString().slice(0, 10);
 }
 
+const dateStringFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeZone: "UTC",
+});
+
+export function formatDateString(date: string): string {
+  const [year, month, day] = date.split("-").map(Number);
+  return dateStringFormatter.format(new Date(Date.UTC(year, month - 1, day)));
+}
+
 export function listDatesBetween(from: string, to: string): string[] {
   const dates: string[] = [];
   let cursor = from;
