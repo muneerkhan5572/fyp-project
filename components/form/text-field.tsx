@@ -55,6 +55,11 @@ export function TextField({
           name={field.name}
           onBlur={field.handleBlur}
           onChange={(event) => field.handleChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+            }
+          }}
           placeholder={placeholder}
           step={step}
           type={isPassword && showPassword ? "text" : type}

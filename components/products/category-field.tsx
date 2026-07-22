@@ -23,6 +23,11 @@ export function CategoryField({ field, categories }: CategoryFieldProps) {
         name={field.name}
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+          }
+        }}
         placeholder="Uncategorized"
         value={field.state.value ?? ""}
       />

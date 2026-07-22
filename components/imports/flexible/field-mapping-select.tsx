@@ -92,6 +92,11 @@ export function FieldMappingSelect({
               value: event.target.value,
             } satisfies FieldMapping)
           }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+            }
+          }}
           placeholder="Value for every row"
           value={mapping.value}
         />
