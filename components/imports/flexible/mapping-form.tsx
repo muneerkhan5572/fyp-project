@@ -13,6 +13,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DATE_FORMATS,
   type DateFormat,
   type FieldKey,
@@ -389,20 +396,28 @@ export function MappingForm({
                   </FieldLabel>
                   <form.Field name="dateFormat">
                     {(field) => (
-                      <select
-                        className="h-8 w-full rounded-md border border-input bg-input/20 px-2 text-xs/relaxed outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 sm:w-fit dark:bg-input/30 dark:hover:bg-input/50"
-                        id="dateFormat"
-                        onChange={(event) =>
-                          field.handleChange(event.target.value as DateFormat)
+                      <Select
+                        name="dateFormat"
+                        onValueChange={(next) =>
+                          field.handleChange(next as DateFormat)
                         }
                         value={field.state.value}
                       >
-                        {DATE_FORMATS.map((format) => (
-                          <option key={format} value={format}>
-                            {DATE_FORMAT_LABELS[format]}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger
+                          className="w-full sm:w-fit"
+                          id="dateFormat"
+                          onBlur={field.handleBlur}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DATE_FORMATS.map((format) => (
+                            <SelectItem key={format} value={format}>
+                              {DATE_FORMAT_LABELS[format]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     )}
                   </form.Field>
                   {dateMapping.kind === "column"

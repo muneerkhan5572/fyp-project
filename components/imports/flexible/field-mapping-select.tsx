@@ -8,8 +8,14 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { FieldMapping } from "@/lib/imports/flexible/mapping-schema";
-import { cn } from "@/lib/utils";
 
 const UNMAPPED_VALUE = "__unmapped__";
 const CONSTANT_VALUE = "__constant__";
@@ -49,16 +55,12 @@ export function FieldMappingSelect({
           </span>
         ) : null}
       </FieldLabel>
-      <select
-        aria-invalid={invalid}
-        className={cn(
-          "h-8 w-full rounded-md border border-input bg-input/20 px-2 text-xs/relaxed outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:bg-input/30 dark:hover:bg-input/50",
-        )}
-        id={field.name}
+      <Select
         name={field.name}
-        onBlur={field.handleBlur}
-        onChange={(event) => {
-          const next = event.target.value;
+        onValueChange={(next) => {
+          if (next === null) {
+            return;
+          }
           if (next === UNMAPPED_VALUE) {
             field.handleChange({ kind: "unmapped" } satisfies FieldMapping);
           } else if (next === CONSTANT_VALUE) {
@@ -75,14 +77,24 @@ export function FieldMappingSelect({
         }}
         value={selectedValue}
       >
-        <option value={UNMAPPED_VALUE}>Not mapped</option>
-        <option value={CONSTANT_VALUE}>Constant value</option>
-        {headers.map((header) => (
-          <option key={header} value={header}>
-            {header}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger
+          aria-invalid={invalid}
+          className="w-full"
+          id={field.name}
+          onBlur={field.handleBlur}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={UNMAPPED_VALUE}>Not mapped</SelectItem>
+          <SelectItem value={CONSTANT_VALUE}>Constant value</SelectItem>
+          {headers.map((header) => (
+            <SelectItem key={header} value={header}>
+              {header}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {mapping.kind === "constant" ? (
         <Input
           className="mt-1"
