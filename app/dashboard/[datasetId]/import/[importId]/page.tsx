@@ -3,6 +3,7 @@ import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { ImportReport } from "@/components/imports/import-report";
 import { requireDataset } from "@/lib/datasets/dal";
+import { datasetHref } from "@/lib/datasets/routes";
 import { getImport } from "@/lib/imports/dal";
 
 export default async function ImportReportPage({
@@ -25,7 +26,10 @@ export default async function ImportReportPage({
           <DatasetBreadcrumbs
             datasetId={dataset.id}
             datasetName={dataset.name}
-            trail={[{ label: importRow.fileName }]}
+            trail={[
+              { label: "Import", href: datasetHref(dataset.id) },
+              { label: importRow.fileName },
+            ]}
           />
         }
         description="Details for this CSV import."

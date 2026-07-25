@@ -19,6 +19,7 @@ import {
   LAST_DATASET_COOKIE_NAME,
   listDatasets,
 } from "@/lib/datasets/dal";
+import { datasetHref } from "@/lib/datasets/routes";
 
 export default async function DashboardPage({
   searchParams,
@@ -33,7 +34,7 @@ export default async function DashboardPage({
   if (!all && lastDatasetId) {
     const lastDataset = await getOwnedDataset(lastDatasetId, userId);
     if (lastDataset) {
-      redirect(`/dashboard/${lastDataset.id}`);
+      redirect(datasetHref(lastDataset.id));
     }
   }
 

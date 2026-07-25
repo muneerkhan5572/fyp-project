@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { datasetHref } from "@/lib/datasets/routes";
 import type { Dataset } from "@/lib/db/schema";
 
 export function DatasetCard({ dataset }: { dataset: Dataset }) {
@@ -30,7 +31,7 @@ export function DatasetCard({ dataset }: { dataset: Dataset }) {
       <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
           <CardTitle>
-            <Link className="hover:underline" href={`/dashboard/${dataset.id}`}>
+            <Link className="hover:underline" href={datasetHref(dataset.id)}>
               {dataset.name}
             </Link>
           </CardTitle>

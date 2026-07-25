@@ -8,6 +8,7 @@ import * as z from "zod";
 import { env } from "@/env";
 import { verifySession } from "@/lib/auth/dal";
 import { getOwnedDataset, LAST_DATASET_COOKIE_NAME } from "@/lib/datasets/dal";
+import { datasetHref } from "@/lib/datasets/routes";
 import { db } from "@/lib/db";
 import { isUniqueViolation } from "@/lib/db/errors";
 import { datasets } from "@/lib/db/schema";
@@ -69,7 +70,7 @@ export async function createDataset(
   });
 
   revalidatePath("/dashboard");
-  redirect(`/dashboard/${datasetId}`);
+  redirect(datasetHref(datasetId));
 }
 
 export async function renameDataset(

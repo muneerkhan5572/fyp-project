@@ -30,7 +30,7 @@ const NAV_GROUPS = [
   {
     label: "Data",
     items: [
-      { href: "", label: "Import", icon: UploadIcon },
+      { href: "/import", label: "Import", icon: UploadIcon },
       {
         href: "/products",
         label: "Products",
@@ -77,10 +77,7 @@ export function DatasetNav({
             <SidebarMenu>
               {group.items.map((item) => {
                 const href = `${base}${item.href}`;
-                const isActive =
-                  item.href === ""
-                    ? pathname === base
-                    : pathname.startsWith(href);
+                const isActive = pathname.startsWith(href);
                 const count =
                   "count" in item
                     ? counts[item.count as keyof NavCounts]

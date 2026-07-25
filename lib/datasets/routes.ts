@@ -1,11 +1,9 @@
 export const DATASETS_HREF = "/dashboard?all=1";
 
 export function datasetHref(datasetId: string) {
-  return `/dashboard/${datasetId}`;
+  return `/dashboard/${datasetId}/import`;
 }
 
 export function datasetSectionHref(datasetId: string, section: string) {
-  return section
-    ? `/dashboard/${datasetId}/${section}`
-    : datasetHref(datasetId);
+  return `/dashboard/${datasetId}/${section}`;
 }
