@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { ImportReport } from "@/components/imports/import-report";
 import { requireDataset } from "@/lib/datasets/dal";
+import { datasetSectionHref } from "@/lib/datasets/routes";
 import { getImport } from "@/lib/imports/dal";
 
 export default async function ImportReportPage({
@@ -19,14 +21,24 @@ export default async function ImportReportPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}/import`} label="Import" />
-      <div className="mt-2">
-        <h1 className="font-semibold text-2xl">Import report</h1>
-        <p className="text-muted-foreground text-sm">
-          Details for this CSV import.
-        </p>
-      </div>
-      <div className="mt-6">
+      <PageHeader
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+            trail={[
+              {
+                label: "Import",
+                href: datasetSectionHref(dataset.id, "import"),
+              },
+              { label: importRow.fileName },
+            ]}
+          />
+        }
+        description="Details for this CSV import."
+        title="Import report"
+      />
+      <div>
         <ImportReport datasetId={dataset.id} importRow={importRow} />
       </div>
     </div>

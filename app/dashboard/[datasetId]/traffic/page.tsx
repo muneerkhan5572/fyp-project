@@ -1,4 +1,5 @@
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { TrafficTable } from "@/components/traffic/traffic-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -36,13 +37,17 @@ export default async function TrafficPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
-      <div className="mt-2">
-        <h1 className="font-semibold text-2xl">Traffic</h1>
-        <p className="text-muted-foreground text-sm">
-          Record and review daily page views for this dataset's products.
-        </p>
-      </div>
+      <PageHeader
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+            trail={[{ label: "Traffic" }]}
+          />
+        }
+        description="Record and review daily page views for this dataset's products."
+        title="Traffic"
+      />
       <div className="mt-6">
         <TrafficTable
           datasetId={dataset.id}

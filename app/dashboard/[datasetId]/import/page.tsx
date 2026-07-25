@@ -1,4 +1,5 @@
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { UploadFlexibleCard } from "@/components/imports/flexible/upload-flexible-card";
 import { ImportHistoryTable } from "@/components/imports/import-history-table";
 import { UploadCard } from "@/components/imports/upload-card";
@@ -16,15 +17,19 @@ export default async function ImportPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
-      <div className="mt-2">
-        <h1 className="font-semibold text-2xl">Import</h1>
-        <p className="text-muted-foreground text-sm">
-          Bulk-upload products, sales, or traffic data from a CSV file.
-        </p>
-      </div>
+      <PageHeader
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+            trail={[{ label: "Import" }]}
+          />
+        }
+        description="Bulk-upload products, sales, or traffic data from a CSV file."
+        title="Import"
+      />
 
-      <div className="mt-6">
+      <div>
         <h2 className="font-medium text-lg">Any CSV</h2>
         <p className="text-muted-foreground text-sm">
           Import a CSV from anywhere else — a Kaggle dataset, an export from

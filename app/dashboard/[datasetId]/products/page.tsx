@@ -1,5 +1,6 @@
 import { GenerateForecastButton } from "@/components/analytics/generate-forecast-button";
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { ProductsTable } from "@/components/products/products-table";
 import { classifyProducts } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
@@ -30,22 +31,26 @@ export default async function ProductsPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="font-semibold text-2xl">Products</h1>
-          <p className="text-muted-foreground text-sm">
-            Manage this dataset's product catalog.
-          </p>
-        </div>
-        {products.length > 0 ? (
-          <GenerateForecastButton
+      <PageHeader
+        actions={
+          products.length > 0 ? (
+            <GenerateForecastButton
+              datasetId={dataset.id}
+              hasExistingForecast={hasForecast}
+            />
+          ) : null
+        }
+        breadcrumbs={
+          <DatasetBreadcrumbs
             datasetId={dataset.id}
-            hasExistingForecast={hasForecast}
+            datasetName={dataset.name}
+            trail={[{ label: "Products" }]}
           />
-        ) : null}
-      </div>
-      <div className="mt-6">
+        }
+        description="Manage this dataset's product catalog."
+        title="Products"
+      />
+      <div>
         <ProductsTable
           categories={categories}
           datasetId={dataset.id}

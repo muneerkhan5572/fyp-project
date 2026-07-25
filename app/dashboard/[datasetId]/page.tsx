@@ -9,7 +9,8 @@ import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
 import { StockRiskCard } from "@/components/analytics/stock-risk-card";
 import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
@@ -23,7 +24,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getDatasetDateBounds } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
 import { requireDataset } from "@/lib/datasets/dal";
-import { DATASETS_HREF } from "@/lib/datasets/routes";
 
 function KpiRowSkeleton() {
   return (
@@ -55,8 +55,15 @@ export default async function DatasetOverviewPage({
   if (!maxDate) {
     return (
       <div>
-        <BackLink href={DATASETS_HREF} label="All datasets" />
-        <h1 className="mt-2 font-semibold text-2xl">{dataset.name} overview</h1>
+        <PageHeader
+          breadcrumbs={
+            <DatasetBreadcrumbs
+              datasetId={dataset.id}
+              datasetName={dataset.name}
+            />
+          }
+          title={`${dataset.name} overview`}
+        />
         <Empty className="mt-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -88,18 +95,19 @@ export default async function DatasetOverviewPage({
 
   return (
     <div>
-      <BackLink href={DATASETS_HREF} label="All datasets" />
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="font-semibold text-2xl">{dataset.name} overview</h1>
-          <p className="text-muted-foreground text-sm">
-            KPIs and trends for this dataset.
-          </p>
-        </div>
-        <DateRangeSelect />
-      </div>
+      <PageHeader
+        actions={<DateRangeSelect />}
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+          />
+        }
+        description="KPIs and trends for this dataset."
+        title={`${dataset.name} overview`}
+      />
 
-      <div className="mt-6">
+      <div>
         <Suspense fallback={<KpiRowSkeleton />}>
           <KpiCardsSection datasetId={dataset.id} range={range} />
         </Suspense>

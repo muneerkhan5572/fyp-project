@@ -6,7 +6,7 @@ import { ProductForecastCard } from "@/components/analytics/product-forecast-car
 import { StockRiskBadge } from "@/components/analytics/stock-risk-badge";
 import { RevenueUnitsChart } from "@/components/charts/revenue-units-chart";
 import { TrafficTrendChart } from "@/components/charts/traffic-trend-chart";
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -20,6 +20,7 @@ import {
   type ProductClassification,
 } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
+import { datasetSectionHref } from "@/lib/datasets/routes";
 import { getLatestForecast } from "@/lib/forecasts/dal";
 import { getProduct } from "@/lib/products/dal";
 
@@ -65,7 +66,17 @@ export default async function ProductDetailPage({
   if (!maxDate) {
     return (
       <div>
-        <BackLink href={`/dashboard/${dataset.id}/products`} label="Products" />
+        <DatasetBreadcrumbs
+          datasetId={dataset.id}
+          datasetName={dataset.name}
+          trail={[
+            {
+              label: "Products",
+              href: datasetSectionHref(dataset.id, "products"),
+            },
+            { label: product.name },
+          ]}
+        />
         <div className="mt-2">
           <ProductHeader
             classification={classification}
@@ -111,7 +122,17 @@ export default async function ProductDetailPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}/products`} label="Products" />
+      <DatasetBreadcrumbs
+        datasetId={dataset.id}
+        datasetName={dataset.name}
+        trail={[
+          {
+            label: "Products",
+            href: datasetSectionHref(dataset.id, "products"),
+          },
+          { label: product.name },
+        ]}
+      />
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <ProductHeader
           classification={classification}

@@ -1,4 +1,5 @@
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -36,14 +37,18 @@ export default async function SalesPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
-      <div className="mt-2">
-        <h1 className="font-semibold text-2xl">Sales</h1>
-        <p className="text-muted-foreground text-sm">
-          Record and review daily sales for this dataset's products.
-        </p>
-      </div>
-      <div className="mt-6">
+      <PageHeader
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+            trail={[{ label: "Sales" }]}
+          />
+        }
+        description="Record and review daily sales for this dataset's products."
+        title="Sales"
+      />
+      <div>
         <SalesTable
           datasetId={dataset.id}
           filters={{ productId, from, to }}

@@ -1,4 +1,5 @@
-import { BackLink } from "@/components/dashboard/back-link";
+import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetSettingsGeneral } from "@/components/datasets/dataset-settings-general";
 import { DatasetThresholdsForm } from "@/components/datasets/dataset-thresholds-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,15 +15,19 @@ export default async function DatasetSettingsPage({
 
   return (
     <div>
-      <BackLink href={`/dashboard/${dataset.id}`} label="Overview" />
-      <div className="mt-2">
-        <h1 className="font-semibold text-2xl">Settings</h1>
-        <p className="text-muted-foreground text-sm">
-          Manage this dataset's name, classification rules, and danger zone.
-        </p>
-      </div>
+      <PageHeader
+        breadcrumbs={
+          <DatasetBreadcrumbs
+            datasetId={dataset.id}
+            datasetName={dataset.name}
+            trail={[{ label: "Settings" }]}
+          />
+        }
+        description="Manage this dataset's name, classification rules, and danger zone."
+        title="Settings"
+      />
 
-      <div className="mt-6 max-w-2xl">
+      <div className="max-w-2xl">
         <DatasetSettingsGeneral dataset={dataset} />
 
         <Card className="mt-4">
