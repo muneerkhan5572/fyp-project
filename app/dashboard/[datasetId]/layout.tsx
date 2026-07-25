@@ -5,13 +5,12 @@ import { DatasetSwitcher } from "@/components/datasets/dataset-switcher";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getDatasetSetupState } from "@/lib/analytics/setup-state";
 import { listDatasets, requireDataset } from "@/lib/datasets/dal";
 
 export default async function DatasetLayout({
@@ -23,7 +22,10 @@ export default async function DatasetLayout({
 }) {
   const { datasetId } = await params;
   const dataset = await requireDataset(datasetId);
-  const datasets = await listDatasets();
+  const [datasets, setupState] = await Promise.all([
+    listDatasets(),
+    getDatasetSetupState(datasetId),
+  ]);
 
   return (
     <SidebarProvider>
@@ -32,11 +34,14 @@ export default async function DatasetLayout({
           <DatasetSwitcher currentDatasetId={dataset.id} datasets={datasets} />
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <DatasetNav datasetId={dataset.id} />
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <DatasetNav
+            counts={{
+              products: setupState.productCount,
+              sales: setupState.salesCount,
+              traffic: setupState.trafficCount,
+            }}
+            datasetId={dataset.id}
+          />
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
