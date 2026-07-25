@@ -6,14 +6,14 @@ upload or manually enter products, sales, and traffic, and get dashboards,
 trends, and rule-based slow-mover / high-demand classification.
 
 Built with Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Drizzle
-ORM, and Postgres, plus a Python/Flask microservice (`ml-service/`) for the AI
+ORM, and Postgres, plus a Python/Flask microservice (`services/ml-service/`) for the AI
 features: demand forecasting, forecast-driven classification, stock-out risk
 alerts, and semantic product search.
 
 ## Prerequisites
 
 - Node.js 20+ and pnpm
-- Python 3.12+ (for `ml-service/`)
+- Python 3.12+ (for `services/ml-service/`)
 - Docker (for the local Postgres database)
 
 ## Getting Started
@@ -69,14 +69,14 @@ rather than duplicating. Prints the demo login credentials when done.
 ### 5. Start the ML service
 
 ```bash
-cd ml-service
+cd services/ml-service
 python3.12 -m venv venv
 venv/bin/pip install -r requirements.txt
 cp .env.example .env   # set ML_SERVICE_API_KEY to match the value in the app's .env
 venv/bin/python app.py
 ```
 
-Runs on `http://localhost:5001` by default (`PORT` in `ml-service/.env`). Flask
+Runs on `http://localhost:5001` by default (`PORT` in `services/ml-service/.env`). Flask
 is fully stateless — it never touches Postgres directly; Next.js gathers data
 via Drizzle, POSTs it to Flask, and persists whatever comes back. The app's
 `ML_SERVICE_URL`/`ML_SERVICE_API_KEY` (in `.env`, validated via `env.ts`) must
@@ -187,9 +187,9 @@ Email/password authentication with stateless JWT sessions.
 - `lib/analytics/` — KPI/trend/top-product/category queries, date-range
   presets, velocity classification, and stock-out risk
 - `lib/forecasts/` — forecast generation orchestration and data access layer
-- `lib/ml/` — fetch wrappers for the `ml-service` HTTP API (forecasting, search)
+- `lib/ml/` — fetch wrappers for the `services/ml-service` HTTP API (forecasting, search)
 - `lib/db/` — Drizzle client, schema, and shared error helpers
-- `ml-service/` — the Flask microservice: demand forecasting
+- `services/ml-service/` — the Flask microservice: demand forecasting
   (scikit-learn) and semantic search (sentence-transformers). Stateless,
   called server-to-server over HTTP with a shared-secret header.
 - `lib/validations/` — shared Zod schemas (client + server)
