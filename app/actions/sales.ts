@@ -56,7 +56,7 @@ export async function createSale(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/sales`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Sale recorded." };
 }
 
@@ -97,7 +97,7 @@ export async function updateSale(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/sales`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Sale updated." };
 }
 
@@ -120,6 +120,6 @@ export async function deleteSale(
     .delete(sales)
     .where(and(eq(sales.id, parsed.data.id), eq(sales.datasetId, dataset.id)));
 
-  revalidatePath(`/dashboard/${dataset.id}/sales`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Sale deleted." };
 }

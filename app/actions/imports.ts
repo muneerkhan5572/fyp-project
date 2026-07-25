@@ -44,11 +44,7 @@ export async function uploadCsv(
   const content = await file.text();
   const result = await runImport(dataset.id, type, file.name, content);
 
-  revalidatePath(`/dashboard/${dataset.id}/import`);
-  revalidatePath(`/dashboard/${dataset.id}/${type}`);
-  if (type !== "products") {
-    revalidatePath(`/dashboard/${dataset.id}`);
-  }
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
 
   redirect(`/dashboard/${dataset.id}/import/${result.importId}`);
 }
@@ -90,10 +86,7 @@ export async function uploadFlexibleCsv(
     content,
   );
 
-  revalidatePath(`/dashboard/${dataset.id}/import`);
-  revalidatePath(`/dashboard/${dataset.id}/products`);
-  revalidatePath(`/dashboard/${dataset.id}/sales`);
-  revalidatePath(`/dashboard/${dataset.id}`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
 
   redirect(`/dashboard/${dataset.id}/import/${result.importId}`);
 }

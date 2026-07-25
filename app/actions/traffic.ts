@@ -55,7 +55,7 @@ export async function createTrafficRecord(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/traffic`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Traffic recorded." };
 }
 
@@ -100,7 +100,7 @@ export async function updateTrafficRecord(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/traffic`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Traffic record updated." };
 }
 
@@ -128,6 +128,6 @@ export async function deleteTrafficRecord(
       ),
     );
 
-  revalidatePath(`/dashboard/${dataset.id}/traffic`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Traffic record deleted." };
 }

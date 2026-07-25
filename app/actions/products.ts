@@ -57,7 +57,7 @@ export async function createProduct(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/products`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Product created." };
 }
 
@@ -108,7 +108,7 @@ export async function updateProduct(
     throw error;
   }
 
-  revalidatePath(`/dashboard/${dataset.id}/products`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Product updated." };
 }
 
@@ -133,6 +133,6 @@ export async function deleteProduct(
       and(eq(products.id, parsed.data.id), eq(products.datasetId, dataset.id)),
     );
 
-  revalidatePath(`/dashboard/${dataset.id}/products`);
+  revalidatePath(`/dashboard/${dataset.id}`, "layout");
   return { success: "Product deleted." };
 }
