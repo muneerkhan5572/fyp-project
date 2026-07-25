@@ -1,6 +1,5 @@
 import { FileWarningIcon } from "lucide-react";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { DatasetSectionLink } from "@/components/dashboard/dataset-section-link";
 import {
   Empty,
   EmptyContent,
@@ -23,9 +22,7 @@ export default function ImportNotFound() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Link className={buttonVariants()} href="/dashboard">
-          Back to your datasets
-        </Link>
+        <DatasetSectionLink label="Back to imports" section="import" />
       </EmptyContent>
     </Empty>
   );

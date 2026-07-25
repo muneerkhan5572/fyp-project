@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getDatasetDateBounds } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
 import { requireDataset } from "@/lib/datasets/dal";
+import { DATASETS_HREF } from "@/lib/datasets/routes";
 
 function KpiRowSkeleton() {
   return (
@@ -54,7 +55,7 @@ export default async function DatasetOverviewPage({
   if (!maxDate) {
     return (
       <div>
-        <BackLink href="/dashboard" label="All datasets" />
+        <BackLink href={DATASETS_HREF} label="All datasets" />
         <h1 className="mt-2 font-semibold text-2xl">{dataset.name} overview</h1>
         <Empty className="mt-10">
           <EmptyHeader>
@@ -87,7 +88,7 @@ export default async function DatasetOverviewPage({
 
   return (
     <div>
-      <BackLink href="/dashboard" label="All datasets" />
+      <BackLink href={DATASETS_HREF} label="All datasets" />
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="font-semibold text-2xl">{dataset.name} overview</h1>

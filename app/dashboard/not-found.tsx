@@ -9,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { DATASETS_HREF } from "@/lib/datasets/routes";
 
 export default function DatasetNotFound() {
   return (
@@ -24,7 +25,7 @@ export default function DatasetNotFound() {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Link className={buttonVariants()} href="/dashboard">
+          <Link className={buttonVariants()} href={DATASETS_HREF}>
             Go to your datasets
           </Link>
         </EmptyContent>

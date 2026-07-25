@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DATASETS_HREF, datasetHref } from "@/lib/datasets/routes";
 import type { Dataset } from "@/lib/db/schema";
 
 type DatasetSwitcherProps = {
@@ -43,14 +44,14 @@ export function DatasetSwitcher({
             <DropdownMenuItem
               data-active={dataset.id === currentDatasetId}
               key={dataset.id}
-              onClick={() => router.push(`/dashboard/${dataset.id}`)}
+              onClick={() => router.push(datasetHref(dataset.id))}
             >
               <span className="truncate">{dataset.name}</span>
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/dashboard?all=1")}>
+        <DropdownMenuItem onClick={() => router.push(DATASETS_HREF)}>
           <LayoutGridIcon />
           Manage datasets
         </DropdownMenuItem>
