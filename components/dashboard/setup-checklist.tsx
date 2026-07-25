@@ -1,4 +1,4 @@
-import { ArrowRightIcon, CheckCircle2Icon, CircleIcon } from "lucide-react";
+import { CheckCircle2Icon, CircleIcon } from "lucide-react";
 import Link from "next/link";
 import { GenerateForecastButton } from "@/components/analytics/generate-forecast-button";
 import { buttonVariants } from "@/components/ui/button";
@@ -180,36 +180,5 @@ export function SetupChecklist({ datasetId, state }: SetupChecklistProps) {
         })}
       </CardContent>
     </Card>
-  );
-}
-
-export function SetupNextStepStrip({ datasetId, state }: SetupChecklistProps) {
-  if (state.isComplete || state.nextStep === "products") {
-    return null;
-  }
-
-  const hint = NEXT_STEP_HINT[state.nextStep as Exclude<SetupStep, "complete">];
-
-  return (
-    <div className="mb-6 flex flex-wrap items-center gap-3 rounded-md border bg-muted/40 px-3 py-2">
-      <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
-      <p className="min-w-0 flex-1 text-sm">
-        <span className="font-medium">Next: </span>
-        <span className="text-muted-foreground">{hint}</span>
-      </p>
-      {state.nextStep === "forecast" ? (
-        <GenerateForecastButton
-          datasetId={datasetId}
-          hasExistingForecast={state.hasForecast}
-        />
-      ) : (
-        <Link
-          className={buttonVariants({ size: "sm" })}
-          href={datasetSectionHref(datasetId, state.nextStep)}
-        >
-          Go to {state.nextStep}
-        </Link>
-      )}
-    </div>
   );
 }

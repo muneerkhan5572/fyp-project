@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { datasetHref, datasetSectionHref } from "@/lib/datasets/routes";
+import { datasetSectionHref } from "@/lib/datasets/routes";
 import type { Import } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
@@ -132,9 +132,9 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
             </Link>
             <Link
               className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-              href={datasetHref(datasetId)}
+              href={datasetSectionHref(datasetId, "analytics")}
             >
-              Go to overview
+              View analytics
             </Link>
           </>
         ) : null}

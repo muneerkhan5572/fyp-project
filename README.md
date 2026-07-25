@@ -119,7 +119,7 @@ Open [http://localhost:3000](http://localhost:3000).
   confidence bands. Products need at least 28 days of sales history.
 - **Stock-out risk alerts** — walks a product's forecast against its current
   stock to flag out-of-stock, at-risk (with an estimated stock-out date), or
-  sufficient — shown on the dashboard overview and each product's page.
+  sufficient — shown on the dataset's Analytics page and each product's page.
 - **Semantic product search** — search products by description instead of
   exact name/SKU match (e.g. "cheap kitchen items"), powered by sentence
   embeddings and cosine similarity.

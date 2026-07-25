@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BarChart3Icon,
   LayoutDashboardIcon,
   PackageIcon,
   ReceiptIcon,
@@ -29,7 +30,10 @@ type NavCounts = {
 const NAV_GROUPS = [
   {
     label: "Insights",
-    items: [{ href: "", label: "Overview", icon: LayoutDashboardIcon }],
+    items: [
+      { href: "", label: "Overview", icon: LayoutDashboardIcon },
+      { href: "/analytics", label: "Analytics", icon: BarChart3Icon },
+    ],
   },
   {
     label: "Data",
