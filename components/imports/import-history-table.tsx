@@ -1,8 +1,10 @@
 import { HistoryIcon } from "lucide-react";
 import Link from "next/link";
 import { ImportStatusBadge } from "@/components/imports/import-status-badge";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
+  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -16,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { datasetSectionHref } from "@/lib/datasets/routes";
 import type { Import } from "@/lib/db/schema";
 
 const TYPE_LABELS: Record<Import["type"], string> = {
@@ -47,9 +50,18 @@ export function ImportHistoryTable({
           </EmptyMedia>
           <EmptyTitle>No imports yet</EmptyTitle>
           <EmptyDescription>
-            Upload a CSV above to see its import history here.
+            Upload a CSV above to see its import history here, or add rows by
+            hand instead.
           </EmptyDescription>
         </EmptyHeader>
+        <EmptyContent>
+          <Link
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+            href={datasetSectionHref(datasetId, "products")}
+          >
+            Add products manually
+          </Link>
+        </EmptyContent>
       </Empty>
     );
   }

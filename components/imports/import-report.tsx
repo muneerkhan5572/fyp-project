@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { datasetHref, datasetSectionHref } from "@/lib/datasets/routes";
 import type { Import } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
@@ -120,12 +121,30 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
         </div>
       ) : null}
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        {importRow.importedRows > 0 ? (
+          <>
+            <Link
+              className={cn(buttonVariants({ size: "sm" }))}
+              href={datasetSectionHref(datasetId, importRow.type)}
+            >
+              View imported {importRow.type}
+            </Link>
+            <Link
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+              href={datasetHref(datasetId)}
+            >
+              Go to overview
+            </Link>
+          </>
+        ) : null}
         <Link
-          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          href={`/dashboard/${datasetId}/import`}
+          className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          href={datasetSectionHref(datasetId, "import")}
         >
-          Upload a corrected file
+          {importRow.failedRows > 0
+            ? "Upload a corrected file"
+            : "Upload another file"}
         </Link>
       </div>
     </div>
