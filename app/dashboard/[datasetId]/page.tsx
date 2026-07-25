@@ -1,5 +1,3 @@
-import { LayoutDashboardIcon } from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
 import { CategoryBreakdownCard } from "@/components/analytics/category-breakdown-card";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
@@ -11,18 +9,14 @@ import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
 import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
-import { buttonVariants } from "@/components/ui/button";
 import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+  SetupChecklist,
+  SetupNextStepStrip,
+} from "@/components/dashboard/setup-checklist";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDatasetDateBounds } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
+import { getDatasetSetupState } from "@/lib/analytics/setup-state";
 import { requireDataset } from "@/lib/datasets/dal";
 
 function KpiRowSkeleton() {
@@ -50,7 +44,10 @@ export default async function DatasetOverviewPage({
   const { range: rangeParam } = await searchParams;
   const dataset = await requireDataset(datasetId);
 
-  const { maxDate } = await getDatasetDateBounds(dataset.id);
+  const [{ maxDate }, setupState] = await Promise.all([
+    getDatasetDateBounds(dataset.id),
+    getDatasetSetupState(dataset.id),
+  ]);
 
   if (!maxDate) {
     return (
@@ -62,28 +59,10 @@ export default async function DatasetOverviewPage({
               datasetName={dataset.name}
             />
           }
+          description="Finish setting up this dataset to see KPIs and trends here."
           title={`${dataset.name} overview`}
         />
-        <Empty className="mt-10">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <LayoutDashboardIcon />
-            </EmptyMedia>
-            <EmptyTitle>Not enough data yet</EmptyTitle>
-            <EmptyDescription>
-              Add products and record some sales — or import a CSV — to see KPIs
-              and charts here.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Link
-              className={buttonVariants()}
-              href={`/dashboard/${dataset.id}/import`}
-            >
-              Import data
-            </Link>
-          </EmptyContent>
-        </Empty>
+        <SetupChecklist datasetId={dataset.id} state={setupState} />
       </div>
     );
   }
@@ -106,6 +85,8 @@ export default async function DatasetOverviewPage({
         description="KPIs and trends for this dataset."
         title={`${dataset.name} overview`}
       />
+
+      <SetupNextStepStrip datasetId={dataset.id} state={setupState} />
 
       <div>
         <Suspense fallback={<KpiRowSkeleton />}>
