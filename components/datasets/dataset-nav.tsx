@@ -2,7 +2,6 @@
 
 import {
   BarChart3Icon,
-  LayoutDashboardIcon,
   PackageIcon,
   ReceiptIcon,
   SettingsIcon,
@@ -29,16 +28,9 @@ type NavCounts = {
 
 const NAV_GROUPS = [
   {
-    label: "Insights",
-    items: [
-      { href: "", label: "Overview", icon: LayoutDashboardIcon },
-      { href: "/analytics", label: "Analytics", icon: BarChart3Icon },
-    ],
-  },
-  {
     label: "Data",
     items: [
-      { href: "/import", label: "Import", icon: UploadIcon },
+      { href: "", label: "Import", icon: UploadIcon },
       {
         href: "/products",
         label: "Products",
@@ -53,6 +45,10 @@ const NAV_GROUPS = [
         count: "traffic",
       },
     ],
+  },
+  {
+    label: "Insights",
+    items: [{ href: "/analytics", label: "Analytics", icon: BarChart3Icon }],
   },
   {
     label: "Manage",

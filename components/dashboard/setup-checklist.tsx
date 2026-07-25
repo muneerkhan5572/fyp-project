@@ -25,7 +25,6 @@ type ChecklistItem = {
   done: boolean;
   optional?: boolean;
   action?: { label: string; href: string };
-  secondaryAction?: { label: string; href: string };
 };
 
 const NEXT_STEP_HINT: Record<Exclude<SetupStep, "complete">, string> = {
@@ -39,8 +38,6 @@ function buildItems(
   datasetId: string,
   state: DatasetSetupState,
 ): ChecklistItem[] {
-  const importHref = datasetSectionHref(datasetId, "import");
-
   return [
     {
       step: "products",
@@ -54,10 +51,6 @@ function buildItems(
         label: state.productCount > 0 ? "View" : "Add products",
         href: datasetSectionHref(datasetId, "products"),
       },
-      secondaryAction:
-        state.productCount > 0
-          ? undefined
-          : { label: "Import CSV", href: importHref },
     },
     {
       step: "sales",
@@ -72,10 +65,6 @@ function buildItems(
         label: state.salesCount > 0 ? "View" : "Record sales",
         href: datasetSectionHref(datasetId, "sales"),
       },
-      secondaryAction:
-        state.salesCount > 0
-          ? undefined
-          : { label: "Import CSV", href: importHref },
     },
     {
       step: "traffic",
@@ -148,14 +137,6 @@ export function SetupChecklist({ datasetId, state }: SetupChecklistProps) {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                {item.secondaryAction ? (
-                  <Link
-                    className={buttonVariants({ variant: "ghost", size: "sm" })}
-                    href={item.secondaryAction.href}
-                  >
-                    {item.secondaryAction.label}
-                  </Link>
-                ) : null}
                 {item.step === "forecast" ? (
                   state.salesCount > 0 ? (
                     <GenerateForecastButton

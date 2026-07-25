@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { datasetSectionHref } from "@/lib/datasets/routes";
+import { datasetHref, datasetSectionHref } from "@/lib/datasets/routes";
 import type { Import } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
@@ -140,7 +140,7 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
         ) : null}
         <Link
           className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-          href={datasetSectionHref(datasetId, "import")}
+          href={datasetHref(datasetId)}
         >
           {importRow.failedRows > 0
             ? "Upload a corrected file"

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { datasetHref } from "@/lib/datasets/routes";
 
 const UNCATEGORIZED = "__uncategorized__";
 const ALL_CATEGORIES = "__all__";
@@ -126,7 +127,7 @@ export function ProductsTable({
               </Button>
               <Link
                 className={buttonVariants({ variant: "outline" })}
-                href={`/dashboard/${datasetId}/import`}
+                href={datasetHref(datasetId)}
               >
                 Import CSV
               </Link>

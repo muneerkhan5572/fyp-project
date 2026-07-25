@@ -20,7 +20,7 @@ type UploadCardProps = {
   datasetId: string;
   type: ImportType;
   title: string;
-  description: string;
+  description?: string;
   columns: string[];
   templateHref: string;
 };
@@ -64,7 +64,7 @@ export function UploadCard({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground text-xs">

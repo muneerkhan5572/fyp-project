@@ -30,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { datasetHref } from "@/lib/datasets/routes";
 
 type ProductOption = { id: string; name: string; sku: string };
 
@@ -96,7 +97,7 @@ export function TrafficTable({
               {products.length === 0 ? null : (
                 <Link
                   className={buttonVariants({ variant: "outline" })}
-                  href={`/dashboard/${datasetId}/import`}
+                  href={datasetHref(datasetId)}
                 >
                   Import CSV
                 </Link>

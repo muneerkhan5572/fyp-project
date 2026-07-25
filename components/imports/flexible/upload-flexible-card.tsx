@@ -102,17 +102,14 @@ export function UploadFlexibleCard({ datasetId }: UploadFlexibleCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Flexible import (any CSV)</CardTitle>
+        <CardTitle>Any CSV</CardTitle>
         <CardDescription>
-          Upload a CSV with your own column names and map them to products and
-          sales.
+          Map your columns — works with any CSV layout.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground text-xs">
-          Works with a single flat file — one row per sale, with a product name
-          or SKU, price, date, and quantity. Revenue can be mapped or calculated
-          automatically.
+          One row per sale — product, price, date, quantity.
         </p>
       </CardContent>
       <CardFooter>

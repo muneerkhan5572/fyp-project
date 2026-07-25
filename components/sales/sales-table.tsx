@@ -30,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { datasetHref } from "@/lib/datasets/routes";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -102,7 +103,7 @@ export function SalesTable({
               {products.length === 0 ? null : (
                 <Link
                   className={buttonVariants({ variant: "outline" })}
-                  href={`/dashboard/${datasetId}/import`}
+                  href={datasetHref(datasetId)}
                 >
                   Import CSV
                 </Link>

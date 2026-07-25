@@ -22,7 +22,7 @@ export default function ImportNotFound() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <DatasetSectionLink label="Back to imports" section="import" />
+        <DatasetSectionLink label="Back to dataset" section="" />
       </EmptyContent>
     </Empty>
   );

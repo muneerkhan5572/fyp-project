@@ -5,5 +5,7 @@ export function datasetHref(datasetId: string) {
 }
 
 export function datasetSectionHref(datasetId: string, section: string) {
-  return `/dashboard/${datasetId}/${section}`;
+  return section
+    ? `/dashboard/${datasetId}/${section}`
+    : datasetHref(datasetId);
 }
