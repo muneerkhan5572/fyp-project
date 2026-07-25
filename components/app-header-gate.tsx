@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const HIDDEN_PREFIX = /^\/dashboard\/[^/]+/;
+const HIDDEN_PREFIX = /^\/dashboard(\/|$)/;
 
 export function AppHeaderGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
