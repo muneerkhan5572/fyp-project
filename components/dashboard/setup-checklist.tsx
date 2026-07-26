@@ -113,7 +113,7 @@ export function SetupChecklist({ datasetId, state }: SetupChecklistProps) {
           return (
             <div
               className={cn(
-                "flex flex-wrap items-center gap-3 rounded-md px-2 py-2",
+                "relative flex flex-wrap items-center gap-3 rounded-md px-2 py-2",
                 isNext && "bg-muted",
               )}
               key={item.step}
@@ -146,9 +146,12 @@ export function SetupChecklist({ datasetId, state }: SetupChecklistProps) {
                   ) : null
                 ) : item.action ? (
                   <Link
-                    className={buttonVariants({
-                      variant: isNext ? "default" : "outline",
-                    })}
+                    className={cn(
+                      buttonVariants({
+                        variant: isNext ? "default" : "outline",
+                      }),
+                      "after:absolute after:inset-0",
+                    )}
                     href={item.action.href}
                   >
                     {item.action.label}

@@ -42,11 +42,11 @@ export async function MoversCard({
           <ul className="space-y-2">
             {matches.map((product) => (
               <li
-                className="flex items-center justify-between gap-2 text-sm"
+                className="relative flex items-center justify-between gap-2 text-sm"
                 key={product.productId}
               >
                 <Link
-                  className="truncate underline-offset-2 hover:underline"
+                  className="truncate underline-offset-2 after:absolute after:inset-0 hover:underline"
                   href={`/dashboard/${dataset.id}/products/${product.productId}`}
                 >
                   {product.name}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronsUpDownIcon, LayoutGridIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,7 +24,6 @@ export function DatasetSwitcher({
   datasets,
   currentDatasetId,
 }: DatasetSwitcherProps) {
-  const router = useRouter();
   const current = datasets.find((dataset) => dataset.id === currentDatasetId);
 
   return (
@@ -44,14 +43,14 @@ export function DatasetSwitcher({
             <DropdownMenuItem
               data-active={dataset.id === currentDatasetId}
               key={dataset.id}
-              onClick={() => router.push(datasetHref(dataset.id))}
+              render={<Link href={datasetHref(dataset.id)} />}
             >
               <span className="truncate">{dataset.name}</span>
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push(DATASETS_HREF)}>
+        <DropdownMenuItem render={<Link href={DATASETS_HREF} />}>
           <LayoutGridIcon />
           Manage datasets
         </DropdownMenuItem>

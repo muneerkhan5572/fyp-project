@@ -28,17 +28,20 @@ export function DatasetCard({ dataset }: { dataset: Dataset }) {
 
   return (
     <>
-      <Card className="transition-shadow hover:shadow-md">
+      <Card className="relative transition-shadow hover:shadow-md">
         <CardHeader>
           <CardTitle>
-            <Link className="hover:underline" href={datasetHref(dataset.id)}>
+            <Link
+              className="after:absolute after:inset-0 hover:underline"
+              href={datasetHref(dataset.id)}
+            >
               {dataset.name}
             </Link>
           </CardTitle>
           <CardDescription>
             Updated {new Date(dataset.updatedAt).toLocaleDateString()}
           </CardDescription>
-          <CardAction>
+          <CardAction className="relative z-10">
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={<Button size="icon" variant="ghost" />}

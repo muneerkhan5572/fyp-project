@@ -28,11 +28,11 @@ export async function StockRiskCard({ datasetId }: { datasetId: string }) {
           <ul className="space-y-2">
             {atRisk.map((entry) => (
               <li
-                className="flex items-center justify-between gap-2 text-sm"
+                className="relative flex items-center justify-between gap-2 text-sm"
                 key={entry.productId}
               >
                 <Link
-                  className="truncate underline-offset-2 hover:underline"
+                  className="truncate underline-offset-2 after:absolute after:inset-0 hover:underline"
                   href={`/dashboard/${datasetId}/products/${entry.productId}`}
                 >
                   {entry.name}
