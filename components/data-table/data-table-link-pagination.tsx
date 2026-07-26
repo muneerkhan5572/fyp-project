@@ -56,7 +56,7 @@ export function DataTableLinkPagination({
       : Math.min(Math.max(parsed, 1), pageCount);
     setJumpValue(String(targetPage));
     if (targetPage !== page) {
-      router.push(buildHref(pathname, filters, targetPage));
+      router.push(buildHref(pathname, filters, targetPage), { scroll: false });
     }
   }
 
@@ -91,6 +91,7 @@ export function DataTableLinkPagination({
           <Link
             className={buttonVariants({ size: "icon", variant: "outline" })}
             href={buildHref(pathname, filters, page - 1)}
+            scroll={false}
           >
             <ChevronLeftIcon />
             <span className="sr-only">Previous page</span>
@@ -105,6 +106,7 @@ export function DataTableLinkPagination({
           <Link
             className={buttonVariants({ size: "icon", variant: "outline" })}
             href={buildHref(pathname, filters, page + 1)}
+            scroll={false}
           >
             <ChevronRightIcon />
             <span className="sr-only">Next page</span>

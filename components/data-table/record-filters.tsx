@@ -66,9 +66,9 @@ export function RecordFilters({
     const href = query ? `${pathname}?${query}` : pathname;
     startTransition(() => {
       if (mode === "push") {
-        router.push(href);
+        router.push(href, { scroll: false });
       } else {
-        router.replace(href);
+        router.replace(href, { scroll: false });
       }
     });
   }
@@ -79,7 +79,7 @@ export function RecordFilters({
 
   function handleClear() {
     setSearchValue("");
-    startTransition(() => router.push(pathname));
+    startTransition(() => router.push(pathname, { scroll: false }));
   }
 
   return (

@@ -93,7 +93,7 @@ export function TrafficFormDialog({
       }}
       open={open}
     >
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <form
           onSubmit={(event) => {
             event.preventDefault();

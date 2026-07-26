@@ -15,7 +15,7 @@ export function DateRangeSelect() {
       onValueChange={(value) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("range", value);
-        router.push(`${pathname}?${params.toString()}`);
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
       }}
       options={RANGE_PRESETS}
       value={range}

@@ -45,9 +45,9 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
     const href = query ? `${pathname}?${query}` : pathname;
     startTransition(() => {
       if (mode === "push") {
-        router.push(href);
+        router.push(href, { scroll: false });
       } else {
-        router.replace(href);
+        router.replace(href, { scroll: false });
       }
     });
   }
