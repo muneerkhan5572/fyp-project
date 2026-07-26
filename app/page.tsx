@@ -1,5 +1,6 @@
 import { BarChart3Icon, TrendingUpIcon, UploadIcon } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -33,6 +34,10 @@ const FEATURES = [
 export default async function Home() {
   const user = await getCurrentUser();
 
+  if (user) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="mx-auto w-full max-w-screen-xl px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-2xl text-center">
@@ -45,20 +50,15 @@ export default async function Home() {
           spreadsheet formula.
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
-          <Link
-            className={buttonVariants({ size: "lg" })}
-            href={user ? "/dashboard" : "/signup"}
-          >
-            {user ? "Go to your datasets" : "Get started"}
+          <Link className={buttonVariants({ size: "lg" })} href="/signup">
+            Get started
           </Link>
-          {user ? null : (
-            <Link
-              className={buttonVariants({ size: "lg", variant: "outline" })}
-              href="/login"
-            >
-              Log in
-            </Link>
-          )}
+          <Link
+            className={buttonVariants({ size: "lg", variant: "outline" })}
+            href="/login"
+          >
+            Log in
+          </Link>
         </div>
       </div>
 

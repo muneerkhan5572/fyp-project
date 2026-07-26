@@ -6,7 +6,7 @@ import { verifySession } from "@/lib/auth/dal";
 import { db } from "@/lib/db";
 import { datasets } from "@/lib/db/schema";
 
-export const LAST_DATASET_COOKIE_NAME = "last_dataset_id";
+export { LAST_DATASET_COOKIE_NAME } from "@/lib/datasets/constants";
 
 export const requireDataset = cache(async (datasetId: string) => {
   const { userId } = await verifySession();

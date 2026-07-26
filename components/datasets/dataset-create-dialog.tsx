@@ -19,8 +19,12 @@ import {
 import { FieldGroup } from "@/components/ui/field";
 import { createDatasetSchema } from "@/lib/validations/datasets";
 
-export function DatasetCreateDialog() {
-  const [open, setOpen] = useState(false);
+export function DatasetCreateDialog({
+  forceOpen = false,
+}: {
+  forceOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(forceOpen);
   const form = useForm({
     defaultValues: { name: "" },
     validators: {
@@ -39,12 +43,17 @@ export function DatasetCreateDialog() {
   });
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger render={<Button />}>
-        <PlusIcon />
-        New dataset
-      </DialogTrigger>
-      <DialogContent>
+    <Dialog
+      onOpenChange={forceOpen ? undefined : setOpen}
+      open={forceOpen || open}
+    >
+      {forceOpen ? null : (
+        <DialogTrigger render={<Button />}>
+          <PlusIcon />
+          New dataset
+        </DialogTrigger>
+      )}
+      <DialogContent showCloseButton={!forceOpen}>
         <form
           onSubmit={(event) => {
             event.preventDefault();
