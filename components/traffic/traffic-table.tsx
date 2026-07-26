@@ -4,8 +4,9 @@ import { MoreVerticalIcon, PlusIcon, TrendingUpIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DataTableLinkPagination } from "@/components/data-table/data-table-link-pagination";
+import { DataTableSortHeader } from "@/components/data-table/data-table-sort-header";
+import { RecordFilters } from "@/components/data-table/record-filters";
 import { TrafficDeleteDialog } from "@/components/traffic/traffic-delete-dialog";
-import { TrafficFilters } from "@/components/traffic/traffic-filters";
 import { TrafficFormDialog } from "@/components/traffic/traffic-form-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -53,6 +54,8 @@ type TrafficTableProps = {
   pathname: string;
   filters: Record<string, string | undefined>;
   hasAnyRecords: boolean;
+  currentSort: string;
+  currentDir: "asc" | "desc";
 };
 
 export function TrafficTable({
@@ -65,6 +68,8 @@ export function TrafficTable({
   pathname,
   filters,
   hasAnyRecords,
+  currentSort,
+  currentDir,
 }: TrafficTableProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<TrafficRow | null>(null);
@@ -118,7 +123,12 @@ export function TrafficTable({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <TrafficFilters products={products} />
+        <RecordFilters
+          dateRange
+          products={products}
+          search
+          searchPlaceholder="Search product name or SKU..."
+        />
         <Button
           disabled={products.length === 0}
           onClick={() => setCreateOpen(true)}
@@ -133,10 +143,39 @@ export function TrafficTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Product</TableHead>
+              <TableHead>
+                <DataTableSortHeader
+                  currentDir={currentDir}
+                  currentSort={currentSort}
+                  field="trafficDate"
+                  label="Date"
+                  params={filters}
+                  pathname={pathname}
+                />
+              </TableHead>
+              <TableHead>
+                <DataTableSortHeader
+                  currentDir={currentDir}
+                  currentSort={currentSort}
+                  field="productName"
+                  label="Product"
+                  params={filters}
+                  pathname={pathname}
+                />
+              </TableHead>
               <TableHead>SKU</TableHead>
-              <TableHead className="text-right">Views</TableHead>
+              <TableHead className="text-right">
+                <div className="flex justify-end">
+                  <DataTableSortHeader
+                    currentDir={currentDir}
+                    currentSort={currentSort}
+                    field="views"
+                    label="Views"
+                    params={filters}
+                    pathname={pathname}
+                  />
+                </div>
+              </TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>

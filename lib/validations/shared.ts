@@ -35,3 +35,24 @@ export const dateString = z
     error: "Date must be in YYYY-MM-DD format.",
   })
   .refine(isRealCalendarDate, { error: "Enter a valid calendar date." });
+
+// Query-param schemas deliberately use `.catch(default)` per field instead of
+// throwing on parse failure — a stale or hand-edited URL must fall back to a
+// sane default, not 500 the page.
+export const pageParam = z.coerce.number().int().positive().catch(1);
+
+export function sortParam<const T extends readonly [string, ...string[]]>(
+  allowed: T,
+  fallback: T[number],
+) {
+  return z.enum(allowed).catch(fallback);
+}
+
+export function dirParam(fallback: "asc" | "desc" = "desc") {
+  return z.enum(["asc", "desc"]).catch(fallback);
+}
+
+export const searchParam = z.preprocess(
+  emptyToUndefined,
+  z.string().trim().max(200).optional(),
+);

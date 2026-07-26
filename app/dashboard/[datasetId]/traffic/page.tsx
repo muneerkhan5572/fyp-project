@@ -4,15 +4,11 @@ import { TrafficTable } from "@/components/traffic/traffic-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
 import { hasAnyTraffic, pagedTraffic } from "@/lib/traffic/dal";
+import { trafficListParamsSchema } from "@/lib/validations/traffic";
 
 type TrafficPageProps = {
   params: Promise<{ datasetId: string }>;
-  searchParams: Promise<{
-    page?: string;
-    productId?: string;
-    from?: string;
-    to?: string;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function TrafficPage({
@@ -20,16 +16,20 @@ export default async function TrafficPage({
   searchParams,
 }: TrafficPageProps) {
   const { datasetId } = await params;
-  const { page, productId, from, to } = await searchParams;
+  const { page, productId, from, to, search, sort, dir } =
+    trafficListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
   const [{ rows, total, page: currentPage, pageCount }, products, anyTraffic] =
     await Promise.all([
       pagedTraffic(dataset.id, {
-        page: page ? Number(page) : undefined,
+        page,
         productId,
         from,
         to,
+        search,
+        sort,
+        dir,
       }),
       listProducts(dataset.id),
       hasAnyTraffic(dataset.id),
@@ -50,8 +50,10 @@ export default async function TrafficPage({
       />
       <div className="mt-6">
         <TrafficTable
+          currentDir={dir}
+          currentSort={sort}
           datasetId={dataset.id}
-          filters={{ productId, from, to }}
+          filters={{ productId, from, to, search, sort, dir }}
           hasAnyRecords={anyTraffic}
           page={currentPage}
           pageCount={pageCount}

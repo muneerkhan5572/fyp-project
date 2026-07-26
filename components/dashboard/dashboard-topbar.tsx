@@ -13,9 +13,9 @@ export function DashboardTopbar({ leading, title }: DashboardTopbarProps) {
     <div className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
       {leading}
       {title ? (
-        <span className="truncate font-medium text-sm">{title}</span>
+        <span className="truncate font-medium text-base">{title}</span>
       ) : (
-        <Link className="font-semibold text-sm" href="/">
+        <Link className="font-semibold text-base" href="/">
           Sales Analytics
         </Link>
       )}

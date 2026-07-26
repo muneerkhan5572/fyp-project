@@ -30,7 +30,7 @@ export function KpiCards({ kpis }: { kpis: Kpis }) {
       {tiles.map((tile) => (
         <Card key={tile.label}>
           <CardHeader>
-            <CardTitle className="font-normal text-muted-foreground text-xs">
+            <CardTitle className="font-normal text-muted-foreground text-sm">
               {tile.label}
             </CardTitle>
           </CardHeader>

@@ -180,7 +180,7 @@ export function MappingForm({
     <div className="rounded-lg border p-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="font-medium text-sm">Review &amp; import</p>
+          <p className="font-medium text-base">Review &amp; import</p>
           <p className="text-muted-foreground text-xs">{file.name}</p>
         </div>
         <Button onClick={onCancel} size="sm" type="button" variant="ghost">

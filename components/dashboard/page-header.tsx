@@ -18,7 +18,7 @@ export function PageHeader({
       {breadcrumbs}
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="font-semibold text-2xl">{title}</h1>
+          <h1 className="font-semibold text-3xl tracking-tight">{title}</h1>
           {description ? (
             <p className="text-muted-foreground text-sm">{description}</p>
           ) : null}

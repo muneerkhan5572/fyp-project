@@ -37,7 +37,7 @@ export function DatasetBreadcrumbs({
 
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="text-sm">
         {crumbs.map((crumb, index) => (
           <Fragment key={crumb.label}>
             {index > 0 ? <BreadcrumbSeparator /> : null}

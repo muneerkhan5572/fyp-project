@@ -4,9 +4,10 @@ import { MoreVerticalIcon, PlusIcon, ReceiptIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DataTableLinkPagination } from "@/components/data-table/data-table-link-pagination";
+import { DataTableSortHeader } from "@/components/data-table/data-table-sort-header";
+import { RecordFilters } from "@/components/data-table/record-filters";
 import { SaleDeleteDialog } from "@/components/sales/sale-delete-dialog";
 import { SaleFormDialog } from "@/components/sales/sale-form-dialog";
-import { SalesFilters } from "@/components/sales/sales-filters";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,6 +60,8 @@ type SalesTableProps = {
   pathname: string;
   filters: Record<string, string | undefined>;
   hasAnyRecords: boolean;
+  currentSort: string;
+  currentDir: "asc" | "desc";
 };
 
 export function SalesTable({
@@ -71,6 +74,8 @@ export function SalesTable({
   pathname,
   filters,
   hasAnyRecords,
+  currentSort,
+  currentDir,
 }: SalesTableProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<SaleRow | null>(null);
@@ -124,7 +129,12 @@ export function SalesTable({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <SalesFilters products={products} />
+        <RecordFilters
+          dateRange
+          products={products}
+          search
+          searchPlaceholder="Search product name or SKU..."
+        />
         <Button
           disabled={products.length === 0}
           onClick={() => setCreateOpen(true)}
@@ -139,11 +149,51 @@ export function SalesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Product</TableHead>
+              <TableHead>
+                <DataTableSortHeader
+                  currentDir={currentDir}
+                  currentSort={currentSort}
+                  field="saleDate"
+                  label="Date"
+                  params={filters}
+                  pathname={pathname}
+                />
+              </TableHead>
+              <TableHead>
+                <DataTableSortHeader
+                  currentDir={currentDir}
+                  currentSort={currentSort}
+                  field="productName"
+                  label="Product"
+                  params={filters}
+                  pathname={pathname}
+                />
+              </TableHead>
               <TableHead>SKU</TableHead>
-              <TableHead className="text-right">Quantity</TableHead>
-              <TableHead className="text-right">Revenue</TableHead>
+              <TableHead className="text-right">
+                <div className="flex justify-end">
+                  <DataTableSortHeader
+                    currentDir={currentDir}
+                    currentSort={currentSort}
+                    field="quantity"
+                    label="Quantity"
+                    params={filters}
+                    pathname={pathname}
+                  />
+                </div>
+              </TableHead>
+              <TableHead className="text-right">
+                <div className="flex justify-end">
+                  <DataTableSortHeader
+                    currentDir={currentDir}
+                    currentSort={currentSort}
+                    field="revenue"
+                    label="Revenue"
+                    params={filters}
+                    pathname={pathname}
+                  />
+                </div>
+              </TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>

@@ -1,5 +1,12 @@
 import * as z from "zod";
-import { dateString, emptyToUndefined } from "@/lib/validations/shared";
+import {
+  dateString,
+  dirParam,
+  emptyToUndefined,
+  pageParam,
+  searchParam,
+  sortParam,
+} from "@/lib/validations/shared";
 
 const productId = z.uuid({ error: "Select a product." });
 
@@ -46,6 +53,25 @@ export type SaleFormValues = {
 };
 
 export type UpdateSaleValues = SaleFormValues & { id: string };
+
+const SALES_SORT_FIELDS = [
+  "saleDate",
+  "productName",
+  "quantity",
+  "revenue",
+] as const;
+
+export const salesListParamsSchema = z.object({
+  page: pageParam,
+  productId: z
+    .preprocess(emptyToUndefined, z.uuid().optional())
+    .catch(undefined),
+  from: z.preprocess(emptyToUndefined, dateString.optional()).catch(undefined),
+  to: z.preprocess(emptyToUndefined, dateString.optional()).catch(undefined),
+  search: searchParam,
+  sort: sortParam(SALES_SORT_FIELDS, "saleDate"),
+  dir: dirParam("desc"),
+});
 
 export const saleFormClientSchema = z.object({
   productId: z.string().min(1, { error: "Select a product." }),

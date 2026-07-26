@@ -1,27 +1,22 @@
 "use client";
 
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
-import { PackageIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { MoreVerticalIcon, PackageIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { DataTable } from "@/components/data-table/data-table";
-import { DataTableFilter } from "@/components/data-table/data-table-filter";
-import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import {
-  createProductColumns,
-  type ProductWithClassification,
-} from "@/components/products/columns";
+import { useState } from "react";
+import { ClassificationBadge } from "@/components/analytics/classification-badge";
+import { DataTableLinkPagination } from "@/components/data-table/data-table-link-pagination";
+import { DataTableSortHeader } from "@/components/data-table/data-table-sort-header";
 import { ProductDeleteDialog } from "@/components/products/product-delete-dialog";
 import { ProductFormDialog } from "@/components/products/product-form-dialog";
-import { SemanticSearchInput } from "@/components/products/semantic-search-input";
+import { ProductsFilters } from "@/components/products/products-filters";
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Empty,
   EmptyContent,
@@ -30,85 +25,67 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { ProductClassification } from "@/lib/analytics/velocity";
 import { datasetHref } from "@/lib/datasets/routes";
+import type { Product } from "@/lib/db/schema";
 
-const UNCATEGORIZED = "__uncategorized__";
-const ALL_CATEGORIES = "__all__";
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+export type ProductWithClassification = Product & {
+  classification: ProductClassification;
+};
 
 type ProductsTableProps = {
   datasetId: string;
-  products: ProductWithClassification[];
   categories: string[];
+  rows: ProductWithClassification[];
+  page: number;
+  pageCount: number;
+  total: number;
+  pathname: string;
+  filters: Record<string, string | undefined>;
+  hasAnyProducts: boolean;
+  currentSort: string;
+  currentDir: "asc" | "desc";
+  mode: "exact" | "semantic";
+  semanticError?: string;
 };
 
 export function ProductsTable({
   datasetId,
-  products,
   categories,
+  rows,
+  page,
+  pageCount,
+  total,
+  pathname,
+  filters,
+  hasAnyProducts,
+  currentSort,
+  currentDir,
+  mode,
+  semanticError,
 }: ProductsTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "name", desc: false },
-  ]);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState(ALL_CATEGORIES);
-  const [searchMode, setSearchMode] = useState<"exact" | "semantic">("exact");
-  const [semanticOrder, setSemanticOrder] = useState<string[] | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [editingProduct, setEditingProduct] =
     useState<ProductWithClassification | null>(null);
   const [deletingProduct, setDeletingProduct] =
     useState<ProductWithClassification | null>(null);
 
-  const columns = useMemo(
-    () =>
-      createProductColumns({
-        datasetId,
-        onEdit: setEditingProduct,
-        onDelete: setDeletingProduct,
-      }),
-    [datasetId],
-  );
-
-  const filteredProducts = useMemo(() => {
-    let result = products;
-    if (categoryFilter === UNCATEGORIZED) {
-      result = result.filter((product) => !product.category);
-    } else if (categoryFilter !== ALL_CATEGORIES) {
-      result = result.filter((product) => product.category === categoryFilter);
-    }
-
-    if (semanticOrder) {
-      const rank = new Map(semanticOrder.map((sku, index) => [sku, index]));
-      result = [...result].sort(
-        (a, b) =>
-          (rank.get(a.sku) ?? Number.POSITIVE_INFINITY) -
-          (rank.get(b.sku) ?? Number.POSITIVE_INFINITY),
-      );
-    }
-
-    return result;
-  }, [products, categoryFilter, semanticOrder]);
-
-  const table = useReactTable({
-    columns,
-    data: filteredProducts,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    initialState: { pagination: { pageSize: 20 } },
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
-    state: { globalFilter, sorting },
-  });
-
-  const isEmpty = products.length === 0;
-
-  return (
-    <div>
-      {isEmpty ? (
+  if (!hasAnyProducts) {
+    return (
+      <>
         <Empty className="mt-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -134,86 +111,149 @@ export function ProductsTable({
             </div>
           </EmptyContent>
         </Empty>
-      ) : (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-1 flex-wrap items-center gap-2">
-              <div className="flex flex-col gap-1.5">
-                <Tabs
-                  onValueChange={(value) => {
-                    const mode = value as "exact" | "semantic";
-                    setSearchMode(mode);
-                    if (mode === "exact") {
-                      setSemanticOrder(null);
-                    } else {
-                      setGlobalFilter("");
-                    }
-                  }}
-                  value={searchMode}
-                >
-                  <TabsList>
-                    <TabsTrigger value="exact">Exact match</TabsTrigger>
-                    <TabsTrigger value="semantic">By description</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-                {searchMode === "exact" ? (
-                  <div className="relative w-full max-w-xs">
-                    <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      className="pl-7"
-                      onChange={(event) => setGlobalFilter(event.target.value)}
-                      placeholder="Search name or SKU..."
-                      value={globalFilter}
-                    />
-                  </div>
-                ) : (
-                  <SemanticSearchInput
-                    datasetId={datasetId}
-                    onResults={(skus) => {
-                      setSemanticOrder(skus);
-                      setSorting([]);
-                    }}
-                  />
-                )}
-              </div>
-              <DataTableFilter
-                onValueChange={setCategoryFilter}
-                options={[
-                  { value: ALL_CATEGORIES, label: "All categories" },
-                  { value: UNCATEGORIZED, label: "Uncategorized" },
-                  ...categories.map((category) => ({
-                    value: category,
-                    label: category,
-                  })),
-                ]}
-                value={categoryFilter}
-              />
-            </div>
-            <Button onClick={() => setCreateOpen(true)} size="sm">
-              <PlusIcon />
-              Add product
-            </Button>
-          </div>
+        <ProductFormDialog
+          categories={categories}
+          datasetId={datasetId}
+          onOpenChange={setCreateOpen}
+          open={createOpen}
+        />
+      </>
+    );
+  }
 
-          <div className="mt-4">
-            <DataTable
-              columnCount={columns.length}
-              headerGroups={table.getHeaderGroups()}
-              rows={table.getRowModel().rows}
-              sorting={sorting}
-            />
-            <DataTablePagination
-              canNextPage={table.getCanNextPage()}
-              canPreviousPage={table.getCanPreviousPage()}
-              onNextPage={() => table.nextPage()}
-              onPreviousPage={() => table.previousPage()}
-              pageCount={table.getPageCount()}
-              pageIndex={table.getState().pagination.pageIndex}
-              rowCount={table.getFilteredRowModel().rows.length}
-            />
-          </div>
-        </>
-      )}
+  function sortHeader(field: string, label: string, className?: string) {
+    if (mode === "semantic") {
+      return <span className={className}>{label}</span>;
+    }
+    return (
+      <DataTableSortHeader
+        className={className}
+        currentDir={currentDir}
+        currentSort={currentSort}
+        field={field}
+        label={label}
+        params={filters}
+        pathname={pathname}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <ProductsFilters categories={categories} />
+        <Button onClick={() => setCreateOpen(true)} size="sm">
+          <PlusIcon />
+          Add product
+        </Button>
+      </div>
+
+      {semanticError ? (
+        <p className="mt-4 text-destructive text-sm">{semanticError}</p>
+      ) : null}
+
+      <div className="mt-4 overflow-x-auto rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{sortHeader("name", "Name")}</TableHead>
+              <TableHead>{sortHeader("sku", "SKU")}</TableHead>
+              <TableHead>{sortHeader("category", "Category")}</TableHead>
+              <TableHead className="text-right">
+                <div className="flex justify-end">
+                  {sortHeader("price", "Price")}
+                </div>
+              </TableHead>
+              <TableHead className="text-right">
+                <div className="flex justify-end">
+                  {sortHeader("stock", "Stock")}
+                </div>
+              </TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length ? (
+              rows.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>
+                    <Link
+                      className="underline-offset-2 hover:underline"
+                      href={`/dashboard/${datasetId}/products/${product.id}`}
+                    >
+                      {product.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="font-mono text-xs">
+                    {product.sku}
+                  </TableCell>
+                  <TableCell>
+                    {product.category ? (
+                      <Badge variant="outline">{product.category}</Badge>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        Uncategorized
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {currency.format(Number(product.price))}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {product.stock ?? "—"}
+                  </TableCell>
+                  <TableCell>
+                    <ClassificationBadge
+                      classification={product.classification}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={<Button size="icon-sm" variant="ghost" />}
+                      >
+                        <MoreVerticalIcon />
+                        <span className="sr-only">Product actions</span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => setEditingProduct(product)}
+                        >
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setDeletingProduct(product)}
+                          variant="destructive"
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center text-muted-foreground"
+                  colSpan={7}
+                >
+                  No products match these filters.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <DataTableLinkPagination
+        filters={filters}
+        page={page}
+        pageCount={pageCount}
+        pathname={pathname}
+        total={total}
+      />
 
       <ProductFormDialog
         categories={categories}

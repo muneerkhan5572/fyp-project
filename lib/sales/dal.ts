@@ -1,16 +1,25 @@
 import "server-only";
-import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { cache } from "react";
+import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products, sales } from "@/lib/db/schema";
-
-export const SALES_PAGE_SIZE = 25;
 
 export type PagedSalesParams = {
   page?: number;
   productId?: string;
   from?: string;
   to?: string;
+  search?: string;
+  sort?: "saleDate" | "productName" | "quantity" | "revenue";
+  dir?: "asc" | "desc";
+};
+
+const SALES_SORT_COLUMNS = {
+  saleDate: sales.saleDate,
+  productName: products.name,
+  quantity: sales.quantity,
+  revenue: sales.revenue,
 };
 
 export const pagedSales = cache(
@@ -27,7 +36,20 @@ export const pagedSales = cache(
     if (params.to) {
       conditions.push(lte(sales.saleDate, params.to));
     }
+    if (params.search) {
+      const pattern = `%${params.search}%`;
+      const searchCondition = or(
+        ilike(products.name, pattern),
+        ilike(products.sku, pattern),
+      );
+      if (searchCondition) {
+        conditions.push(searchCondition);
+      }
+    }
     const where = and(...conditions);
+
+    const sortColumn = SALES_SORT_COLUMNS[params.sort ?? "saleDate"];
+    const direction = params.dir === "asc" ? asc : desc;
 
     const [rows, countRows] = await Promise.all([
       db
@@ -43,10 +65,14 @@ export const pagedSales = cache(
         .from(sales)
         .innerJoin(products, eq(sales.productId, products.id))
         .where(where)
-        .orderBy(desc(sales.saleDate), asc(products.name))
-        .limit(SALES_PAGE_SIZE)
-        .offset((page - 1) * SALES_PAGE_SIZE),
-      db.select({ count: sql<number>`count(*)::int` }).from(sales).where(where),
+        .orderBy(direction(sortColumn), asc(products.name))
+        .limit(TABLE_PAGE_SIZE)
+        .offset((page - 1) * TABLE_PAGE_SIZE),
+      db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(sales)
+        .innerJoin(products, eq(sales.productId, products.id))
+        .where(where),
     ]);
 
     const total = countRows[0]?.count ?? 0;
@@ -55,8 +81,8 @@ export const pagedSales = cache(
       rows,
       total,
       page,
-      pageSize: SALES_PAGE_SIZE,
-      pageCount: Math.max(1, Math.ceil(total / SALES_PAGE_SIZE)),
+      pageSize: TABLE_PAGE_SIZE,
+      pageCount: Math.max(1, Math.ceil(total / TABLE_PAGE_SIZE)),
     };
   },
 );

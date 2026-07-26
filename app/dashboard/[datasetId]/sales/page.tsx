@@ -4,15 +4,11 @@ import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
 import { hasAnySales, pagedSales } from "@/lib/sales/dal";
+import { salesListParamsSchema } from "@/lib/validations/sales";
 
 type SalesPageProps = {
   params: Promise<{ datasetId: string }>;
-  searchParams: Promise<{
-    page?: string;
-    productId?: string;
-    from?: string;
-    to?: string;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function SalesPage({
@@ -20,17 +16,13 @@ export default async function SalesPage({
   searchParams,
 }: SalesPageProps) {
   const { datasetId } = await params;
-  const { page, productId, from, to } = await searchParams;
+  const { page, productId, from, to, search, sort, dir } =
+    salesListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
   const [{ rows, total, page: currentPage, pageCount }, products, anySales] =
     await Promise.all([
-      pagedSales(dataset.id, {
-        page: page ? Number(page) : undefined,
-        productId,
-        from,
-        to,
-      }),
+      pagedSales(dataset.id, { page, productId, from, to, search, sort, dir }),
       listProducts(dataset.id),
       hasAnySales(dataset.id),
     ]);
@@ -50,8 +42,10 @@ export default async function SalesPage({
       />
       <div>
         <SalesTable
+          currentDir={dir}
+          currentSort={sort}
           datasetId={dataset.id}
-          filters={{ productId, from, to }}
+          filters={{ productId, from, to, search, sort, dir }}
           hasAnyRecords={anySales}
           page={currentPage}
           pageCount={pageCount}

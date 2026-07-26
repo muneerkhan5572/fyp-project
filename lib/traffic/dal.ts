@@ -1,16 +1,24 @@
 import "server-only";
-import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { cache } from "react";
+import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products, trafficRecords } from "@/lib/db/schema";
-
-export const TRAFFIC_PAGE_SIZE = 25;
 
 export type PagedTrafficParams = {
   page?: number;
   productId?: string;
   from?: string;
   to?: string;
+  search?: string;
+  sort?: "trafficDate" | "productName" | "views";
+  dir?: "asc" | "desc";
+};
+
+const TRAFFIC_SORT_COLUMNS = {
+  trafficDate: trafficRecords.trafficDate,
+  productName: products.name,
+  views: trafficRecords.views,
 };
 
 export const pagedTraffic = cache(
@@ -27,7 +35,20 @@ export const pagedTraffic = cache(
     if (params.to) {
       conditions.push(lte(trafficRecords.trafficDate, params.to));
     }
+    if (params.search) {
+      const pattern = `%${params.search}%`;
+      const searchCondition = or(
+        ilike(products.name, pattern),
+        ilike(products.sku, pattern),
+      );
+      if (searchCondition) {
+        conditions.push(searchCondition);
+      }
+    }
     const where = and(...conditions);
+
+    const sortColumn = TRAFFIC_SORT_COLUMNS[params.sort ?? "trafficDate"];
+    const direction = params.dir === "asc" ? asc : desc;
 
     const [rows, countRows] = await Promise.all([
       db
@@ -42,12 +63,13 @@ export const pagedTraffic = cache(
         .from(trafficRecords)
         .innerJoin(products, eq(trafficRecords.productId, products.id))
         .where(where)
-        .orderBy(desc(trafficRecords.trafficDate), asc(products.name))
-        .limit(TRAFFIC_PAGE_SIZE)
-        .offset((page - 1) * TRAFFIC_PAGE_SIZE),
+        .orderBy(direction(sortColumn), asc(products.name))
+        .limit(TABLE_PAGE_SIZE)
+        .offset((page - 1) * TABLE_PAGE_SIZE),
       db
         .select({ count: sql<number>`count(*)::int` })
         .from(trafficRecords)
+        .innerJoin(products, eq(trafficRecords.productId, products.id))
         .where(where),
     ]);
 
@@ -57,8 +79,8 @@ export const pagedTraffic = cache(
       rows,
       total,
       page,
-      pageSize: TRAFFIC_PAGE_SIZE,
-      pageCount: Math.max(1, Math.ceil(total / TRAFFIC_PAGE_SIZE)),
+      pageSize: TABLE_PAGE_SIZE,
+      pageCount: Math.max(1, Math.ceil(total / TABLE_PAGE_SIZE)),
     };
   },
 );

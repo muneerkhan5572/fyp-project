@@ -72,7 +72,7 @@ export function ImportWizard({ datasetId }: ImportWizardProps) {
           >
             <CardContent className="flex flex-col items-start gap-2">
               <choice.icon className="size-5 text-muted-foreground" />
-              <p className="font-medium text-sm">{choice.label}</p>
+              <p className="font-medium text-base">{choice.label}</p>
               <p className="text-muted-foreground text-xs">{choice.hint}</p>
             </CardContent>
           </Card>

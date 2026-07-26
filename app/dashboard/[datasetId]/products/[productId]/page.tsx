@@ -146,19 +146,19 @@ export default async function ProductDetailPage({
       <div className="mt-6 grid grid-cols-3 gap-4">
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Units sold</p>
-          <p className="font-semibold text-xl">
+          <p className="font-semibold text-2xl">
             {compactNumber.format(totals.units)}
           </p>
         </div>
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Revenue</p>
-          <p className="font-semibold text-xl">
+          <p className="font-semibold text-2xl">
             {currency.format(totals.revenue)}
           </p>
         </div>
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Views</p>
-          <p className="font-semibold text-xl">
+          <p className="font-semibold text-2xl">
             {compactNumber.format(totals.views)}
           </p>
         </div>
@@ -233,7 +233,7 @@ function ProductHeader({
 }) {
   return (
     <div>
-      <h1 className="font-semibold text-2xl">{product.name}</h1>
+      <h1 className="font-semibold text-3xl tracking-tight">{product.name}</h1>
       <div className="mt-1 flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
         <span className="font-mono text-xs">{product.sku}</span>
         {product.category ? (

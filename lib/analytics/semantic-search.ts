@@ -1,13 +1,21 @@
 import "server-only";
 import { requestSemanticSearch } from "@/lib/ml/search-client";
-import { listProducts } from "@/lib/products/dal";
 
 export type SemanticSearchResult =
   | { success: true; skus: string[] }
   | { success: false; error: string };
 
+type SearchableProduct = {
+  sku: string;
+  name: string;
+  category: string | null;
+};
+
+// Takes the product corpus as a parameter rather than fetching it itself —
+// callers (lib/products/dal.ts) already have it loaded, and fetching here
+// would create a dal.ts <-> semantic-search.ts import cycle.
 export async function runSemanticSearch(
-  datasetId: string,
+  products: SearchableProduct[],
   query: string,
 ): Promise<SemanticSearchResult> {
   const trimmed = query.trim();
@@ -15,7 +23,6 @@ export async function runSemanticSearch(
     return { success: false, error: "Type something to search for." };
   }
 
-  const products = await listProducts(datasetId);
   if (products.length === 0) {
     return { success: false, error: "No products to search yet." };
   }

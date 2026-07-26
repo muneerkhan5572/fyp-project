@@ -44,15 +44,15 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
       <div className="mt-6 grid grid-cols-3 gap-3">
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Total rows</p>
-          <p className="font-semibold text-xl">{importRow.totalRows}</p>
+          <p className="font-semibold text-2xl">{importRow.totalRows}</p>
         </div>
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Imported</p>
-          <p className="font-semibold text-xl">{importRow.importedRows}</p>
+          <p className="font-semibold text-2xl">{importRow.importedRows}</p>
         </div>
         <div className="rounded-md border p-3">
           <p className="text-muted-foreground text-xs">Failed</p>
-          <p className="font-semibold text-xl">{importRow.failedRows}</p>
+          <p className="font-semibold text-2xl">{importRow.failedRows}</p>
         </div>
       </div>
 
@@ -87,7 +87,7 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
 
       {importRow.errors.length > 0 ? (
         <div className="mt-6">
-          <h2 className="font-medium text-sm">Row errors</h2>
+          <h2 className="font-semibold text-lg">Row errors</h2>
           <div className="mt-2 overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>

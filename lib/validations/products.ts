@@ -1,4 +1,10 @@
 import * as z from "zod";
+import {
+  dirParam,
+  pageParam,
+  searchParam,
+  sortParam,
+} from "@/lib/validations/shared";
 
 const emptyToUndefined = (value: unknown) =>
   typeof value === "string" && value.trim() === "" ? undefined : value;
@@ -87,6 +93,26 @@ export type ProductFormValues = {
 };
 
 export type UpdateProductValues = ProductFormValues & { id: string };
+
+const PRODUCTS_SORT_FIELDS = [
+  "name",
+  "sku",
+  "category",
+  "price",
+  "stock",
+] as const;
+
+export const productsListParamsSchema = z.object({
+  page: pageParam,
+  category: z.preprocess(
+    emptyToUndefined,
+    z.string().trim().max(60).optional(),
+  ),
+  mode: z.enum(["exact", "semantic"]).catch("exact"),
+  search: searchParam,
+  sort: sortParam(PRODUCTS_SORT_FIELDS, "name"),
+  dir: dirParam("asc"),
+});
 
 // Client-side validator matching the raw string shape above, used for
 // inline TanStack Form field errors as the user types. The server action

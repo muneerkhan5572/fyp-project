@@ -5,26 +5,45 @@ import { ProductsTable } from "@/components/products/products-table";
 import { classifyProducts } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
 import { hasAnyForecast } from "@/lib/forecasts/dal";
-import { listCategories, listProducts } from "@/lib/products/dal";
+import {
+  hasAnyProducts,
+  listCategories,
+  pagedProducts,
+} from "@/lib/products/dal";
+import { productsListParamsSchema } from "@/lib/validations/products";
+
+type ProductsPageProps = {
+  params: Promise<{ datasetId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 export default async function ProductsPage({
   params,
-}: {
-  params: Promise<{ datasetId: string }>;
-}) {
+  searchParams,
+}: ProductsPageProps) {
   const { datasetId } = await params;
+  const { page, category, mode, search, sort, dir } =
+    productsListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
-  const [rawProducts, categories, classified, hasForecast] = await Promise.all([
-    listProducts(dataset.id),
+
+  const [
+    { rows: pagedRows, total, page: currentPage, pageCount, semanticError },
+    categories,
+    classified,
+    hasForecast,
+    anyProducts,
+  ] = await Promise.all([
+    pagedProducts(dataset.id, { page, category, mode, search, sort, dir }),
     listCategories(dataset.id),
     classifyProducts(dataset),
     hasAnyForecast(dataset.id),
+    hasAnyProducts(dataset.id),
   ]);
 
   const classificationByProductId = new Map(
     classified.map((product) => [product.productId, product.classification]),
   );
-  const products = rawProducts.map((product) => ({
+  const rows = pagedRows.map((product) => ({
     ...product,
     classification: classificationByProductId.get(product.id) ?? "no-data",
   }));
@@ -33,7 +52,7 @@ export default async function ProductsPage({
     <div>
       <PageHeader
         actions={
-          products.length > 0 ? (
+          anyProducts ? (
             <GenerateForecastButton
               datasetId={dataset.id}
               hasExistingForecast={hasForecast}
@@ -53,8 +72,18 @@ export default async function ProductsPage({
       <div>
         <ProductsTable
           categories={categories}
+          currentDir={dir}
+          currentSort={sort}
           datasetId={dataset.id}
-          products={products}
+          filters={{ category, mode, search, sort, dir }}
+          hasAnyProducts={anyProducts}
+          mode={mode}
+          page={currentPage}
+          pageCount={pageCount}
+          pathname={`/dashboard/${dataset.id}/products`}
+          rows={rows}
+          semanticError={semanticError}
+          total={total}
         />
       </div>
     </div>
