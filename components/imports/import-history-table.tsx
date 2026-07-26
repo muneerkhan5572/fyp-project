@@ -70,7 +70,7 @@ export function ImportHistoryTable({
         </EmptyHeader>
         <EmptyContent>
           <Link
-            className={buttonVariants({ variant: "outline", size: "sm" })}
+            className={buttonVariants({ variant: "outline" })}
             href={datasetSectionHref(datasetId, "products")}
           >
             Add products manually

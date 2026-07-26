@@ -86,7 +86,6 @@ export function ImportWizard({ datasetId }: ImportWizardProps) {
       <Button
         className="mb-3 px-0"
         onClick={() => setSelected(null)}
-        size="sm"
         variant="ghost"
       >
         <ArrowLeftIcon />

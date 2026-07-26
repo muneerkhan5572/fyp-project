@@ -72,7 +72,7 @@ export function DataTableLinkPagination({
         {pageCount > 1 ? (
           <Input
             aria-label="Jump to page"
-            className="h-8 w-16 text-center"
+            className="w-16 text-center"
             max={pageCount}
             min={1}
             onBlur={commitJump}
@@ -89,28 +89,28 @@ export function DataTableLinkPagination({
         ) : null}
         {canPrevious ? (
           <Link
-            className={buttonVariants({ size: "icon-sm", variant: "outline" })}
+            className={buttonVariants({ size: "icon", variant: "outline" })}
             href={buildHref(pathname, filters, page - 1)}
           >
             <ChevronLeftIcon />
             <span className="sr-only">Previous page</span>
           </Link>
         ) : (
-          <Button disabled size="icon-sm" variant="outline">
+          <Button disabled size="icon" variant="outline">
             <ChevronLeftIcon />
             <span className="sr-only">Previous page</span>
           </Button>
         )}
         {canNext ? (
           <Link
-            className={buttonVariants({ size: "icon-sm", variant: "outline" })}
+            className={buttonVariants({ size: "icon", variant: "outline" })}
             href={buildHref(pathname, filters, page + 1)}
           >
             <ChevronRightIcon />
             <span className="sr-only">Next page</span>
           </Link>
         ) : (
-          <Button disabled size="icon-sm" variant="outline">
+          <Button disabled size="icon" variant="outline">
             <ChevronRightIcon />
             <span className="sr-only">Next page</span>
           </Button>

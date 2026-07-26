@@ -41,7 +41,7 @@ export function DatasetCard({ dataset }: { dataset: Dataset }) {
           <CardAction>
             <DropdownMenu>
               <DropdownMenuTrigger
-                render={<Button size="icon-sm" variant="ghost" />}
+                render={<Button size="icon" variant="ghost" />}
               >
                 <MoreVerticalIcon />
                 <span className="sr-only">Dataset actions</span>

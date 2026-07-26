@@ -115,7 +115,7 @@ export function UploadFlexibleCard({ datasetId }: UploadFlexibleCardProps) {
       <CardFooter>
         <label
           className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
+            buttonVariants({ variant: "outline" }),
             "cursor-pointer",
           )}
         >

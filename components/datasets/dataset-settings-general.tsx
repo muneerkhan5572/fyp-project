@@ -31,11 +31,7 @@ export function DatasetSettingsGeneral({
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button
-            onClick={() => setRenameOpen(true)}
-            size="sm"
-            variant="outline"
-          >
+          <Button onClick={() => setRenameOpen(true)} variant="outline">
             Rename dataset
           </Button>
         </CardFooter>
@@ -50,11 +46,7 @@ export function DatasetSettingsGeneral({
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button
-            onClick={() => setDeleteOpen(true)}
-            size="sm"
-            variant="destructive"
-          >
+          <Button onClick={() => setDeleteOpen(true)} variant="destructive">
             Delete dataset
           </Button>
         </CardFooter>

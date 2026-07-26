@@ -148,7 +148,6 @@ export function SetupChecklist({ datasetId, state }: SetupChecklistProps) {
                   <Link
                     className={buttonVariants({
                       variant: isNext ? "default" : "outline",
-                      size: "sm",
                     })}
                     href={item.action.href}
                   >

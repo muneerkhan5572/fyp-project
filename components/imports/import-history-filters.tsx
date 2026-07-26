@@ -123,7 +123,7 @@ export function ImportHistoryFilters() {
         value={status}
       />
       {hasFilters ? (
-        <Button onClick={handleClear} size="sm" variant="ghost">
+        <Button onClick={handleClear} variant="ghost">
           <XIcon />
           Clear
         </Button>

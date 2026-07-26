@@ -18,7 +18,7 @@ export async function AppHeader() {
           {user ? (
             <>
               <Link
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                className={buttonVariants({ variant: "ghost" })}
                 href="/dashboard"
               >
                 Dashboard
@@ -28,12 +28,12 @@ export async function AppHeader() {
           ) : (
             <>
               <Link
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                className={buttonVariants({ variant: "ghost" })}
                 href="/login"
               >
                 Login
               </Link>
-              <Link className={buttonVariants({ size: "sm" })} href="/signup">
+              <Link className={buttonVariants()} href="/signup">
                 Sign up
               </Link>
             </>

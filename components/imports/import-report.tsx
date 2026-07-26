@@ -125,13 +125,13 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
         {importRow.importedRows > 0 ? (
           <>
             <Link
-              className={cn(buttonVariants({ size: "sm" }))}
+              className={cn(buttonVariants())}
               href={datasetSectionHref(datasetId, importRow.type)}
             >
               View imported {importRow.type}
             </Link>
             <Link
-              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+              className={cn(buttonVariants({ variant: "outline" }))}
               href={datasetSectionHref(datasetId, "analytics")}
             >
               View analytics
@@ -139,7 +139,7 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
           </>
         ) : null}
         <Link
-          className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          className={cn(buttonVariants({ variant: "ghost" }))}
           href={datasetHref(datasetId)}
         >
           {importRow.failedRows > 0

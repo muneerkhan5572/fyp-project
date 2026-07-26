@@ -41,8 +41,8 @@ export function DataTableSortHeader({
   return (
     <Link
       className={cn(
-        buttonVariants({ size: "sm", variant: "ghost" }),
-        "-ml-2 h-7 gap-1",
+        buttonVariants({ variant: "ghost" }),
+        "-ml-2 gap-1",
         className,
       )}
       href={`${pathname}?${query.toString()}`}

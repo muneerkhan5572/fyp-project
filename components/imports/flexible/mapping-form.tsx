@@ -183,7 +183,7 @@ export function MappingForm({
           <p className="font-medium text-base">Review &amp; import</p>
           <p className="text-muted-foreground text-xs">{file.name}</p>
         </div>
-        <Button onClick={onCancel} size="sm" type="button" variant="ghost">
+        <Button onClick={onCancel} type="button" variant="ghost">
           Choose a different file
         </Button>
       </div>

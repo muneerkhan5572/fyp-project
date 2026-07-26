@@ -132,7 +132,6 @@ export function TrafficTable({
         <Button
           disabled={products.length === 0}
           onClick={() => setCreateOpen(true)}
-          size="sm"
         >
           <PlusIcon />
           Add traffic record
@@ -192,7 +191,7 @@ export function TrafficTable({
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger
-                        render={<Button size="icon-sm" variant="ghost" />}
+                        render={<Button size="icon" variant="ghost" />}
                       >
                         <MoreVerticalIcon />
                         <span className="sr-only">Traffic record actions</span>

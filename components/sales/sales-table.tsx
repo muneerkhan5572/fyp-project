@@ -138,7 +138,6 @@ export function SalesTable({
         <Button
           disabled={products.length === 0}
           onClick={() => setCreateOpen(true)}
-          size="sm"
         >
           <PlusIcon />
           Add sale
@@ -213,7 +212,7 @@ export function SalesTable({
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger
-                        render={<Button size="icon-sm" variant="ghost" />}
+                        render={<Button size="icon" variant="ghost" />}
                       >
                         <MoreVerticalIcon />
                         <span className="sr-only">Sale actions</span>

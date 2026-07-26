@@ -79,7 +79,7 @@ export function UploadCard({
       <CardFooter className="flex flex-wrap items-center gap-3">
         <label
           className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
+            buttonVariants({ variant: "outline" }),
             "cursor-pointer",
             isPending && "pointer-events-none opacity-50",
           )}

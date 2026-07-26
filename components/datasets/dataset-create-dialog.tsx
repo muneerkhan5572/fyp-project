@@ -40,7 +40,7 @@ export function DatasetCreateDialog() {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger render={<Button size="sm" />}>
+      <DialogTrigger render={<Button />}>
         <PlusIcon />
         New dataset
       </DialogTrigger>

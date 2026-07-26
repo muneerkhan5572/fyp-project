@@ -142,7 +142,7 @@ export function ProductsTable({
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <ProductsFilters categories={categories} />
-        <Button onClick={() => setCreateOpen(true)} size="sm">
+        <Button onClick={() => setCreateOpen(true)}>
           <PlusIcon />
           Add product
         </Button>
@@ -211,7 +211,7 @@ export function ProductsTable({
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger
-                        render={<Button size="icon-sm" variant="ghost" />}
+                        render={<Button size="icon" variant="ghost" />}
                       >
                         <MoreVerticalIcon />
                         <span className="sr-only">Product actions</span>

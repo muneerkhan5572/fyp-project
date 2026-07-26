@@ -11,7 +11,6 @@ export function LogoutButton() {
     <Button
       disabled={isPending}
       onClick={() => startTransition(() => logout())}
-      size="sm"
       variant="outline"
     >
       {isPending ? "Logging out..." : "Logout"}
