@@ -7,4 +7,5 @@ export const importsListParamsSchema = z.object({
   search: searchParam,
   type: z.enum(importType.enumValues).optional().catch(undefined),
   status: z.enum(importStatus.enumValues).optional().catch(undefined),
+  importId: z.uuid().optional().catch(undefined),
 });

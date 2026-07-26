@@ -46,7 +46,7 @@ export async function uploadCsv(
 
   revalidatePath(`/dashboard/${dataset.id}`, "layout");
 
-  redirect(`/dashboard/${dataset.id}/import/${result.importId}`);
+  redirect(`/dashboard/${dataset.id}/import?importId=${result.importId}`);
 }
 
 export async function uploadFlexibleCsv(
@@ -88,5 +88,5 @@ export async function uploadFlexibleCsv(
 
   revalidatePath(`/dashboard/${dataset.id}`, "layout");
 
-  redirect(`/dashboard/${dataset.id}/import/${result.importId}`);
+  redirect(`/dashboard/${dataset.id}/import?importId=${result.importId}`);
 }

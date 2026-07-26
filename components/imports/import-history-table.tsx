@@ -104,7 +104,7 @@ export function ImportHistoryTable({
                   <TableCell>
                     <Link
                       className="block underline-offset-2 hover:underline"
-                      href={`/dashboard/${datasetId}/import/${row.id}`}
+                      href={`/dashboard/${datasetId}/import?importId=${row.id}`}
                     >
                       {TYPE_LABELS[row.type]}
                     </Link>
