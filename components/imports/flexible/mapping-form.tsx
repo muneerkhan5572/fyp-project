@@ -114,9 +114,7 @@ function DetectionSummary({
           <li key={label}>
             <span className="text-muted-foreground">{label}:</span> {detail}
             {low ? (
-              <span className="ml-1 text-amber-600 dark:text-amber-500">
-                ⚠ double-check
-              </span>
+              <span className="ml-1 text-warning">⚠ double-check</span>
             ) : null}
           </li>
         ))}
@@ -389,7 +387,7 @@ export function MappingForm({
                   <FieldLabel htmlFor="dateFormat">
                     Date format
                     {lowConfidenceFields.includes("date") ? (
-                      <span className="font-normal text-amber-600 dark:text-amber-500">
+                      <span className="font-normal text-warning">
                         ⚠ ambiguous, please confirm
                       </span>
                     ) : null}

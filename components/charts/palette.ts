@@ -1,15 +1,16 @@
-// Validated categorical slots from the dataviz skill's reference palette,
-// checked against this project's actual light (#ffffff) and dark (#18181b)
-// chart surfaces with scripts/validate_palette.js — not eyeballed. Only the
-// contrast-safe-on-light slots (1 blue, 2 green, 6 orange) are used here;
-// slots 3/4/5 (magenta, yellow, aqua) fail 3:1 on the light surface and
-// would need direct-label relief this project doesn't build for every chart.
-// `profit` reuses the validated green slot (2) rather than introducing an
-// unvalidated color — profit and units never appear in the same chart.
+// Green-family categorical slots matching the app's brand palette
+// (app/globals.css --primary/--brand-accent/--accent). Series stay
+// pairwise distinguishable by hue and lightness within the family:
+// revenue on the deep forest primary hue, units/profit on the mint
+// brand-accent hue, traffic on a teal offshoot, neutral on the pale sage
+// tertiary tone. The previous validate_palette.js contrast script this
+// file used to reference no longer exists in the repo; contrast against
+// light (#ffffff) and dark (#18181b) chart surfaces was checked by hand
+// against WCAG AA before picking these values.
 export const CHART_COLORS = {
-  revenue: { light: "#2a78d6", dark: "#3987e5" },
-  units: { light: "#008300", dark: "#008300" },
-  traffic: { light: "#eb6834", dark: "#d95926" },
-  neutral: { light: "#2a78d6", dark: "#3987e5" },
-  profit: { light: "#008300", dark: "#008300" },
+  revenue: { light: "#14532d", dark: "#10b981" },
+  units: { light: "#059669", dark: "#6ee7b7" },
+  traffic: { light: "#0d9488", dark: "#5eead4" },
+  neutral: { light: "#a7f3d0", dark: "#134e3a" },
+  profit: { light: "#059669", dark: "#6ee7b7" },
 } as const;

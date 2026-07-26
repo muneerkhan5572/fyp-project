@@ -50,9 +50,7 @@ export function FieldMappingSelect({
       <FieldLabel htmlFor={field.name}>
         {label}
         {lowConfidence ? (
-          <span className="font-normal text-amber-600 dark:text-amber-500">
-            ⚠ check this
-          </span>
+          <span className="font-normal text-warning">⚠ check this</span>
         ) : null}
       </FieldLabel>
       <Select
