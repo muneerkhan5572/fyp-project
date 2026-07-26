@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ClassificationBadge } from "@/components/analytics/classification-badge";
 import { NoDataMessage } from "@/components/analytics/no-data-message";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { classifyProducts } from "@/lib/analytics/velocity";
@@ -62,16 +61,5 @@ export async function MoversCard({
         )}
       </CardContent>
     </Card>
-  );
-}
-
-export function ClassificationLegend() {
-  return (
-    <div className="flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
-      <ClassificationBadge classification="high-demand" />
-      <ClassificationBadge classification="normal" />
-      <ClassificationBadge classification="slow-mover" />
-      <ClassificationBadge classification="no-data" />
-    </div>
   );
 }

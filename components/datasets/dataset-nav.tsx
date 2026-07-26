@@ -2,6 +2,7 @@
 
 import {
   BarChart3Icon,
+  LayoutDashboardIcon,
   PackageIcon,
   ReceiptIcon,
   SettingsIcon,
@@ -48,7 +49,10 @@ const NAV_GROUPS = [
   },
   {
     label: "Insights",
-    items: [{ href: "/analytics", label: "Analytics", icon: BarChart3Icon }],
+    items: [
+      { href: "/overview", label: "Overview", icon: LayoutDashboardIcon },
+      { href: "/analytics", label: "Analytics", icon: BarChart3Icon },
+    ],
   },
   {
     label: "Manage",

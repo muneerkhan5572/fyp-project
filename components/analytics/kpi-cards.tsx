@@ -14,6 +14,11 @@ const decimalNumber = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 1,
 });
 
+const percentNumber = new Intl.NumberFormat("en-US", {
+  style: "percent",
+  maximumFractionDigits: 1,
+});
+
 export function KpiCards({ kpis }: { kpis: Kpis }) {
   const tiles = [
     { label: "Total revenue", value: currency.format(kpis.totalRevenue) },
@@ -23,10 +28,16 @@ export function KpiCards({ kpis }: { kpis: Kpis }) {
       value: decimalNumber.format(kpis.avgDailyUnits),
     },
     { label: "Products", value: compactNumber.format(kpis.productCount) },
+    {
+      label: "Gross margin",
+      value:
+        kpis.marginPct === null ? "—" : percentNumber.format(kpis.marginPct),
+    },
+    { label: "Gross profit", value: currency.format(kpis.grossProfit) },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
       {tiles.map((tile) => (
         <Card key={tile.label}>
           <CardHeader>
@@ -51,5 +62,18 @@ export async function KpiCardsSection({
   range: DateRange;
 }) {
   const kpis = await getKpis(datasetId, range);
-  return <KpiCards kpis={kpis} />;
+  const showCoverageCaveat =
+    kpis.costedRevenuePct !== null && kpis.costedRevenuePct < 1;
+
+  return (
+    <div>
+      <KpiCards kpis={kpis} />
+      {showCoverageCaveat ? (
+        <p className="mt-2 text-muted-foreground text-xs">
+          Margin based on {Math.round((kpis.costedRevenuePct ?? 0) * 100)}% of
+          revenue — some products are missing a cost.
+        </p>
+      ) : null}
+    </div>
+  );
 }

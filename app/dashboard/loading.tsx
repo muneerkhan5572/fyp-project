@@ -1,4 +1,6 @@
 import { DashboardTopbar } from "@/components/dashboard/dashboard-topbar";
+import { PageHeaderSkeleton } from "@/components/dashboard/page-header-skeleton";
+import { Card, CardAction, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CARD_IDS = ["card-1", "card-2", "card-3", "card-4", "card-5", "card-6"];
@@ -8,16 +10,23 @@ export default function DashboardLoading() {
     <>
       <DashboardTopbar />
       <main className="mx-auto w-full max-w-screen-2xl px-4 py-10">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <Skeleton className="h-8 w-32" />
-            <Skeleton className="mt-2 h-4 w-96" />
-          </div>
-          <Skeleton className="h-7 w-32" />
-        </div>
+        <PageHeaderSkeleton
+          actionsWidth="w-32"
+          breadcrumbs={false}
+          descriptionWidth="w-96"
+          titleWidth="w-24"
+        />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CARD_IDS.map((id) => (
-            <Skeleton className="h-24 w-full" key={id} />
+            <Card key={id}>
+              <CardHeader>
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="mt-2 h-3 w-24" />
+                <CardAction>
+                  <Skeleton className="size-7" />
+                </CardAction>
+              </CardHeader>
+            </Card>
           ))}
         </div>
       </main>

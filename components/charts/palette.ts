@@ -4,9 +4,12 @@
 // contrast-safe-on-light slots (1 blue, 2 green, 6 orange) are used here;
 // slots 3/4/5 (magenta, yellow, aqua) fail 3:1 on the light surface and
 // would need direct-label relief this project doesn't build for every chart.
+// `profit` reuses the validated green slot (2) rather than introducing an
+// unvalidated color — profit and units never appear in the same chart.
 export const CHART_COLORS = {
   revenue: { light: "#2a78d6", dark: "#3987e5" },
   units: { light: "#008300", dark: "#008300" },
   traffic: { light: "#eb6834", dark: "#d95926" },
   neutral: { light: "#2a78d6", dark: "#3987e5" },
+  profit: { light: "#008300", dark: "#008300" },
 } as const;

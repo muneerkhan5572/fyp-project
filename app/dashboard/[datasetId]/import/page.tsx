@@ -8,15 +8,15 @@ import { requireDataset } from "@/lib/datasets/dal";
 import { pagedImports } from "@/lib/imports/dal";
 import { importsListParamsSchema } from "@/lib/validations/imports";
 
-type DatasetOverviewPageProps = {
+type DatasetImportPageProps = {
   params: Promise<{ datasetId: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function DatasetOverviewPage({
+export default async function DatasetImportPage({
   params,
   searchParams,
-}: DatasetOverviewPageProps) {
+}: DatasetImportPageProps) {
   const { datasetId } = await params;
   const { page, search, type, status } = importsListParamsSchema.parse(
     await searchParams,

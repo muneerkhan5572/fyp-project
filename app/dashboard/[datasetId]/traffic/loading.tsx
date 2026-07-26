@@ -1,18 +1,33 @@
+import { PageHeaderSkeleton } from "@/components/dashboard/page-header-skeleton";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const ROW_IDS = ["row-1", "row-2", "row-3", "row-4", "row-5", "row-6"];
+const COLUMNS = [
+  { id: "date", width: "w-20" },
+  { id: "product", width: "w-32" },
+  { id: "sku", width: "w-20" },
+  { id: "views", width: "w-10", align: "right" as const },
+  { id: "actions", width: "size-7" },
+];
 
 export default function TrafficLoading() {
   return (
     <div>
-      <Skeleton className="h-8 w-40" />
-      <Skeleton className="mt-2 h-4 w-72" />
-      <div className="mt-6 space-y-2">
-        <Skeleton className="h-9 w-full max-w-md" />
-        {ROW_IDS.map((id) => (
-          <Skeleton className="h-10 w-full" key={id} />
-        ))}
-      </div>
+      <PageHeaderSkeleton descriptionWidth="w-80" titleWidth="w-20" />
+      <DataTableSkeleton
+        columns={COLUMNS}
+        toolbar={
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Skeleton className="h-7 w-64" />
+              <Skeleton className="h-7 w-40" />
+              <Skeleton className="h-7 w-36" />
+              <Skeleton className="h-7 w-36" />
+            </div>
+            <Skeleton className="h-7 w-40" />
+          </div>
+        }
+      />
     </div>
   );
 }

@@ -53,6 +53,9 @@ export type Kpis = {
   totalUnits: number;
   avgDailyUnits: number;
   productCount: number;
+  marginPct: number | null;
+  grossProfit: number;
+  costedRevenuePct: number | null;
 };
 
 export const getKpis = cache(
@@ -76,16 +79,98 @@ export const getKpis = cache(
       .from(products)
       .where(eq(products.datasetId, datasetId));
 
+    const profitSummary = await getProfitSummary(datasetId, range);
+
     const effectiveFrom = range.from ?? salesRow?.minDate ?? range.to;
     const dayCount = listDatesBetween(effectiveFrom, range.to).length || 1;
     const totalUnits = salesRow?.totalUnits ?? 0;
+    const totalRevenue = salesRow?.totalRevenue ?? 0;
 
     return {
-      totalRevenue: salesRow?.totalRevenue ?? 0,
+      totalRevenue,
       totalUnits,
       avgDailyUnits: dayCount > 0 ? totalUnits / dayCount : 0,
       productCount: productRow?.count ?? 0,
+      marginPct: profitSummary.marginPct,
+      grossProfit: profitSummary.grossProfit,
+      costedRevenuePct:
+        totalRevenue > 0 ? profitSummary.costedRevenue / totalRevenue : null,
     };
+  },
+);
+
+export type ProfitSummary = {
+  grossProfit: number;
+  costedRevenue: number;
+  totalRevenue: number;
+  marginPct: number | null;
+};
+
+export const getProfitSummary = cache(
+  async (datasetId: string, range: RangeBounds): Promise<ProfitSummary> => {
+    const [row] = await db
+      .select({
+        grossProfit: sql<number>`coalesce(sum(${sales.revenue} - ${sales.quantity} * ${products.cost}), 0)::float`,
+        costedRevenue: sql<number>`coalesce(sum(${sales.revenue}) filter (where ${products.cost} is not null), 0)::float`,
+        totalRevenue: sql<number>`coalesce(sum(${sales.revenue}), 0)::float`,
+      })
+      .from(sales)
+      .innerJoin(products, eq(sales.productId, products.id))
+      .where(
+        and(
+          eq(sales.datasetId, datasetId),
+          ...dateConditions(sales.saleDate, range),
+        ),
+      );
+
+    const grossProfit = row?.grossProfit ?? 0;
+    const costedRevenue = row?.costedRevenue ?? 0;
+
+    return {
+      grossProfit,
+      costedRevenue,
+      totalRevenue: row?.totalRevenue ?? 0,
+      marginPct: costedRevenue > 0 ? grossProfit / costedRevenue : null,
+    };
+  },
+);
+
+export type TopProductByProfit = {
+  productId: string;
+  name: string;
+  sku: string;
+  profit: number;
+};
+
+export const getTopProductsByProfit = cache(
+  async (
+    datasetId: string,
+    range: RangeBounds,
+    limit = 10,
+  ): Promise<TopProductByProfit[]> => {
+    const rows = await db
+      .select({
+        productId: sales.productId,
+        name: products.name,
+        sku: products.sku,
+        profit: sql<number>`coalesce(sum(${sales.revenue} - ${sales.quantity} * ${products.cost}), 0)::float`,
+      })
+      .from(sales)
+      .innerJoin(products, eq(sales.productId, products.id))
+      .where(
+        and(
+          eq(sales.datasetId, datasetId),
+          ...dateConditions(sales.saleDate, range),
+          sql`${products.cost} is not null`,
+        ),
+      )
+      .groupBy(sales.productId, products.name, products.sku)
+      .orderBy(
+        desc(sql`sum(${sales.revenue} - ${sales.quantity} * ${products.cost})`),
+      )
+      .limit(limit);
+
+    return rows;
   },
 );
 
