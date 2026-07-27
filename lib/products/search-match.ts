@@ -65,8 +65,16 @@ async function semanticMatchIds(datasetId: string, query: string) {
 export async function matchProductIdsForSearch(
   datasetId: string,
   query: string,
+  mode: "semantic" | "lexical" = "semantic",
 ) {
   const tokens = tokenize(query);
+
+  if (mode === "lexical") {
+    return {
+      productIds: await lexicalMatchIds(datasetId, tokens),
+      semanticError: undefined as string | undefined,
+    };
+  }
 
   const [lexicalIds, semanticResult] = await Promise.all([
     lexicalMatchIds(datasetId, tokens),

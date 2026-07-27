@@ -53,6 +53,7 @@ export type PagedProductsParams = {
   page?: number;
   category?: string;
   search?: string;
+  searchMode?: "semantic" | "lexical";
   sort?: "name" | "sku" | "category" | "price" | "stock";
   dir?: "asc" | "desc";
 };
@@ -94,7 +95,7 @@ async function pagedProductsSemantic(
 
   const [allProducts, match] = await Promise.all([
     listProducts(datasetId),
-    matchProductIdsForSearch(datasetId, query),
+    matchProductIdsForSearch(datasetId, query, params.searchMode ?? "semantic"),
   ]);
 
   const byId = new Map(allProducts.map((product) => [product.id, product]));

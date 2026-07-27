@@ -22,9 +22,8 @@ export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   const { datasetId } = await params;
-  const { page, category, search, sort, dir } = productsListParamsSchema.parse(
-    await searchParams,
-  );
+  const { page, category, search, searchMode, sort, dir } =
+    productsListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
   const [
@@ -34,7 +33,14 @@ export default async function ProductsPage({
     hasForecast,
     anyProducts,
   ] = await Promise.all([
-    pagedProducts(dataset.id, { page, category, search, sort, dir }),
+    pagedProducts(dataset.id, {
+      page,
+      category,
+      search,
+      searchMode,
+      sort,
+      dir,
+    }),
     listCategories(dataset.id),
     classifyProducts(dataset),
     hasAnyForecast(dataset.id),
@@ -76,7 +82,7 @@ export default async function ProductsPage({
           currentDir={dir}
           currentSort={sort}
           datasetId={dataset.id}
-          filters={{ category, search, sort, dir }}
+          filters={{ category, search, searchMode, sort, dir }}
           hasAnyProducts={anyProducts}
           page={currentPage}
           pageCount={pageCount}

@@ -1,8 +1,9 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, SparklesIcon } from "lucide-react";
 import { useState } from "react";
 import { DataTableFilter } from "@/components/data-table/data-table-filter";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { useQueryParams } from "@/hooks/use-query-params";
@@ -19,6 +20,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
   const { searchParams, isPending, updateParams } = useQueryParams();
 
   const category = searchParams.get("category") ?? ALL_CATEGORIES;
+  const isSemantic = searchParams.get("searchMode") !== "lexical";
   const [searchValue, setSearchValue] = useState(
     () => searchParams.get("search") ?? "",
   );
@@ -37,7 +39,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
       <div className="relative min-w-40 flex-1">
         <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
-          className="pl-7"
+          className="pr-8 pl-7"
           onChange={(event) => {
             setSearchValue(event.target.value);
             debouncedSearch(event.target.value);
@@ -45,6 +47,28 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
           placeholder="Search by name or SKU..."
           value={searchValue}
         />
+        <Button
+          aria-label={
+            isSemantic ? "Semantic search is on" : "Semantic search is off"
+          }
+          aria-pressed={isSemantic}
+          className={cn(
+            "absolute top-1 right-1.5 size-5",
+            isSemantic
+              ? "text-primary hover:text-primary"
+              : "text-muted-foreground",
+          )}
+          onClick={() =>
+            updateParams(
+              { searchMode: isSemantic ? "lexical" : undefined },
+              "push",
+            )
+          }
+          size="icon"
+          variant="ghost"
+        >
+          <SparklesIcon className="size-3.5" />
+        </Button>
       </div>
       <DataTableFilter
         onValueChange={(value) =>

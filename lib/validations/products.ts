@@ -115,6 +115,7 @@ export const productsListParamsSchema = z.object({
     z.string().trim().max(60).optional(),
   ),
   search: searchParam,
+  searchMode: z.enum(["semantic", "lexical"]).catch("semantic"),
   sort: sortParam(PRODUCTS_SORT_FIELDS, "name"),
   dir: dirParam("asc"),
 });
