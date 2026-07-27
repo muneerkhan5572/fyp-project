@@ -8,6 +8,7 @@ import { getOwnedDataset } from "@/lib/datasets/dal";
 import { db } from "@/lib/db";
 import { isUniqueViolation } from "@/lib/db/errors";
 import { trafficRecords } from "@/lib/db/schema";
+import { getProduct } from "@/lib/products/dal";
 import {
   type DeleteTrafficInput,
   deleteTrafficSchema,
@@ -41,6 +42,11 @@ export async function createTrafficRecord(
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
   }
 
+  const product = await getProduct(dataset.id, parsed.data.productId);
+  if (!product) {
+    return { fieldErrors: { productId: ["Select a product."] } };
+  }
+
   try {
     await db.insert(trafficRecords).values({
       datasetId: dataset.id,
@@ -72,6 +78,11 @@ export async function updateTrafficRecord(
   const parsed = updateTrafficSchema.safeParse(input);
   if (!parsed.success) {
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+
+  const product = await getProduct(dataset.id, parsed.data.productId);
+  if (!product) {
+    return { fieldErrors: { productId: ["Select a product."] } };
   }
 
   try {

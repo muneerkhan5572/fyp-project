@@ -8,6 +8,7 @@ import { getOwnedDataset } from "@/lib/datasets/dal";
 import { db } from "@/lib/db";
 import { isUniqueViolation } from "@/lib/db/errors";
 import { sales } from "@/lib/db/schema";
+import { getProduct } from "@/lib/products/dal";
 import {
   type DeleteSaleInput,
   deleteSaleSchema,
@@ -39,6 +40,11 @@ export async function createSale(
   const parsed = saleFormSchema.safeParse(input);
   if (!parsed.success) {
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+
+  const product = await getProduct(dataset.id, parsed.data.productId);
+  if (!product) {
+    return { fieldErrors: { productId: ["Select a product."] } };
   }
 
   try {
@@ -73,6 +79,11 @@ export async function updateSale(
   const parsed = updateSaleSchema.safeParse(input);
   if (!parsed.success) {
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
+  }
+
+  const product = await getProduct(dataset.id, parsed.data.productId);
+  if (!product) {
+    return { fieldErrors: { productId: ["Select a product."] } };
   }
 
   try {
