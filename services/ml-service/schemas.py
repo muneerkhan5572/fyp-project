@@ -43,3 +43,13 @@ class SearchProductInput(BaseModel):
 class SearchRequest(BaseModel):
     products: list[SearchProductInput]
     query: str
+
+
+class ClassifyProductInput(BaseModel):
+    sku: str
+    units_velocity: float = Field(alias="unitsVelocity")
+    revenue_velocity: float = Field(alias="revenueVelocity")
+
+
+class ClassifyRequest(BaseModel):
+    products: list[ClassifyProductInput]

@@ -3,8 +3,9 @@ from pydantic import ValidationError
 
 import config
 from auth import require_api_key
+from classification import classify_products
 from forecasting import generate_forecasts
-from schemas import ForecastRequest, SearchRequest
+from schemas import ClassifyRequest, ForecastRequest, SearchRequest
 from semantic_search import search_products
 
 app = Flask(__name__)
@@ -38,6 +39,18 @@ def search():
     results = search_products(
         [product.model_dump() for product in payload.products], payload.query
     )
+    return jsonify({"results": results})
+
+
+@app.post("/classify")
+@require_api_key
+def classify():
+    try:
+        payload = ClassifyRequest.model_validate(request.get_json(force=True, silent=False))
+    except ValidationError as error:
+        return jsonify({"error": "Invalid request.", "details": error.errors()}), 400
+
+    results = classify_products([product.model_dump() for product in payload.products])
     return jsonify({"results": results})
 
 

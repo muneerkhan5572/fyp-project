@@ -55,6 +55,7 @@ export default async function ProductDetailPage({
     historicalVelocity: 0,
     predictedVelocity: null,
     velocitySource: "historical" as const,
+    classificationSource: "rule" as const,
   };
 
   const stockRisk = await getStockRisk(dataset.id);
@@ -227,6 +228,7 @@ function ProductHeader({
     historicalVelocity: number;
     predictedVelocity: number | null;
     velocitySource: "forecast" | "historical";
+    classificationSource: "ml" | "rule";
   };
   stockRisk: StockRiskEntry | null;
   windowDays: number;
@@ -241,6 +243,9 @@ function ProductHeader({
         ) : null}
         <span>{currency.format(Number(product.price))}</span>
         <ClassificationBadge classification={classification.classification} />
+        {classification.classificationSource === "ml" ? (
+          <Badge variant="outline">ML-classified</Badge>
+        ) : null}
         <StockRiskBadge stockRisk={stockRisk} />
         {classification.velocitySource === "forecast" &&
         classification.predictedVelocity !== null ? (
