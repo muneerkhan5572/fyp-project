@@ -9,13 +9,11 @@ import { Button } from "@/components/ui/button";
 type GenerateForecastButtonProps = {
   datasetId: string;
   hasExistingForecast?: boolean;
-  size?: "sm" | "default";
 };
 
 export function GenerateForecastButton({
   datasetId,
   hasExistingForecast = false,
-  size = "sm",
 }: GenerateForecastButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -33,7 +31,7 @@ export function GenerateForecastButton({
   };
 
   return (
-    <Button disabled={isPending} onClick={handleClick} size={size}>
+    <Button disabled={isPending} onClick={handleClick}>
       {isPending
         ? "Generating..."
         : hasExistingForecast
