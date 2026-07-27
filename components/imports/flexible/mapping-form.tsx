@@ -41,6 +41,7 @@ const FIELD_LABELS: Record<FieldKey, string> = {
   name: "Name",
   sku: "SKU",
   category: "Category",
+  description: "Description",
   price: "Price",
   cost: "Cost",
   stock: "Stock",
@@ -256,6 +257,16 @@ export function MappingForm({
                     field={field}
                     headers={headers}
                     label="Category"
+                    sample={sampleAt(field.state.value, sampleRow)}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="fields.description">
+                {(field) => (
+                  <FieldMappingSelect
+                    field={field}
+                    headers={headers}
+                    label="Description"
                     sample={sampleAt(field.state.value, sampleRow)}
                   />
                 )}

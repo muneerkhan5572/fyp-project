@@ -17,6 +17,10 @@ import {
   TRAFFIC_REQUIRED_HEADERS,
   trafficRowSchema,
 } from "@/lib/imports/row-schemas";
+import {
+  buildProductEmbeddingText,
+  embedProductTexts,
+} from "@/lib/products/embedding";
 
 const BATCH_SIZE = 1000;
 const MAX_ERRORS = 500;
@@ -121,19 +125,37 @@ async function runProductsImport(
   });
 
   if (validRows.length > 0) {
+    const embeddings = await embedProductTexts(
+      validRows.map(({ data }) =>
+        buildProductEmbeddingText({
+          name: data.name,
+          category: data.category ?? null,
+          description: data.description ?? null,
+        }),
+      ),
+    );
+
     await db.transaction(async (tx) => {
-      for (const batch of chunk(validRows, BATCH_SIZE)) {
+      for (const batch of chunk(
+        validRows.map((row, index) => ({
+          ...row,
+          embedding: embeddings[index],
+        })),
+        BATCH_SIZE,
+      )) {
         await tx
           .insert(products)
           .values(
-            batch.map(({ data }) => ({
+            batch.map(({ data, embedding }) => ({
               datasetId,
               name: data.name,
               sku: data.sku,
               category: data.category ?? null,
+              description: data.description ?? null,
               price: data.price.toString(),
               cost: data.cost !== undefined ? data.cost.toString() : null,
               stock: data.stock ?? null,
+              embedding: embedding ?? null,
             })),
           )
           .onConflictDoUpdate({
@@ -141,9 +163,11 @@ async function runProductsImport(
             set: {
               name: sql`excluded.name`,
               category: sql`excluded.category`,
+              description: sql`excluded.description`,
               price: sql`excluded.price`,
               cost: sql`excluded.cost`,
               stock: sql`excluded.stock`,
+              embedding: sql`excluded.embedding`,
               updatedAt: sql`now()`,
             },
           });

@@ -9,6 +9,10 @@ import { db } from "@/lib/db";
 import { isUniqueViolation } from "@/lib/db/errors";
 import { products } from "@/lib/db/schema";
 import {
+  buildProductEmbeddingText,
+  embedProductText,
+} from "@/lib/products/embedding";
+import {
   type DeleteProductInput,
   deleteProductSchema,
   type ProductFormValues,
@@ -38,15 +42,25 @@ export async function createProduct(
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
   }
 
+  const embedding = await embedProductText(
+    buildProductEmbeddingText({
+      name: parsed.data.name,
+      category: parsed.data.category ?? null,
+      description: parsed.data.description ?? null,
+    }),
+  );
+
   try {
     await db.insert(products).values({
       datasetId: dataset.id,
       name: parsed.data.name,
       sku: parsed.data.sku,
       category: parsed.data.category ?? null,
+      description: parsed.data.description ?? null,
       price: parsed.data.price.toString(),
       cost: parsed.data.cost !== undefined ? parsed.data.cost.toString() : null,
       stock: parsed.data.stock ?? null,
+      embedding,
     });
   } catch (error) {
     if (isUniqueViolation(error)) {
@@ -76,6 +90,14 @@ export async function updateProduct(
     return { fieldErrors: z.flattenError(parsed.error).fieldErrors };
   }
 
+  const embedding = await embedProductText(
+    buildProductEmbeddingText({
+      name: parsed.data.name,
+      category: parsed.data.category ?? null,
+      description: parsed.data.description ?? null,
+    }),
+  );
+
   try {
     const [updated] = await db
       .update(products)
@@ -83,10 +105,12 @@ export async function updateProduct(
         name: parsed.data.name,
         sku: parsed.data.sku,
         category: parsed.data.category ?? null,
+        description: parsed.data.description ?? null,
         price: parsed.data.price.toString(),
         cost:
           parsed.data.cost !== undefined ? parsed.data.cost.toString() : null,
         stock: parsed.data.stock ?? null,
+        embedding,
       })
       .where(
         and(

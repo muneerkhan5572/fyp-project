@@ -10,15 +10,7 @@ import {
 import { normalizeDate } from "./normalize-date";
 
 const SYNONYMS: Record<FieldKey, string[]> = {
-  name: [
-    "name",
-    "product name",
-    "product",
-    "item",
-    "item name",
-    "title",
-    "description",
-  ],
+  name: ["name", "product name", "product", "item", "item name", "title"],
   sku: [
     "sku",
     "product id",
@@ -37,6 +29,13 @@ const SYNONYMS: Record<FieldKey, string[]> = {
     "segment",
     "product category",
     "group",
+  ],
+  description: [
+    "description",
+    "product description",
+    "details",
+    "summary",
+    "notes",
   ],
   price: [
     "price",

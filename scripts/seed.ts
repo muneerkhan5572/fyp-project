@@ -15,6 +15,33 @@ const DEMO_NAME = "Demo User";
 const DATASET_NAME = "Demo Store";
 
 const CATEGORIES = ["Apparel", "Kitchen", "Electronics", "Outdoors", "Toys"];
+const CATEGORY_DESCRIPTIONS: Record<string, string[]> = {
+  Apparel: [
+    "Everyday cotton wear designed for comfort and easy care.",
+    "Soft, breathable fabric ideal for casual and layered outfits.",
+    "Durable stitching built to hold up through frequent washing.",
+  ],
+  Kitchen: [
+    "Sturdy kitchenware for everyday cooking and food prep.",
+    "Dishwasher-safe cookware piece that's easy to clean and store.",
+    "Practical kitchen essential for home cooks who cook often.",
+  ],
+  Electronics: [
+    "Compact gadget with a rechargeable battery for daily use.",
+    "Reliable electronic accessory with plug-and-play setup.",
+    "Lightweight device built for home or office use.",
+  ],
+  Outdoors: [
+    "Weather-resistant gear made for hiking and camping trips.",
+    "Rugged outdoor equipment built to handle rough terrain.",
+    "Lightweight travel companion for outdoor adventures.",
+  ],
+  Toys: [
+    "Fun, safe plaything designed for hours of imaginative play.",
+    "Durable toy built to withstand active kids.",
+    "Colorful, engaging toy suited for younger children.",
+  ],
+};
 const PRODUCT_COUNT = 45;
 const DAYS = 365;
 const BATCH_SIZE = 1000;
@@ -83,6 +110,8 @@ async function seedProducts(datasetId: string) {
   const rows = Array.from({ length: PRODUCT_COUNT }, (_, i) => {
     const index = i + 1;
     const category = CATEGORIES[i % CATEGORIES.length];
+    const descriptions = CATEGORY_DESCRIPTIONS[category];
+    const description = descriptions[i % descriptions.length];
     const price = randomInt(500, 20000) / 100;
     const cost = Number((price * (randomInt(30, 70) / 100)).toFixed(2));
     return {
@@ -90,6 +119,7 @@ async function seedProducts(datasetId: string) {
       name: `${category} Item ${index}`,
       sku: `DEMO-${String(index).padStart(3, "0")}`,
       category,
+      description,
       price: price.toString(),
       cost: cost.toString(),
       stock: randomInt(0, 400),
@@ -105,6 +135,7 @@ async function seedProducts(datasetId: string) {
       set: {
         name: sql`excluded.name`,
         category: sql`excluded.category`,
+        description: sql`excluded.description`,
         price: sql`excluded.price`,
         cost: sql`excluded.cost`,
         stock: sql`excluded.stock`,

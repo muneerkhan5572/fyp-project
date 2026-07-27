@@ -12,6 +12,10 @@ import { parseRaw } from "@/lib/imports/parse-csv";
 import { productRowSchema, saleRowSchema } from "@/lib/imports/row-schemas";
 import type { RunImportResult } from "@/lib/imports/run-import";
 import { chunk, resolveSkuMap } from "@/lib/imports/run-import";
+import {
+  buildProductEmbeddingText,
+  embedProductTexts,
+} from "@/lib/products/embedding";
 import { applyMapping } from "./apply-mapping";
 import { buildSkuAssignments, normalizeProductName } from "./generate-sku";
 import type { ImportMapping } from "./mapping-schema";
@@ -147,18 +151,36 @@ export async function runFlexibleImport(
       const productBatchValues = Array.from(uniqueProducts.values());
       productsUpserted = productBatchValues.length;
 
-      for (const batch of chunk(productBatchValues, BATCH_SIZE)) {
+      const embeddings = await embedProductTexts(
+        productBatchValues.map((data) =>
+          buildProductEmbeddingText({
+            name: data.name,
+            category: data.category ?? null,
+            description: data.description ?? null,
+          }),
+        ),
+      );
+
+      for (const batch of chunk(
+        productBatchValues.map((data, index) => ({
+          data,
+          embedding: embeddings[index],
+        })),
+        BATCH_SIZE,
+      )) {
         await tx
           .insert(products)
           .values(
-            batch.map((data) => ({
+            batch.map(({ data, embedding }) => ({
               datasetId,
               name: data.name,
               sku: data.sku,
               category: data.category ?? null,
+              description: data.description ?? null,
               price: data.price.toString(),
               cost: data.cost !== undefined ? data.cost.toString() : null,
               stock: data.stock ?? null,
+              embedding: embedding ?? null,
             })),
           )
           .onConflictDoUpdate({
@@ -166,9 +188,11 @@ export async function runFlexibleImport(
             set: {
               name: sql`excluded.name`,
               category: sql`excluded.category`,
+              description: sql`excluded.description`,
               price: sql`excluded.price`,
               cost: sql`excluded.cost`,
               stock: sql`excluded.stock`,
+              embedding: sql`excluded.embedding`,
               updatedAt: sql`now()`,
             },
           });

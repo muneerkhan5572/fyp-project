@@ -34,15 +34,8 @@ class SkippedProduct(BaseModel):
     reason: str
 
 
-class SearchProductInput(BaseModel):
-    sku: str
-    name: str
-    category: str | None = None
-
-
-class SearchRequest(BaseModel):
-    products: list[SearchProductInput]
-    query: str
+class EmbedRequest(BaseModel):
+    texts: list[str]
 
 
 class ClassifyProductInput(BaseModel):

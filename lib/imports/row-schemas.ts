@@ -31,6 +31,14 @@ export const productRowSchema = z.object({
       .max(60, { error: "Category must be at most 60 characters long." })
       .optional(),
   ),
+  description: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .max(500, { error: "Description must be at most 500 characters long." })
+      .optional(),
+  ),
   price: z.preprocess(
     emptyToUndefined,
     z.coerce

@@ -35,6 +35,15 @@ const category = z.preprocess(
     .optional(),
 );
 
+const description = z.preprocess(
+  emptyToUndefined,
+  z
+    .string()
+    .trim()
+    .max(500, { error: "Description must be at most 500 characters long." })
+    .optional(),
+);
+
 const price = z.preprocess(
   emptyToUndefined,
   z.coerce
@@ -63,6 +72,7 @@ export const productFormSchema = z.object({
   name,
   sku,
   category,
+  description,
   price,
   cost,
   stock,
@@ -82,6 +92,7 @@ export type ProductFormValues = {
   name: string;
   sku: string;
   category: string;
+  description: string;
   price: string;
   cost: string;
   stock: string;
@@ -126,6 +137,9 @@ export const productFormClientSchema = z.object({
   category: z
     .string()
     .max(60, { error: "Category must be at most 60 characters long." }),
+  description: z
+    .string()
+    .max(500, { error: "Description must be at most 500 characters long." }),
   price: z
     .string()
     .refine((value) => value.trim() !== "", { error: "Price is required." })

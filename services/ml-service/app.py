@@ -5,8 +5,8 @@ import config
 from auth import require_api_key
 from classification import classify_products
 from forecasting import generate_forecasts
-from schemas import ClassifyRequest, ForecastRequest, SearchRequest
-from semantic_search import search_products
+from schemas import ClassifyRequest, EmbedRequest, ForecastRequest
+from semantic_search import embed_texts
 
 app = Flask(__name__)
 
@@ -28,18 +28,16 @@ def forecast():
     return jsonify(result)
 
 
-@app.post("/search")
+@app.post("/embed")
 @require_api_key
-def search():
+def embed():
     try:
-        payload = SearchRequest.model_validate(request.get_json(force=True, silent=False))
+        payload = EmbedRequest.model_validate(request.get_json(force=True, silent=False))
     except ValidationError as error:
         return jsonify({"error": "Invalid request.", "details": error.errors()}), 400
 
-    results = search_products(
-        [product.model_dump() for product in payload.products], payload.query
-    )
-    return jsonify({"results": results})
+    vectors = embed_texts(payload.texts)
+    return jsonify({"vectors": vectors})
 
 
 @app.post("/classify")

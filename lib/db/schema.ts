@@ -11,7 +11,10 @@ import {
   timestamp,
   unique,
   uuid,
+  vector,
 } from "drizzle-orm/pg-core";
+
+export const PRODUCT_EMBEDDING_DIMENSIONS = 384;
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -90,9 +93,13 @@ export const products = pgTable(
     name: text("name").notNull(),
     sku: text("sku").notNull(),
     category: text("category"),
+    description: text("description"),
     price: numeric("price", { precision: 12, scale: 2 }).notNull(),
     cost: numeric("cost", { precision: 12, scale: 2 }),
     stock: integer("stock"),
+    embedding: vector("embedding", {
+      dimensions: PRODUCT_EMBEDDING_DIMENSIONS,
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -104,6 +111,10 @@ export const products = pgTable(
   (table) => [
     unique("products_dataset_id_sku_unique").on(table.datasetId, table.sku),
     index("products_dataset_id_idx").on(table.datasetId),
+    index("products_embedding_idx").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops"),
+    ),
   ],
 );
 

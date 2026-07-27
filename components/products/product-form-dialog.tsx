@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { createProduct, updateProduct } from "@/app/actions/products";
 import { TextField } from "@/components/form/text-field";
 import { CategoryField } from "@/components/products/category-field";
+import { DescriptionField } from "@/components/products/description-field";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -46,6 +47,7 @@ export function ProductFormDialog({
       name: product?.name ?? "",
       sku: product?.sku ?? "",
       category: product?.category ?? "",
+      description: product?.description ?? "",
       price: toFormValue(product?.price ?? null),
       cost: toFormValue(product?.cost ?? null),
       stock:
@@ -127,6 +129,9 @@ export function ProductFormDialog({
               {(field) => (
                 <CategoryField categories={categories} field={field} />
               )}
+            </form.Field>
+            <form.Field name="description">
+              {(field) => <DescriptionField field={field} />}
             </form.Field>
             <div className="grid grid-cols-3 gap-2">
               <form.Field name="price">
