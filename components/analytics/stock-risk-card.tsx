@@ -33,7 +33,7 @@ export async function StockRiskCard({ datasetId }: { datasetId: string }) {
               >
                 <Link
                   className="truncate underline-offset-2 after:absolute after:inset-0 hover:underline"
-                  href={`/dashboard/${datasetId}/products/${entry.productId}`}
+                  href={`/dashboard/${datasetId}/products/${entry.productId}/restock`}
                 >
                   {entry.name}
                 </Link>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ClassificationBadge } from "@/components/analytics/classification-badge";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
@@ -82,6 +83,7 @@ export default async function ProductDetailPage({
           <ProductHeader
             classification={classification}
             product={product}
+            restockHref={`/dashboard/${dataset.id}/products/${product.id}/restock`}
             stockRisk={productStockRisk}
             windowDays={dataset.velocityWindowDays}
           />
@@ -138,6 +140,7 @@ export default async function ProductDetailPage({
         <ProductHeader
           classification={classification}
           product={product}
+          restockHref={`/dashboard/${dataset.id}/products/${product.id}/restock`}
           stockRisk={productStockRisk}
           windowDays={dataset.velocityWindowDays}
         />
@@ -214,6 +217,7 @@ function ProductHeader({
   product,
   classification,
   stockRisk,
+  restockHref,
   windowDays,
 }: {
   product: {
@@ -231,6 +235,7 @@ function ProductHeader({
     classificationSource: "ml" | "rule";
   };
   stockRisk: StockRiskEntry | null;
+  restockHref: string;
   windowDays: number;
 }) {
   return (
@@ -247,6 +252,14 @@ function ProductHeader({
           <Badge variant="outline">ML-classified</Badge>
         ) : null}
         <StockRiskBadge stockRisk={stockRisk} />
+        {stockRisk && stockRisk.status !== "sufficient" ? (
+          <Link
+            className="underline-offset-2 hover:underline"
+            href={restockHref}
+          >
+            Restock details
+          </Link>
+        ) : null}
         {classification.velocitySource === "forecast" &&
         classification.predictedVelocity !== null ? (
           <span className="text-xs">
