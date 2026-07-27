@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangleIcon } from "lucide-react";
+import { BackButton } from "@/components/dashboard/back-button";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -15,12 +16,16 @@ type ErrorStateProps = {
   title?: string;
   description?: string;
   onRetry: () => void;
+  backHref?: string;
+  backLabel?: string;
 };
 
 export function ErrorState({
   title = "Something went wrong",
   description = "An unexpected error occurred. Try again, or go back if the problem persists.",
   onRetry,
+  backHref,
+  backLabel = "Back",
 }: ErrorStateProps) {
   return (
     <Empty className="mt-10">
@@ -33,6 +38,9 @@ export function ErrorState({
       </EmptyHeader>
       <EmptyContent>
         <Button onClick={onRetry}>Try again</Button>
+        {backHref ? (
+          <BackButton href={backHref} label={backLabel} variant="outline" />
+        ) : null}
       </EmptyContent>
     </Empty>
   );

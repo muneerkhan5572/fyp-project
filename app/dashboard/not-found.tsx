@@ -1,7 +1,6 @@
 import { FolderXIcon } from "lucide-react";
-import Link from "next/link";
+import { BackButton } from "@/components/dashboard/back-button";
 import { DashboardTopbar } from "@/components/dashboard/dashboard-topbar";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -28,9 +27,7 @@ export default function DatasetNotFound() {
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Link className={buttonVariants()} href={DATASETS_HREF}>
-              Go to your datasets
-            </Link>
+            <BackButton href={DATASETS_HREF} label="Back to datasets" />
           </EmptyContent>
         </Empty>
       </main>

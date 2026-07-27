@@ -1,16 +1,15 @@
 "use client";
 
 import {
-  ArrowLeftIcon,
   PackageIcon,
   ReceiptIcon,
   ScanIcon,
   TrendingUpIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { BackButton } from "@/components/dashboard/back-button";
 import { UploadFlexibleCard } from "@/components/imports/flexible/upload-flexible-card";
 import { UploadCard } from "@/components/imports/upload-card";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type ImportChoice = "products" | "sales" | "traffic" | "any-csv";
@@ -83,14 +82,12 @@ export function ImportWizard({ datasetId }: ImportWizardProps) {
 
   return (
     <div>
-      <Button
-        className="mb-3 px-0"
+      <BackButton
+        className="mb-3"
+        label={CHOICE_LABEL[selected]}
         onClick={() => setSelected(null)}
         variant="ghost"
-      >
-        <ArrowLeftIcon />
-        {CHOICE_LABEL[selected]}
-      </Button>
+      />
       {selected === "any-csv" ? (
         <UploadFlexibleCard datasetId={datasetId} />
       ) : (
