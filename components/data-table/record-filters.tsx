@@ -54,12 +54,12 @@ export function RecordFilters({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center gap-2 transition-opacity",
+        "flex min-w-0 flex-1 flex-row flex-wrap items-center gap-2 transition-opacity",
         isPending && "opacity-60",
       )}
     >
       {search ? (
-        <div className="relative w-full max-w-xs">
+        <div className="relative min-w-40 flex-1">
           <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-7"
