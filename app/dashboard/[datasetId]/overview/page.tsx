@@ -1,13 +1,13 @@
 import { LayoutDashboardIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AttentionSummary } from "@/components/analytics/attention-summary";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { KpiCardsSection } from "@/components/analytics/kpi-cards";
-import { MoversCard } from "@/components/analytics/movers-card";
-import { StockRiskCard } from "@/components/analytics/stock-risk-card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -32,8 +32,17 @@ function KpiRowSkeleton() {
   );
 }
 
-function ChartCardSkeleton() {
-  return <Skeleton className="h-72 w-full" />;
+function AttentionSummarySkeleton() {
+  return (
+    <Card>
+      <CardContent className="flex flex-wrap items-center gap-3">
+        {["pill-1", "pill-2", "pill-3", "pill-4"].map((id) => (
+          <Skeleton className="h-8 w-36 rounded-full" key={id} />
+        ))}
+        <Skeleton className="h-4 w-72 basis-full" />
+      </CardContent>
+    </Card>
+  );
 }
 
 export default async function DatasetOverviewPage({
@@ -109,12 +118,9 @@ export default async function DatasetOverviewPage({
         </Suspense>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Suspense fallback={<ChartCardSkeleton />}>
-          <MoversCard dataset={dataset} kind="high-demand" />
-        </Suspense>
-        <Suspense fallback={<ChartCardSkeleton />}>
-          <StockRiskCard datasetId={dataset.id} />
+      <div className="mt-6">
+        <Suspense fallback={<AttentionSummarySkeleton />}>
+          <AttentionSummary dataset={dataset} />
         </Suspense>
       </div>
     </div>

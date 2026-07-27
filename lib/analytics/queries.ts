@@ -319,6 +319,69 @@ export const getCategoryBreakdown = cache(
   },
 );
 
+export type ConversionTrendPoint = {
+  date: string;
+  units: number;
+  views: number;
+  rate: number | null;
+};
+
+export const getConversionTrend = cache(
+  async (
+    datasetId: string,
+    range: RangeBounds,
+  ): Promise<ConversionTrendPoint[]> => {
+    const [salesRows, trafficRows] = await Promise.all([
+      db
+        .select({
+          date: sales.saleDate,
+          units: sql<number>`coalesce(sum(${sales.quantity}), 0)::int`,
+        })
+        .from(sales)
+        .where(
+          and(
+            eq(sales.datasetId, datasetId),
+            ...dateConditions(sales.saleDate, range),
+          ),
+        )
+        .groupBy(sales.saleDate),
+      db
+        .select({
+          date: trafficRecords.trafficDate,
+          views: sql<number>`coalesce(sum(${trafficRecords.views}), 0)::int`,
+        })
+        .from(trafficRecords)
+        .where(
+          and(
+            eq(trafficRecords.datasetId, datasetId),
+            ...dateConditions(trafficRecords.trafficDate, range),
+          ),
+        )
+        .groupBy(trafficRecords.trafficDate),
+    ]);
+
+    const unitsByDate = new Map(salesRows.map((row) => [row.date, row.units]));
+    const viewsByDate = new Map(
+      trafficRows.map((row) => [row.date, row.views]),
+    );
+
+    const toPoint = (date: string): ConversionTrendPoint => {
+      const units = unitsByDate.get(date) ?? 0;
+      const views = viewsByDate.get(date) ?? 0;
+      return { date, units, views, rate: views > 0 ? units / views : null };
+    };
+
+    if (!range.from) {
+      const dates = Array.from(
+        new Set([...unitsByDate.keys(), ...viewsByDate.keys()]),
+      ).sort();
+      return dates.map(toPoint);
+    }
+
+    return listDatesBetween(range.from, range.to).map(toPoint);
+  },
+);
+
 export type ProductSeriesPoint = {
   date: string;
   units: number;

@@ -1,7 +1,13 @@
 import { LayoutDashboardIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import {
+  ChartCardSkeleton,
+  ListCardSkeleton,
+  TabbedChartCardSkeleton,
+} from "@/components/analytics/card-skeletons";
 import { CategoryBreakdownCard } from "@/components/analytics/category-breakdown-card";
+import { ConversionRateCard } from "@/components/analytics/conversion-rate-card";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { MoversCard } from "@/components/analytics/movers-card";
 import { ProfitByProductCard } from "@/components/analytics/profit-by-product-card";
@@ -20,15 +26,10 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getDatasetDateBounds } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
 import { requireDataset } from "@/lib/datasets/dal";
 import { datasetSectionHref } from "@/lib/datasets/routes";
-
-function ChartCardSkeleton() {
-  return <Skeleton className="h-72 w-full" />;
-}
 
 export default async function DatasetAnalyticsPage({
   params,
@@ -100,45 +101,54 @@ export default async function DatasetAnalyticsPage({
       <div className="mt-6">
         <h2 className="font-semibold text-lg">Sales & traffic</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Suspense fallback={<ChartCardSkeleton />}>
+          <Suspense fallback={<TabbedChartCardSkeleton />}>
             <RevenueUnitsCard datasetId={dataset.id} range={range} />
           </Suspense>
           <Suspense fallback={<ChartCardSkeleton />}>
             <TrafficCard datasetId={dataset.id} range={range} />
           </Suspense>
+          <div className="lg:col-span-2">
+            <Suspense fallback={<ChartCardSkeleton />}>
+              <ConversionRateCard datasetId={dataset.id} range={range} />
+            </Suspense>
+          </div>
         </div>
       </div>
 
       <div className="mt-8">
         <h2 className="font-semibold text-lg">Product performance</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Suspense fallback={<ChartCardSkeleton />}>
+          <Suspense fallback={<TabbedChartCardSkeleton />}>
             <TopProductsCard datasetId={dataset.id} range={range} />
           </Suspense>
           <Suspense fallback={<ChartCardSkeleton />}>
             <CategoryBreakdownCard datasetId={dataset.id} range={range} />
           </Suspense>
-          <Suspense fallback={<ChartCardSkeleton />}>
-            <div className="lg:col-span-2">
+          <div className="lg:col-span-2">
+            <Suspense fallback={<ChartCardSkeleton />}>
               <ProfitByProductCard datasetId={dataset.id} range={range} />
-            </div>
+            </Suspense>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8" id="demand-classification">
+        <h2 className="font-semibold text-lg">Demand classification</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Suspense fallback={<ListCardSkeleton />}>
+            <MoversCard dataset={dataset} kind="high-demand" />
+          </Suspense>
+          <Suspense fallback={<ListCardSkeleton />}>
+            <MoversCard dataset={dataset} kind="slow-mover" />
           </Suspense>
         </div>
       </div>
 
-      <div className="mt-8">
-        <h2 className="font-semibold text-lg">Inventory & risk</h2>
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Suspense fallback={<ChartCardSkeleton />}>
-            <MoversCard dataset={dataset} kind="high-demand" />
-          </Suspense>
-          <Suspense fallback={<ChartCardSkeleton />}>
-            <MoversCard dataset={dataset} kind="slow-mover" />
-          </Suspense>
-          <Suspense fallback={<ChartCardSkeleton />}>
-            <div className="lg:col-span-2">
-              <StockRiskCard datasetId={dataset.id} />
-            </div>
+      <div className="mt-8" id="stock-risk">
+        <h2 className="font-semibold text-lg">Stock risk</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4">
+          <Suspense fallback={<ListCardSkeleton />}>
+            <StockRiskCard datasetId={dataset.id} />
           </Suspense>
         </div>
       </div>
