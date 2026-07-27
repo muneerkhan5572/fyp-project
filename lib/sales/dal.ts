@@ -1,11 +1,10 @@
 import "server-only";
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { cache } from "react";
-import { runSemanticSearch } from "@/lib/analytics/semantic-search";
 import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products, sales } from "@/lib/db/schema";
-import { listProducts } from "@/lib/products/dal";
+import { matchProductIdsForSearch } from "@/lib/products/search-match";
 
 export type PagedSalesParams = {
   page?: number;
@@ -23,41 +22,6 @@ const SALES_SORT_COLUMNS = {
   quantity: sales.quantity,
   revenue: sales.revenue,
 };
-
-async function matchProductIdsForSearch(datasetId: string, query: string) {
-  const allProducts = await listProducts(datasetId);
-  const needle = query.toLowerCase();
-  const substringMatches = allProducts.filter(
-    (product) =>
-      product.name.toLowerCase().includes(needle) ||
-      product.sku.toLowerCase().includes(needle),
-  );
-
-  const result = await runSemanticSearch(allProducts, query);
-  if (!result.success) {
-    return {
-      productIds: substringMatches.map((product) => product.id),
-      semanticError: result.error as string | undefined,
-    };
-  }
-
-  const bySku = new Map(allProducts.map((product) => [product.sku, product]));
-  const ranked = result.skus
-    .map((sku) => bySku.get(sku))
-    .filter((product): product is (typeof allProducts)[number] =>
-      Boolean(product),
-    );
-  const seen = new Set(ranked.map((product) => product.id));
-  const matched = [
-    ...ranked,
-    ...substringMatches.filter((product) => !seen.has(product.id)),
-  ];
-
-  return {
-    productIds: matched.map((product) => product.id),
-    semanticError: undefined as string | undefined,
-  };
-}
 
 export const pagedSales = cache(
   async (datasetId: string, params: PagedSalesParams = {}) => {

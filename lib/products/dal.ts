@@ -1,11 +1,11 @@
 import "server-only";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { cache } from "react";
-import { runSemanticSearch } from "@/lib/analytics/semantic-search";
 import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products } from "@/lib/db/schema";
 import { UNCATEGORIZED_CATEGORY } from "@/lib/products/constants";
+import { matchProductIdsForSearch } from "@/lib/products/search-match";
 
 export const listProducts = cache((datasetId: string) => {
   return db
@@ -74,17 +74,6 @@ function matchesCategory<T extends { category: string | null }>(
     : product.category === category;
 }
 
-function matchesSearchText<T extends { name: string; sku: string }>(
-  product: T,
-  query: string,
-) {
-  const needle = query.toLowerCase();
-  return (
-    product.name.toLowerCase().includes(needle) ||
-    product.sku.toLowerCase().includes(needle)
-  );
-}
-
 async function pagedProductsSemantic(
   datasetId: string,
   params: PagedProductsParams,
@@ -103,32 +92,18 @@ async function pagedProductsSemantic(
     };
   }
 
-  const allProducts = await listProducts(datasetId);
-  const result = await runSemanticSearch(allProducts, query);
+  const [allProducts, match] = await Promise.all([
+    listProducts(datasetId),
+    matchProductIdsForSearch(datasetId, query),
+  ]);
 
-  const substringMatches = allProducts.filter((product) =>
-    matchesSearchText(product, query),
-  );
-
-  let matched: typeof allProducts;
-  let semanticError: string | undefined;
-
-  if (result.success) {
-    const bySku = new Map(allProducts.map((product) => [product.sku, product]));
-    const ranked = result.skus
-      .map((sku) => bySku.get(sku))
-      .filter((product): product is (typeof allProducts)[number] =>
-        Boolean(product),
-      );
-    const seen = new Set(ranked.map((product) => product.id));
-    matched = [
-      ...ranked,
-      ...substringMatches.filter((product) => !seen.has(product.id)),
-    ];
-  } else {
-    matched = substringMatches;
-    semanticError = result.error;
-  }
+  const byId = new Map(allProducts.map((product) => [product.id, product]));
+  const matched = match.productIds
+    .map((id) => byId.get(id))
+    .filter((product): product is (typeof allProducts)[number] =>
+      Boolean(product),
+    );
+  const semanticError = match.semanticError;
 
   let filtered = matched;
   if (params.category) {

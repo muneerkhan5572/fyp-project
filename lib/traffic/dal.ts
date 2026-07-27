@@ -1,9 +1,10 @@
 import "server-only";
-import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { cache } from "react";
 import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products, trafficRecords } from "@/lib/db/schema";
+import { matchProductIdsForSearch } from "@/lib/products/search-match";
 
 export type PagedTrafficParams = {
   page?: number;
@@ -24,6 +25,7 @@ const TRAFFIC_SORT_COLUMNS = {
 export const pagedTraffic = cache(
   async (datasetId: string, params: PagedTrafficParams = {}) => {
     const page = Math.max(1, params.page ?? 1);
+    const query = params.search?.trim();
 
     const conditions = [eq(trafficRecords.datasetId, datasetId)];
     if (params.productId) {
@@ -35,16 +37,25 @@ export const pagedTraffic = cache(
     if (params.to) {
       conditions.push(lte(trafficRecords.trafficDate, params.to));
     }
-    if (params.search) {
-      const pattern = `%${params.search}%`;
-      const searchCondition = or(
-        ilike(products.name, pattern),
-        ilike(products.sku, pattern),
-      );
-      if (searchCondition) {
-        conditions.push(searchCondition);
+
+    let semanticError: string | undefined;
+
+    if (query) {
+      const match = await matchProductIdsForSearch(datasetId, query);
+      semanticError = match.semanticError;
+      if (match.productIds.length === 0) {
+        return {
+          rows: [],
+          total: 0,
+          page: 1,
+          pageSize: TABLE_PAGE_SIZE,
+          pageCount: 1,
+          semanticError,
+        };
       }
+      conditions.push(inArray(trafficRecords.productId, match.productIds));
     }
+
     const where = and(...conditions);
 
     const sortColumn = TRAFFIC_SORT_COLUMNS[params.sort ?? "trafficDate"];
@@ -81,6 +92,7 @@ export const pagedTraffic = cache(
       page,
       pageSize: TABLE_PAGE_SIZE,
       pageCount: Math.max(1, Math.ceil(total / TABLE_PAGE_SIZE)),
+      semanticError,
     };
   },
 );

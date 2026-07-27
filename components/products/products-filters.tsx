@@ -42,7 +42,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
             setSearchValue(event.target.value);
             debouncedSearch(event.target.value);
           }}
-          placeholder="Search by name, SKU, or description..."
+          placeholder="Search by name or SKU..."
           value={searchValue}
         />
       </div>

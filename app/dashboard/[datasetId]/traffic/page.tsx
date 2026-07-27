@@ -20,20 +20,23 @@ export default async function TrafficPage({
     trafficListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
-  const [{ rows, total, page: currentPage, pageCount }, products, anyTraffic] =
-    await Promise.all([
-      pagedTraffic(dataset.id, {
-        page,
-        productId,
-        from,
-        to,
-        search,
-        sort,
-        dir,
-      }),
-      listProducts(dataset.id),
-      hasAnyTraffic(dataset.id),
-    ]);
+  const [
+    { rows, total, page: currentPage, pageCount, semanticError },
+    products,
+    anyTraffic,
+  ] = await Promise.all([
+    pagedTraffic(dataset.id, {
+      page,
+      productId,
+      from,
+      to,
+      search,
+      sort,
+      dir,
+    }),
+    listProducts(dataset.id),
+    hasAnyTraffic(dataset.id),
+  ]);
 
   return (
     <div>
@@ -60,6 +63,7 @@ export default async function TrafficPage({
           pathname={`/dashboard/${dataset.id}/traffic`}
           products={products}
           rows={rows}
+          semanticError={semanticError}
           total={total}
         />
       </div>

@@ -135,7 +135,7 @@ export function SalesTable({
           dateRange
           products={products}
           search
-          searchPlaceholder="Search by product name, SKU, or description..."
+          searchPlaceholder="Search by product name or SKU..."
         />
         <Button
           disabled={products.length === 0}

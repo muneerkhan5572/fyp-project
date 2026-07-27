@@ -56,6 +56,7 @@ type TrafficTableProps = {
   hasAnyRecords: boolean;
   currentSort: string;
   currentDir: "asc" | "desc";
+  semanticError?: string;
 };
 
 export function TrafficTable({
@@ -70,6 +71,7 @@ export function TrafficTable({
   hasAnyRecords,
   currentSort,
   currentDir,
+  semanticError,
 }: TrafficTableProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<TrafficRow | null>(null);
@@ -137,6 +139,10 @@ export function TrafficTable({
           Add traffic record
         </Button>
       </div>
+
+      {semanticError ? (
+        <p className="mt-4 text-destructive text-sm">{semanticError}</p>
+      ) : null}
 
       <div className="mt-4 overflow-x-auto rounded-md border">
         <Table>
