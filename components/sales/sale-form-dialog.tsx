@@ -94,6 +94,7 @@ export function SaleFormDialog({
     >
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();

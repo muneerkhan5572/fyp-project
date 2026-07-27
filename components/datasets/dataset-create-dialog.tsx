@@ -55,6 +55,7 @@ export function DatasetCreateDialog({
       )}
       <DialogContent showCloseButton={!forceOpen}>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();

@@ -188,6 +188,7 @@ export function MappingForm({
 
       <form
         className="mt-4"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           event.stopPropagation();

@@ -38,6 +38,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();

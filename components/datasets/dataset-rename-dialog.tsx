@@ -56,6 +56,7 @@ export function DatasetRenameDialog({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();

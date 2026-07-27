@@ -49,6 +49,7 @@ export function ForgotPasswordForm({
       </CardHeader>
       <CardContent>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();

@@ -43,6 +43,7 @@ export function ResetPasswordForm({
       </CardHeader>
       <CardContent>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();
