@@ -1,5 +1,5 @@
 import { PackageXIcon } from "lucide-react";
-import { DatasetSectionLink } from "@/components/dashboard/dataset-section-link";
+import { DatasetSectionLink } from "@/components/datasets/dataset-section-link";
 import {
   Empty,
   EmptyContent,

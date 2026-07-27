@@ -36,9 +36,6 @@ export const dateString = z
   })
   .refine(isRealCalendarDate, { error: "Enter a valid calendar date." });
 
-// Query-param schemas deliberately use `.catch(default)` per field instead of
-// throwing on parse failure — a stale or hand-edited URL must fall back to a
-// sane default, not 500 the page.
 export const pageParam = z.coerce.number().int().positive().catch(1);
 
 export function sortParam<const T extends readonly [string, ...string[]]>(

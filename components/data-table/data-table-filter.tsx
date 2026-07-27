@@ -24,10 +24,6 @@ type DataTableFilterProps = {
   "aria-invalid"?: boolean;
 };
 
-// A single-select dropdown filter. Deliberately built on DropdownMenu
-// rather than the shadcn Select component — clicking a Select item
-// reproducibly crashes the page with this project's @base-ui/react
-// version (see feedback_base-ui-shadcn-nextjs16-gotchas memory).
 export function DataTableFilter({
   value,
   onValueChange,

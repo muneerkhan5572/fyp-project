@@ -14,7 +14,7 @@ is entirely non-AI CRUD, CSV import, and analytics.
 - shadcn/ui (built on Base UI, not Radix — see Gotchas)
 - Postgres + Drizzle ORM
 - Zod (validation/schemas)
-- TanStack Table, TanStack Form
+- TanStack Form
 - Recharts (via shadcn `chart`), papaparse (CSV import)
 
 # Package Manager

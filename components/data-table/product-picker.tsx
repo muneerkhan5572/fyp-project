@@ -23,13 +23,6 @@ type ProductPickerProps = {
   id?: string;
 };
 
-// A typeahead-enabled product filter: a search Input composed inside the
-// existing DropdownMenu popup rather than a shadcn Select/Combobox, which
-// crashes on item click with this project's Base UI version. All keydown
-// events except Escape are stopped from bubbling to the menu — Base UI's
-// Menu has its own built-in character-key typeahead that jumps focus to a
-// matching item, which would otherwise steal every keystroke from this
-// input before it ever reaches the value.
 export function ProductPicker({
   value,
   onValueChange,

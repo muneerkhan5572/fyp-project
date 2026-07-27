@@ -1,6 +1,6 @@
 import { GenerateForecastButton } from "@/components/analytics/generate-forecast-button";
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { ProductsTable } from "@/components/products/products-table";
 import { classifyProducts } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";

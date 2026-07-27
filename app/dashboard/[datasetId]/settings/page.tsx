@@ -1,5 +1,5 @@
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { DatasetSettingsGeneral } from "@/components/datasets/dataset-settings-general";
 import { DatasetThresholdsForm } from "@/components/datasets/dataset-thresholds-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

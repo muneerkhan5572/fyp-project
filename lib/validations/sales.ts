@@ -42,9 +42,6 @@ export const deleteSaleSchema = z.object({
 
 export type DeleteSaleInput = z.infer<typeof deleteSaleSchema>;
 
-// Raw shape the form holds and submits (every field a string). Server
-// actions re-validate/coerce with saleFormSchema — see productFormSchema
-// in lib/validations/products.ts for why these can't share a type.
 export type SaleFormValues = {
   productId: string;
   saleDate: string;

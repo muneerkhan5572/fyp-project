@@ -1,12 +1,12 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { DataTableFilter } from "@/components/data-table/data-table-filter";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { UNCATEGORIZED_CATEGORY } from "@/lib/products/constants";
 import { cn } from "@/lib/utils";
 
@@ -17,40 +17,13 @@ type ProductsFiltersProps = {
 };
 
 export function ProductsFilters({ categories }: ProductsFiltersProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+  const { searchParams, isPending, updateParams } = useQueryParams();
 
   const mode = searchParams.get("mode") === "semantic" ? "semantic" : "exact";
   const category = searchParams.get("category") ?? ALL_CATEGORIES;
   const [searchValue, setSearchValue] = useState(
     () => searchParams.get("search") ?? "",
   );
-
-  function updateParams(
-    next: Record<string, string | undefined>,
-    mode: "push" | "replace",
-  ) {
-    const params = new URLSearchParams(searchParams.toString());
-    for (const [key, value] of Object.entries(next)) {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    }
-    params.delete("page");
-    const query = params.toString();
-    const href = query ? `${pathname}?${query}` : pathname;
-    startTransition(() => {
-      if (mode === "push") {
-        router.push(href, { scroll: false });
-      } else {
-        router.replace(href, { scroll: false });
-      }
-    });
-  }
 
   const debouncedSearch = useDebouncedCallback((value: string) => {
     updateParams({ search: value || undefined }, "replace");

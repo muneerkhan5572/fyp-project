@@ -1,18 +1,7 @@
 "use client";
 
-import { useTransition } from "react";
-import { toast } from "sonner";
 import { deleteTrafficRecord } from "@/app/actions/traffic";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { RecordDeleteDialog } from "@/components/shared/record-delete-dialog";
 
 type TrafficDeleteDialogProps = {
   datasetId: string;
@@ -27,40 +16,15 @@ export function TrafficDeleteDialog({
   open,
   onOpenChange,
 }: TrafficDeleteDialogProps) {
-  const [isPending, startTransition] = useTransition();
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      const result = await deleteTrafficRecord(datasetId, { id: record.id });
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(result?.success ?? "Traffic record deleted.");
-      onOpenChange(false);
-    });
-  };
-
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete this traffic record?</AlertDialogTitle>
-          <AlertDialogDescription>
-            {record.productName} on {record.trafficDate}. This cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            onClick={handleDelete}
-            variant="destructive"
-          >
-            {isPending ? "Deleting..." : "Delete record"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <RecordDeleteDialog
+      confirmLabel="Delete record"
+      defaultSuccessMessage="Traffic record deleted."
+      description={`${record.productName} on ${record.trafficDate}. This cannot be undone.`}
+      onDelete={() => deleteTrafficRecord(datasetId, { id: record.id })}
+      onOpenChange={onOpenChange}
+      open={open}
+      title="Delete this traffic record?"
+    />
   );
 }

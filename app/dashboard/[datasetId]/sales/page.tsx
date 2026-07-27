@@ -1,5 +1,5 @@
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";

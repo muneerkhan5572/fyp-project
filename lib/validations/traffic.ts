@@ -34,10 +34,6 @@ export const deleteTrafficSchema = z.object({
 
 export type DeleteTrafficInput = z.infer<typeof deleteTrafficSchema>;
 
-// Raw shape the form holds and submits (every field a string). Server
-// actions re-validate/coerce with trafficFormSchema — see
-// productFormSchema in lib/validations/products.ts for why these can't
-// share a type.
 export type TrafficFormValues = {
   productId: string;
   trafficDate: string;

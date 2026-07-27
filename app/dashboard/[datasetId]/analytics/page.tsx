@@ -9,8 +9,8 @@ import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
 import { StockRiskCard } from "@/components/analytics/stock-risk-card";
 import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,

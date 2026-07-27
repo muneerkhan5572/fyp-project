@@ -5,8 +5,8 @@ import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { KpiCardsSection } from "@/components/analytics/kpi-cards";
 import { MoversCard } from "@/components/analytics/movers-card";
 import { StockRiskCard } from "@/components/analytics/stock-risk-card";
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,

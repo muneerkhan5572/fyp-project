@@ -6,7 +6,7 @@ import { ProductForecastCard } from "@/components/analytics/product-forecast-car
 import { StockRiskBadge } from "@/components/analytics/stock-risk-badge";
 import { RevenueUnitsChart } from "@/components/charts/revenue-units-chart";
 import { TrafficTrendChart } from "@/components/charts/traffic-trend-chart";
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

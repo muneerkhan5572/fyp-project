@@ -1,8 +1,7 @@
 "use client";
 
 import { SearchIcon, XIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import {
   ALL_PRODUCTS,
   type ProductOption,
@@ -11,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { cn } from "@/lib/utils";
 
 type RecordFiltersProps = {
@@ -20,21 +20,14 @@ type RecordFiltersProps = {
   dateRange?: boolean;
 };
 
-// Shared replacement for the (formerly byte-identical) sales-filters.tsx /
-// traffic-filters.tsx. Debounced search commits via router.replace (no
-// history entry per keystroke); discrete changes (product/date) commit via
-// router.push. Both run inside useTransition so the filter bar can dim
-// itself while a navigation is pending.
 export function RecordFilters({
   products,
   search = false,
   searchPlaceholder = "Search...",
   dateRange = false,
 }: RecordFiltersProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+  const { searchParams, isPending, updateParams, clearParams } =
+    useQueryParams();
 
   const productId = searchParams.get("productId") ?? ALL_PRODUCTS;
   const from = searchParams.get("from") ?? "";
@@ -49,37 +42,13 @@ export function RecordFilters({
     Boolean(to) ||
     Boolean(searchValue);
 
-  function updateParams(
-    next: Record<string, string | undefined>,
-    mode: "push" | "replace",
-  ) {
-    const params = new URLSearchParams(searchParams.toString());
-    for (const [key, value] of Object.entries(next)) {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    }
-    params.delete("page");
-    const query = params.toString();
-    const href = query ? `${pathname}?${query}` : pathname;
-    startTransition(() => {
-      if (mode === "push") {
-        router.push(href, { scroll: false });
-      } else {
-        router.replace(href, { scroll: false });
-      }
-    });
-  }
-
   const debouncedSearch = useDebouncedCallback((value: string) => {
     updateParams({ search: value || undefined }, "replace");
   }, 350);
 
   function handleClear() {
     setSearchValue("");
-    startTransition(() => router.push(pathname, { scroll: false }));
+    clearParams();
   }
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 
 import { SearchIcon, XIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { DataTableFilter } from "@/components/data-table/data-table-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { useQueryParams } from "@/hooks/use-query-params";
 import type { Import } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
@@ -26,10 +26,8 @@ const STATUS_LABELS: Record<Import["status"], string> = {
 };
 
 export function ImportHistoryFilters() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+  const { searchParams, isPending, updateParams, clearParams } =
+    useQueryParams();
 
   const type = searchParams.get("type") ?? ALL_TYPES;
   const status = searchParams.get("status") ?? ALL_STATUSES;
@@ -40,37 +38,13 @@ export function ImportHistoryFilters() {
   const hasFilters =
     type !== ALL_TYPES || status !== ALL_STATUSES || Boolean(searchValue);
 
-  function updateParams(
-    next: Record<string, string | undefined>,
-    mode: "push" | "replace",
-  ) {
-    const params = new URLSearchParams(searchParams.toString());
-    for (const [key, value] of Object.entries(next)) {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    }
-    params.delete("page");
-    const query = params.toString();
-    const href = query ? `${pathname}?${query}` : pathname;
-    startTransition(() => {
-      if (mode === "push") {
-        router.push(href, { scroll: false });
-      } else {
-        router.replace(href, { scroll: false });
-      }
-    });
-  }
-
   const debouncedSearch = useDebouncedCallback((value: string) => {
     updateParams({ search: value || undefined }, "replace");
   }, 350);
 
   function handleClear() {
     setSearchValue("");
-    startTransition(() => router.push(pathname, { scroll: false }));
+    clearParams();
   }
 
   return (

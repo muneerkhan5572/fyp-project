@@ -1,18 +1,7 @@
 "use client";
 
-import { useTransition } from "react";
-import { toast } from "sonner";
 import { deleteProduct } from "@/app/actions/products";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { RecordDeleteDialog } from "@/components/shared/record-delete-dialog";
 import type { Product } from "@/lib/db/schema";
 
 type ProductDeleteDialogProps = {
@@ -28,41 +17,15 @@ export function ProductDeleteDialog({
   open,
   onOpenChange,
 }: ProductDeleteDialogProps) {
-  const [isPending, startTransition] = useTransition();
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      const result = await deleteProduct(datasetId, { id: product.id });
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(result?.success ?? "Product deleted.");
-      onOpenChange(false);
-    });
-  };
-
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete “{product.name}”?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This also removes any sales and traffic records linked to this
-            product. This cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            onClick={handleDelete}
-            variant="destructive"
-          >
-            {isPending ? "Deleting..." : "Delete product"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <RecordDeleteDialog
+      confirmLabel="Delete product"
+      defaultSuccessMessage="Product deleted."
+      description="This also removes any sales and traffic records linked to this product. This cannot be undone."
+      onDelete={() => deleteProduct(datasetId, { id: product.id })}
+      onOpenChange={onOpenChange}
+      open={open}
+      title={`Delete “${product.name}”?`}
+    />
   );
 }

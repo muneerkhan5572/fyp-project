@@ -75,11 +75,6 @@ function matchesCategory<T extends { category: string | null }>(
     : product.category === category;
 }
 
-// Semantic mode is fully server-driven: the ranked SKU list is recomputed on
-// every request (page/category change included) rather than cached
-// client-side, then sliced for the current page — same paged shape as exact
-// mode. Bounded by catalog size (one ML call over the whole dataset), so this
-// is acceptable cost for a per-request re-rank.
 async function pagedProductsSemantic(
   datasetId: string,
   params: PagedProductsParams,

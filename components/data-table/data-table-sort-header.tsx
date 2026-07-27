@@ -13,10 +13,6 @@ type DataTableSortHeaderProps = {
   className?: string;
 };
 
-// Link-based sortable header for server-driven tables — a pure server
-// re-render on click, no client sort state to go stale (sidesteps the React
-// Compiler memoization gotcha that DataTable/DataTablePagination work around
-// via derived-primitive props and header keying).
 export function DataTableSortHeader({
   label,
   field,

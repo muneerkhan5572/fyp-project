@@ -11,9 +11,6 @@ type SearchableProduct = {
   category: string | null;
 };
 
-// Takes the product corpus as a parameter rather than fetching it itself —
-// callers (lib/products/dal.ts) already have it loaded, and fetching here
-// would create a dal.ts <-> semantic-search.ts import cycle.
 export async function runSemanticSearch(
   products: SearchableProduct[],
   query: string,

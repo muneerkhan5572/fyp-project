@@ -78,11 +78,6 @@ export const deleteProductSchema = z.object({
 
 export type DeleteProductInput = z.infer<typeof deleteProductSchema>;
 
-// The raw shape the form actually holds and submits (every field is a
-// string, since inputs are uncontrolled-by-type). Server actions accept
-// this and re-validate/coerce with productFormSchema — that schema's own
-// z.infer is the *parsed* output (price: number, etc.), not what callers
-// send, so it can't be reused as the action parameter type.
 export type ProductFormValues = {
   name: string;
   sku: string;
@@ -114,9 +109,6 @@ export const productsListParamsSchema = z.object({
   dir: dirParam("asc"),
 });
 
-// Client-side validator matching the raw string shape above, used for
-// inline TanStack Form field errors as the user types. The server action
-// re-validates with productFormSchema regardless — this is UX only.
 export const productFormClientSchema = z.object({
   name: z
     .string()

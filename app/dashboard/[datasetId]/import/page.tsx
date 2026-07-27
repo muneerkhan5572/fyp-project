@@ -1,10 +1,10 @@
 import { FileWarningIcon } from "lucide-react";
 import { Suspense } from "react";
-import { DatasetBreadcrumbs } from "@/components/dashboard/dataset-breadcrumbs";
-import { DatasetSectionLink } from "@/components/dashboard/dataset-section-link";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { PageHeaderSkeleton } from "@/components/dashboard/page-header-skeleton";
 import { SetupChecklist } from "@/components/dashboard/setup-checklist";
+import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
+import { DatasetSectionLink } from "@/components/datasets/dataset-section-link";
 import { ImportHistoryTable } from "@/components/imports/import-history-table";
 import { ImportReport } from "@/components/imports/import-report";
 import { ImportWizard } from "@/components/imports/import-wizard";
