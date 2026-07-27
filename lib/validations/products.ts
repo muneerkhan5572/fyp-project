@@ -103,7 +103,6 @@ export const productsListParamsSchema = z.object({
     emptyToUndefined,
     z.string().trim().max(60).optional(),
   ),
-  mode: z.enum(["exact", "semantic"]).catch("exact"),
   search: searchParam,
   sort: sortParam(PRODUCTS_SORT_FIELDS, "name"),
   dir: dirParam("asc"),

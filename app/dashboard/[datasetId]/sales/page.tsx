@@ -20,12 +20,15 @@ export default async function SalesPage({
     salesListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
-  const [{ rows, total, page: currentPage, pageCount }, products, anySales] =
-    await Promise.all([
-      pagedSales(dataset.id, { page, productId, from, to, search, sort, dir }),
-      listProducts(dataset.id),
-      hasAnySales(dataset.id),
-    ]);
+  const [
+    { rows, total, page: currentPage, pageCount, semanticError },
+    products,
+    anySales,
+  ] = await Promise.all([
+    pagedSales(dataset.id, { page, productId, from, to, search, sort, dir }),
+    listProducts(dataset.id),
+    hasAnySales(dataset.id),
+  ]);
 
   return (
     <div>
@@ -52,6 +55,7 @@ export default async function SalesPage({
           pathname={`/dashboard/${dataset.id}/sales`}
           products={products}
           rows={rows}
+          semanticError={semanticError}
           total={total}
         />
       </div>

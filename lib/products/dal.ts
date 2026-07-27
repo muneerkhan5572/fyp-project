@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { cache } from "react";
 import { runSemanticSearch } from "@/lib/analytics/semantic-search";
 import { TABLE_PAGE_SIZE } from "@/lib/constants";
@@ -52,7 +52,6 @@ export const hasAnyProducts = cache(async (datasetId: string) => {
 export type PagedProductsParams = {
   page?: number;
   category?: string;
-  mode?: "exact" | "semantic";
   search?: string;
   sort?: "name" | "sku" | "category" | "price" | "stock";
   dir?: "asc" | "desc";
@@ -75,6 +74,17 @@ function matchesCategory<T extends { category: string | null }>(
     : product.category === category;
 }
 
+function matchesSearchText<T extends { name: string; sku: string }>(
+  product: T,
+  query: string,
+) {
+  const needle = query.toLowerCase();
+  return (
+    product.name.toLowerCase().includes(needle) ||
+    product.sku.toLowerCase().includes(needle)
+  );
+}
+
 async function pagedProductsSemantic(
   datasetId: string,
   params: PagedProductsParams,
@@ -95,41 +105,48 @@ async function pagedProductsSemantic(
 
   const allProducts = await listProducts(datasetId);
   const result = await runSemanticSearch(allProducts, query);
-  if (!result.success) {
-    return {
-      rows: [],
-      total: 0,
-      page: 1,
-      pageSize: TABLE_PAGE_SIZE,
-      pageCount: 1,
-      semanticError: result.error,
-    };
+
+  const substringMatches = allProducts.filter((product) =>
+    matchesSearchText(product, query),
+  );
+
+  let matched: typeof allProducts;
+  let semanticError: string | undefined;
+
+  if (result.success) {
+    const bySku = new Map(allProducts.map((product) => [product.sku, product]));
+    const ranked = result.skus
+      .map((sku) => bySku.get(sku))
+      .filter((product): product is (typeof allProducts)[number] =>
+        Boolean(product),
+      );
+    const seen = new Set(ranked.map((product) => product.id));
+    matched = [
+      ...ranked,
+      ...substringMatches.filter((product) => !seen.has(product.id)),
+    ];
+  } else {
+    matched = substringMatches;
+    semanticError = result.error;
   }
 
-  const bySku = new Map(allProducts.map((product) => [product.sku, product]));
-
-  let ranked = result.skus
-    .map((sku) => bySku.get(sku))
-    .filter((product): product is (typeof allProducts)[number] =>
-      Boolean(product),
-    );
-
+  let filtered = matched;
   if (params.category) {
-    ranked = ranked.filter((product) =>
+    filtered = filtered.filter((product) =>
       matchesCategory(product, params.category as string),
     );
   }
 
-  const total = ranked.length;
+  const total = filtered.length;
   const start = (page - 1) * TABLE_PAGE_SIZE;
 
   return {
-    rows: ranked.slice(start, start + TABLE_PAGE_SIZE),
+    rows: filtered.slice(start, start + TABLE_PAGE_SIZE),
     total,
     page,
     pageSize: TABLE_PAGE_SIZE,
     pageCount: Math.max(1, Math.ceil(total / TABLE_PAGE_SIZE)),
-    semanticError: undefined as string | undefined,
+    semanticError,
   };
 }
 
@@ -144,16 +161,6 @@ async function pagedProductsExact(
     conditions.push(isNull(products.category));
   } else if (params.category) {
     conditions.push(eq(products.category, params.category));
-  }
-  if (params.search) {
-    const pattern = `%${params.search}%`;
-    const searchCondition = or(
-      ilike(products.name, pattern),
-      ilike(products.sku, pattern),
-    );
-    if (searchCondition) {
-      conditions.push(searchCondition);
-    }
   }
   const where = and(...conditions);
 
@@ -188,7 +195,7 @@ async function pagedProductsExact(
 
 export const pagedProducts = cache(
   (datasetId: string, params: PagedProductsParams = {}) => {
-    return params.mode === "semantic"
+    return params.search?.trim()
       ? pagedProductsSemantic(datasetId, params)
       : pagedProductsExact(datasetId, params);
   },

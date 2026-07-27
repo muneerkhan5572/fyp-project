@@ -62,6 +62,7 @@ type SalesTableProps = {
   hasAnyRecords: boolean;
   currentSort: string;
   currentDir: "asc" | "desc";
+  semanticError?: string;
 };
 
 export function SalesTable({
@@ -76,6 +77,7 @@ export function SalesTable({
   hasAnyRecords,
   currentSort,
   currentDir,
+  semanticError,
 }: SalesTableProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<SaleRow | null>(null);
@@ -133,7 +135,7 @@ export function SalesTable({
           dateRange
           products={products}
           search
-          searchPlaceholder="Search product name or SKU..."
+          searchPlaceholder="Search by product name, SKU, or description..."
         />
         <Button
           disabled={products.length === 0}
@@ -143,6 +145,10 @@ export function SalesTable({
           Add sale
         </Button>
       </div>
+
+      {semanticError ? (
+        <p className="mt-4 text-destructive text-sm">{semanticError}</p>
+      ) : null}
 
       <div className="mt-4 overflow-x-auto rounded-md border">
         <Table>

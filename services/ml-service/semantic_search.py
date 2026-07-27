@@ -4,6 +4,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 _MODEL_NAME = "all-MiniLM-L6-v2"
+MIN_RELEVANCE_SCORE = 0.35
 _model: SentenceTransformer | None = None
 
 
@@ -35,4 +36,8 @@ def search_products(products: list[dict], query: str) -> list[dict]:
         key=lambda pair: pair[1],
         reverse=True,
     )
-    return [{"sku": sku, "score": float(score)} for sku, score in ranked]
+    return [
+        {"sku": sku, "score": float(score)}
+        for sku, score in ranked
+        if score >= MIN_RELEVANCE_SCORE
+    ]

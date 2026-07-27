@@ -1,9 +1,11 @@
 import "server-only";
-import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { cache } from "react";
+import { runSemanticSearch } from "@/lib/analytics/semantic-search";
 import { TABLE_PAGE_SIZE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { products, sales } from "@/lib/db/schema";
+import { listProducts } from "@/lib/products/dal";
 
 export type PagedSalesParams = {
   page?: number;
@@ -22,9 +24,45 @@ const SALES_SORT_COLUMNS = {
   revenue: sales.revenue,
 };
 
+async function matchProductIdsForSearch(datasetId: string, query: string) {
+  const allProducts = await listProducts(datasetId);
+  const needle = query.toLowerCase();
+  const substringMatches = allProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(needle) ||
+      product.sku.toLowerCase().includes(needle),
+  );
+
+  const result = await runSemanticSearch(allProducts, query);
+  if (!result.success) {
+    return {
+      productIds: substringMatches.map((product) => product.id),
+      semanticError: result.error as string | undefined,
+    };
+  }
+
+  const bySku = new Map(allProducts.map((product) => [product.sku, product]));
+  const ranked = result.skus
+    .map((sku) => bySku.get(sku))
+    .filter((product): product is (typeof allProducts)[number] =>
+      Boolean(product),
+    );
+  const seen = new Set(ranked.map((product) => product.id));
+  const matched = [
+    ...ranked,
+    ...substringMatches.filter((product) => !seen.has(product.id)),
+  ];
+
+  return {
+    productIds: matched.map((product) => product.id),
+    semanticError: undefined as string | undefined,
+  };
+}
+
 export const pagedSales = cache(
   async (datasetId: string, params: PagedSalesParams = {}) => {
     const page = Math.max(1, params.page ?? 1);
+    const query = params.search?.trim();
 
     const conditions = [eq(sales.datasetId, datasetId)];
     if (params.productId) {
@@ -36,16 +74,25 @@ export const pagedSales = cache(
     if (params.to) {
       conditions.push(lte(sales.saleDate, params.to));
     }
-    if (params.search) {
-      const pattern = `%${params.search}%`;
-      const searchCondition = or(
-        ilike(products.name, pattern),
-        ilike(products.sku, pattern),
-      );
-      if (searchCondition) {
-        conditions.push(searchCondition);
+
+    let semanticError: string | undefined;
+
+    if (query) {
+      const match = await matchProductIdsForSearch(datasetId, query);
+      semanticError = match.semanticError;
+      if (match.productIds.length === 0) {
+        return {
+          rows: [],
+          total: 0,
+          page: 1,
+          pageSize: TABLE_PAGE_SIZE,
+          pageCount: 1,
+          semanticError,
+        };
       }
+      conditions.push(inArray(sales.productId, match.productIds));
     }
+
     const where = and(...conditions);
 
     const sortColumn = SALES_SORT_COLUMNS[params.sort ?? "saleDate"];
@@ -83,6 +130,7 @@ export const pagedSales = cache(
       page,
       pageSize: TABLE_PAGE_SIZE,
       pageCount: Math.max(1, Math.ceil(total / TABLE_PAGE_SIZE)),
+      semanticError,
     };
   },
 );

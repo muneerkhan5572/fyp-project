@@ -58,7 +58,6 @@ type ProductsTableProps = {
   hasAnyProducts: boolean;
   currentSort: string;
   currentDir: "asc" | "desc";
-  mode: "exact" | "semantic";
   semanticError?: string;
 };
 
@@ -74,9 +73,9 @@ export function ProductsTable({
   hasAnyProducts,
   currentSort,
   currentDir,
-  mode,
   semanticError,
 }: ProductsTableProps) {
+  const isSearching = Boolean(filters.search);
   const [createOpen, setCreateOpen] = useState(false);
   const [editingProduct, setEditingProduct] =
     useState<ProductWithClassification | null>(null);
@@ -122,7 +121,7 @@ export function ProductsTable({
   }
 
   function sortHeader(field: string, label: string, className?: string) {
-    if (mode === "semantic") {
+    if (isSearching) {
       return <span className={className}>{label}</span>;
     }
     return (
