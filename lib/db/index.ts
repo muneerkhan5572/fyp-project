@@ -7,7 +7,8 @@ const globalForDb = globalThis as unknown as {
   client: ReturnType<typeof postgres> | undefined;
 };
 
-const client = globalForDb.client ?? postgres(env.DATABASE_URL);
+const client =
+  globalForDb.client ?? postgres(env.DATABASE_URL, { prepare: false });
 
 if (env.NODE_ENV !== "production") {
   globalForDb.client = client;
