@@ -1,6 +1,7 @@
 import { GenerateForecastButton } from "@/components/analytics/generate-forecast-button";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
+import { InlineImportCard } from "@/components/imports/inline-import-card";
 import { ProductsTable } from "@/components/products/products-table";
 import { classifyProducts } from "@/lib/analytics/velocity";
 import { requireDataset } from "@/lib/datasets/dal";
@@ -76,6 +77,7 @@ export default async function ProductsPage({
         description="Manage this dataset's product catalog."
         title="Products"
       />
+      <InlineImportCard datasetId={dataset.id} type="products" />
       <div>
         <ProductsTable
           categories={categories}

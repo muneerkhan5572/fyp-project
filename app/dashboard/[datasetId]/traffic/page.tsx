@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
+import { InlineImportCard } from "@/components/imports/inline-import-card";
 import { TrafficTable } from "@/components/traffic/traffic-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -51,6 +52,7 @@ export default async function TrafficPage({
         description="Record and review daily page views for this dataset's products."
         title="Traffic"
       />
+      <InlineImportCard datasetId={dataset.id} type="traffic" />
       <div className="mt-6">
         <TrafficTable
           currentDir={dir}

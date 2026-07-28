@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
+import { InlineImportCard } from "@/components/imports/inline-import-card";
 import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProducts } from "@/lib/products/dal";
@@ -43,6 +44,7 @@ export default async function SalesPage({
         description="Record and review daily sales for this dataset's products."
         title="Sales"
       />
+      <InlineImportCard datasetId={dataset.id} type="sales" />
       <div>
         <SalesTable
           currentDir={dir}
