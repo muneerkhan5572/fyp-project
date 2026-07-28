@@ -28,11 +28,11 @@ export function DatasetCard({ dataset }: { dataset: Dataset }) {
 
   return (
     <>
-      <Card className="relative transition-shadow hover:shadow-md">
+      <Card className="relative transition-colors hover:border-primary/50 hover:bg-primary/5 hover:shadow-md">
         <CardHeader>
           <CardTitle>
             <Link
-              className="after:absolute after:inset-0 hover:underline"
+              className="after:absolute after:inset-0"
               href={datasetHref(dataset.id)}
             >
               {dataset.name}
