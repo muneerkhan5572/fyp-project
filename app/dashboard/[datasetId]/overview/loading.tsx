@@ -1,8 +1,9 @@
 import { PageHeaderSkeleton } from "@/components/dashboard/page-header-skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const KPI_IDS = ["kpi-1", "kpi-2", "kpi-3", "kpi-4", "kpi-5", "kpi-6"];
-const CHART_IDS = ["chart-1", "chart-2"];
+const ATTENTION_PILL_IDS = ["pill-1", "pill-2", "pill-3", "pill-4"];
 
 export default function DatasetOverviewLoading() {
   return (
@@ -19,10 +20,15 @@ export default function DatasetOverviewLoading() {
         ))}
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {CHART_IDS.map((id) => (
-          <Skeleton className="h-72 w-full" key={id} />
-        ))}
+      <div className="mt-6">
+        <Card>
+          <CardContent className="flex flex-wrap items-center gap-3">
+            {ATTENTION_PILL_IDS.map((id) => (
+              <Skeleton className="h-8 w-36 rounded-full" key={id} />
+            ))}
+            <Skeleton className="h-4 w-72 basis-full" />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
