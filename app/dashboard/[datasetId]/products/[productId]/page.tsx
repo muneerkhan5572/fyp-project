@@ -4,6 +4,8 @@ import { ClassificationBadge } from "@/components/analytics/classification-badge
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { NoDataMessage } from "@/components/analytics/no-data-message";
 import { ProductForecastCard } from "@/components/analytics/product-forecast-card";
+import { SentimentBadge } from "@/components/analytics/sentiment-badge";
+import { SentimentCard } from "@/components/analytics/sentiment-card";
 import { StockRiskBadge } from "@/components/analytics/stock-risk-badge";
 import { RevenueUnitsChart } from "@/components/charts/revenue-units-chart";
 import { TrafficTrendChart } from "@/components/charts/traffic-trend-chart";
@@ -15,6 +17,10 @@ import {
   getProductSeries,
 } from "@/lib/analytics/queries";
 import { parseRangePreset, resolveDateRange } from "@/lib/analytics/range";
+import {
+  getProductSentiment,
+  type ProductSentimentSummary,
+} from "@/lib/analytics/sentiment";
 import { getStockRisk, type StockRiskEntry } from "@/lib/analytics/stock-risk";
 import {
   classifyProducts,
@@ -63,6 +69,8 @@ export default async function ProductDetailPage({
   const productStockRisk =
     stockRisk.find((entry) => entry.productId === product.id) ?? null;
 
+  const sentiment = await getProductSentiment(product.id);
+
   const { maxDate } = await getProductDateBounds(product.id);
 
   if (!maxDate) {
@@ -84,12 +92,23 @@ export default async function ProductDetailPage({
             classification={classification}
             product={product}
             restockHref={`/dashboard/${dataset.id}/products/${product.id}/restock`}
+            sentiment={sentiment}
             stockRisk={productStockRisk}
             windowDays={dataset.velocityWindowDays}
           />
         </div>
         <div className="mt-10">
           <NoDataMessage message="No sales recorded for this product yet." />
+        </div>
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer sentiment</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SentimentCard sentiment={sentiment} />
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -141,6 +160,7 @@ export default async function ProductDetailPage({
           classification={classification}
           product={product}
           restockHref={`/dashboard/${dataset.id}/products/${product.id}/restock`}
+          sentiment={sentiment}
           stockRisk={productStockRisk}
           windowDays={dataset.velocityWindowDays}
         />
@@ -209,6 +229,17 @@ export default async function ProductDetailPage({
           </CardContent>
         </Card>
       </div>
+
+      <div className="mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Customer sentiment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SentimentCard sentiment={sentiment} />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -216,6 +247,7 @@ export default async function ProductDetailPage({
 function ProductHeader({
   product,
   classification,
+  sentiment,
   stockRisk,
   restockHref,
   windowDays,
@@ -234,6 +266,7 @@ function ProductHeader({
     velocitySource: "forecast" | "historical";
     classificationSource: "ml" | "rule";
   };
+  sentiment: ProductSentimentSummary;
   stockRisk: StockRiskEntry | null;
   restockHref: string;
   windowDays: number;
@@ -252,6 +285,7 @@ function ProductHeader({
           <Badge variant="outline">ML-classified</Badge>
         ) : null}
         <StockRiskBadge stockRisk={stockRisk} />
+        <SentimentBadge sentiment={sentiment} />
         {stockRisk && stockRisk.status !== "sufficient" ? (
           <Link
             className="underline-offset-2 hover:underline"

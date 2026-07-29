@@ -46,3 +46,7 @@ class ClassifyProductInput(BaseModel):
 
 class ClassifyRequest(BaseModel):
     products: list[ClassifyProductInput]
+
+
+class SentimentRequest(BaseModel):
+    texts: list[str]

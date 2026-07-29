@@ -3,7 +3,7 @@ import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { InlineImportCard } from "@/components/imports/inline-import-card";
 import { SalesTable } from "@/components/sales/sales-table";
 import { requireDataset } from "@/lib/datasets/dal";
-import { listProducts } from "@/lib/products/dal";
+import { listProductOptions } from "@/lib/products/dal";
 import { hasAnySales, pagedSales } from "@/lib/sales/dal";
 import { salesListParamsSchema } from "@/lib/validations/sales";
 
@@ -27,7 +27,7 @@ export default async function SalesPage({
     anySales,
   ] = await Promise.all([
     pagedSales(dataset.id, { page, productId, from, to, search, sort, dir }),
-    listProducts(dataset.id),
+    listProductOptions(dataset.id),
     hasAnySales(dataset.id),
   ]);
 

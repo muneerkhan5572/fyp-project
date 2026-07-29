@@ -15,6 +15,14 @@ export const listProducts = cache((datasetId: string) => {
     .orderBy(asc(products.name));
 });
 
+export const listProductOptions = cache((datasetId: string) => {
+  return db
+    .select({ id: products.id, name: products.name, sku: products.sku })
+    .from(products)
+    .where(eq(products.datasetId, datasetId))
+    .orderBy(asc(products.name));
+});
+
 export const getProduct = cache(
   async (datasetId: string, productId: string) => {
     const [product] = await db

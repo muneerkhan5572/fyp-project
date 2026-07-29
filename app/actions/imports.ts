@@ -9,7 +9,7 @@ import { importMappingSchema } from "@/lib/imports/flexible/mapping-schema";
 import { runFlexibleImport } from "@/lib/imports/flexible/run-flexible-import";
 import { type ImportType, runImport } from "@/lib/imports/run-import";
 
-const importTypeSchema = z.enum(["products", "sales", "traffic"], {
+const importTypeSchema = z.enum(["products", "sales", "traffic", "reviews"], {
   error: "Invalid import type.",
 });
 

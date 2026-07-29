@@ -11,10 +11,6 @@ function tokenize(query: string) {
   return query.toLowerCase().split(/\W+/).filter(Boolean);
 }
 
-function hasNumericToken(tokens: string[]) {
-  return tokens.some((token) => /^\d+$/.test(token));
-}
-
 function toPgVectorLiteral(vector: number[]) {
   return `[${vector.join(",")}]`;
 }
@@ -87,14 +83,20 @@ export async function matchProductIdsForSearch(
       })),
   ]);
 
-  let ranked = semanticResult.ids;
-  if (hasNumericToken(tokens)) {
-    const lexicalSet = new Set(lexicalIds);
-    ranked = ranked.filter((id) => lexicalSet.has(id));
+  if (lexicalIds.length === 0) {
+    return {
+      productIds: semanticResult.ids,
+      semanticError: semanticResult.error,
+    };
   }
 
-  const seen = new Set(ranked);
-  const matched = [...ranked, ...lexicalIds.filter((id) => !seen.has(id))];
+  const lexicalSet = new Set(lexicalIds);
+  const semanticRanked = semanticResult.ids.filter((id) => lexicalSet.has(id));
+  const seen = new Set(semanticRanked);
+  const matched = [
+    ...semanticRanked,
+    ...lexicalIds.filter((id) => !seen.has(id)),
+  ];
 
   return {
     productIds: matched,

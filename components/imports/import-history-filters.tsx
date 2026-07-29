@@ -17,6 +17,7 @@ const TYPE_LABELS: Record<Import["type"], string> = {
   products: "Products",
   sales: "Sales",
   traffic: "Traffic",
+  reviews: "Reviews",
 };
 
 const STATUS_LABELS: Record<Import["status"], string> = {

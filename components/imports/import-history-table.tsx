@@ -27,6 +27,7 @@ const TYPE_LABELS: Record<Import["type"], string> = {
   products: "Products",
   sales: "Sales",
   traffic: "Traffic",
+  reviews: "Reviews",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {

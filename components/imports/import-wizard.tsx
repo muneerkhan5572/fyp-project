@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  MessageSquareIcon,
   PackageIcon,
   ReceiptIcon,
   ScanIcon,
@@ -24,6 +25,7 @@ const EXACT_CHOICES: {
   { value: "products", hint: "Upload product file", icon: PackageIcon },
   { value: "sales", hint: "Upload sales file", icon: ReceiptIcon },
   { value: "traffic", hint: "Upload traffic file", icon: TrendingUpIcon },
+  { value: "reviews", hint: "Upload reviews file", icon: MessageSquareIcon },
 ];
 
 type ImportWizardProps = {

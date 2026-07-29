@@ -62,31 +62,35 @@ export const pagedSales = cache(
     const sortColumn = SALES_SORT_COLUMNS[params.sort ?? "saleDate"];
     const direction = params.dir === "asc" ? asc : desc;
 
-    const [rows, countRows] = await Promise.all([
-      db
-        .select({
-          id: sales.id,
-          productId: sales.productId,
-          productName: products.name,
-          productSku: products.sku,
-          saleDate: sales.saleDate,
-          quantity: sales.quantity,
-          revenue: sales.revenue,
-        })
-        .from(sales)
-        .innerJoin(products, eq(sales.productId, products.id))
-        .where(where)
-        .orderBy(direction(sortColumn), asc(products.name))
-        .limit(TABLE_PAGE_SIZE)
-        .offset((page - 1) * TABLE_PAGE_SIZE),
-      db
+    const pagedRows = await db
+      .select({
+        id: sales.id,
+        productId: sales.productId,
+        productName: products.name,
+        productSku: products.sku,
+        saleDate: sales.saleDate,
+        quantity: sales.quantity,
+        revenue: sales.revenue,
+        total: sql<number>`count(*) over ()::int`,
+      })
+      .from(sales)
+      .innerJoin(products, eq(sales.productId, products.id))
+      .where(where)
+      .orderBy(direction(sortColumn), asc(products.name))
+      .limit(TABLE_PAGE_SIZE)
+      .offset((page - 1) * TABLE_PAGE_SIZE);
+
+    let total = pagedRows[0]?.total ?? 0;
+    if (pagedRows.length === 0 && page > 1) {
+      const [countRow] = await db
         .select({ count: sql<number>`count(*)::int` })
         .from(sales)
         .innerJoin(products, eq(sales.productId, products.id))
-        .where(where),
-    ]);
+        .where(where);
+      total = countRow?.count ?? 0;
+    }
 
-    const total = countRows[0]?.count ?? 0;
+    const rows = pagedRows.map(({ total: _total, ...row }) => row);
 
     return {
       rows,

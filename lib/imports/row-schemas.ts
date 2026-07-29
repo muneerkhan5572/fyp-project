@@ -15,6 +15,7 @@ const skuField = z
 export const PRODUCT_REQUIRED_HEADERS = ["name", "sku", "price"];
 export const SALE_REQUIRED_HEADERS = ["sku", "date", "quantity", "revenue"];
 export const TRAFFIC_REQUIRED_HEADERS = ["sku", "date", "views"];
+export const REVIEW_REQUIRED_HEADERS = ["sku", "review_text"];
 
 export const productRowSchema = z.object({
   name: z
@@ -88,3 +89,24 @@ export const trafficRowSchema = z.object({
 });
 
 export type TrafficRow = z.infer<typeof trafficRowSchema>;
+
+export const reviewRowSchema = z.object({
+  sku: skuField,
+  review_date: z.preprocess(emptyToUndefined, dateString.optional()),
+  review_text: z
+    .string()
+    .trim()
+    .min(1, { error: "Review text is required." })
+    .max(2000, { error: "Review text must be at most 2000 characters long." }),
+  rating: z.preprocess(
+    emptyToUndefined,
+    z.coerce
+      .number({ error: "Rating must be a number." })
+      .int({ error: "Rating must be a whole number." })
+      .min(1, { error: "Rating must be between 1 and 5." })
+      .max(5, { error: "Rating must be between 1 and 5." })
+      .optional(),
+  ),
+});
+
+export type ReviewRow = z.infer<typeof reviewRowSchema>;

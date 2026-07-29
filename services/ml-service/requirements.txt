@@ -5,3 +5,4 @@ numpy==2.2.2
 pydantic==2.10.5
 python-dotenv==1.0.1
 sentence-transformers==3.4.1
+transformers==4.57.6

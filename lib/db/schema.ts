@@ -100,6 +100,8 @@ export const products = pgTable(
     embedding: vector("embedding", {
       dimensions: PRODUCT_EMBEDDING_DIMENSIONS,
     }),
+    externalSource: text("external_source"),
+    externalId: text("external_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -185,6 +187,7 @@ export const importType = pgEnum("import_type", [
   "products",
   "sales",
   "traffic",
+  "reviews",
 ]);
 
 export const importStatus = pgEnum("import_status", [
@@ -270,3 +273,43 @@ export const forecasts = pgTable(
 
 export type Forecast = typeof forecasts.$inferSelect;
 export type NewForecast = typeof forecasts.$inferInsert;
+
+export const reviewSource = pgEnum("review_source", ["scraped"]);
+
+export const reviewSentimentLabel = pgEnum("review_sentiment_label", [
+  "positive",
+  "negative",
+]);
+
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    datasetId: uuid("dataset_id")
+      .notNull()
+      .references(() => datasets.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    reviewDate: date("review_date", { mode: "string" }),
+    reviewText: text("review_text").notNull(),
+    rating: integer("rating"),
+    sentimentLabel: reviewSentimentLabel("sentiment_label"),
+    sentimentScore: numeric("sentiment_score", { precision: 5, scale: 4 }),
+    source: reviewSource("source").notNull().default("scraped"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("reviews_product_id_review_text_unique").on(
+      table.productId,
+      table.reviewText,
+    ),
+    index("reviews_dataset_id_idx").on(table.datasetId),
+    index("reviews_product_id_idx").on(table.productId),
+  ],
+);
+
+export type Review = typeof reviews.$inferSelect;
+export type NewReview = typeof reviews.$inferInsert;

@@ -1,10 +1,12 @@
 import "server-only";
 import { and, eq, inArray, sql } from "drizzle-orm";
+import { scoreReviewTexts } from "@/lib/analytics/sentiment";
 import { db } from "@/lib/db";
 import {
   type ImportRowError,
   imports,
   products,
+  reviews,
   sales,
   trafficRecords,
 } from "@/lib/db/schema";
@@ -12,6 +14,8 @@ import { parseCsv } from "@/lib/imports/parse-csv";
 import {
   PRODUCT_REQUIRED_HEADERS,
   productRowSchema,
+  REVIEW_REQUIRED_HEADERS,
+  reviewRowSchema,
   SALE_REQUIRED_HEADERS,
   saleRowSchema,
   TRAFFIC_REQUIRED_HEADERS,
@@ -28,7 +32,7 @@ const MAX_ERRORS = 500;
 type DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 type DbExecutor = typeof db | DbTransaction;
 
-export type ImportType = "products" | "sales" | "traffic";
+export type ImportType = "products" | "sales" | "traffic" | "reviews";
 
 export type RunImportResult = {
   importId: string;
@@ -405,6 +409,120 @@ async function runTrafficImport(
   );
 }
 
+async function runReviewsImport(
+  datasetId: string,
+  fileName: string,
+  content: string,
+): Promise<RunImportResult> {
+  const parsed = parseCsv(content, REVIEW_REQUIRED_HEADERS);
+  if (!parsed.success) {
+    return writeImportRow(datasetId, "reviews", fileName, 0, 0, 0, [
+      { row: 0, message: parsed.error },
+    ]);
+  }
+
+  const { rows } = parsed.data;
+  const errors: ImportRowError[] = [];
+  const parsedRows: {
+    row: number;
+    data: ReturnType<typeof reviewRowSchema.parse>;
+  }[] = [];
+
+  rows.forEach((rawRow, index) => {
+    const rowNumber = index + 1;
+    const result = reviewRowSchema.safeParse(rawRow);
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        errors.push({
+          row: rowNumber,
+          field: issue.path.join(".") || undefined,
+          message: issue.message,
+        });
+      }
+      return;
+    }
+    parsedRows.push({ row: rowNumber, data: result.data });
+  });
+
+  const skuMap = await resolveSkuMap(
+    db,
+    datasetId,
+    Array.from(new Set(parsedRows.map(({ data }) => data.sku))),
+  );
+
+  const validRows: {
+    row: number;
+    productId: string;
+    reviewDate: string | null;
+    reviewText: string;
+    rating: number | null;
+  }[] = [];
+
+  for (const { row, data } of parsedRows) {
+    const productId = skuMap.get(data.sku);
+    if (!productId) {
+      errors.push({
+        row,
+        field: "sku",
+        message: "SKU not found in this dataset — import products first.",
+      });
+      continue;
+    }
+    validRows.push({
+      row,
+      productId,
+      reviewDate: data.review_date ?? null,
+      reviewText: data.review_text,
+      rating: data.rating ?? null,
+    });
+  }
+
+  if (validRows.length > 0) {
+    const sentiments = await scoreReviewTexts(
+      validRows.map((entry) => entry.reviewText),
+    );
+
+    await db.transaction(async (tx) => {
+      for (const batch of chunk(
+        validRows.map((row, index) => ({
+          ...row,
+          sentiment: sentiments[index],
+        })),
+        BATCH_SIZE,
+      )) {
+        await tx
+          .insert(reviews)
+          .values(
+            batch.map((entry) => ({
+              datasetId,
+              productId: entry.productId,
+              reviewDate: entry.reviewDate,
+              reviewText: entry.reviewText,
+              rating: entry.rating,
+              sentimentLabel: entry.sentiment?.label ?? null,
+              sentimentScore: entry.sentiment
+                ? entry.sentiment.score.toString()
+                : null,
+            })),
+          )
+          .onConflictDoNothing({
+            target: [reviews.productId, reviews.reviewText],
+          });
+      }
+    });
+  }
+
+  return writeImportRow(
+    datasetId,
+    "reviews",
+    fileName,
+    rows.length,
+    validRows.length,
+    rows.length - validRows.length,
+    errors,
+  );
+}
+
 export function runImport(
   datasetId: string,
   type: ImportType,
@@ -416,6 +534,9 @@ export function runImport(
   }
   if (type === "sales") {
     return runSalesImport(datasetId, fileName, content);
+  }
+  if (type === "reviews") {
+    return runReviewsImport(datasetId, fileName, content);
   }
   return runTrafficImport(datasetId, fileName, content);
 }

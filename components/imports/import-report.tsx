@@ -126,9 +126,15 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
           <>
             <Link
               className={cn(buttonVariants())}
-              href={datasetSectionHref(datasetId, importRow.type)}
+              href={
+                importRow.type === "reviews"
+                  ? `${datasetSectionHref(datasetId, "analytics")}#sentiment`
+                  : datasetSectionHref(datasetId, importRow.type)
+              }
             >
-              View imported {importRow.type}
+              {importRow.type === "reviews"
+                ? "View sentiment"
+                : `View imported ${importRow.type}`}
             </Link>
             <Link
               className={cn(buttonVariants({ variant: "outline" }))}

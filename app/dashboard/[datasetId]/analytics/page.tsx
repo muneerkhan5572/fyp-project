@@ -12,6 +12,7 @@ import { DateRangeSelect } from "@/components/analytics/date-range-select";
 import { MoversCard } from "@/components/analytics/movers-card";
 import { ProfitByProductCard } from "@/components/analytics/profit-by-product-card";
 import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
+import { SentimentAlertsCard } from "@/components/analytics/sentiment-alerts-card";
 import { StockRiskCard } from "@/components/analytics/stock-risk-card";
 import { TopProductsCard } from "@/components/analytics/top-products-card";
 import { TrafficCard } from "@/components/analytics/traffic-card";
@@ -149,6 +150,15 @@ export default async function DatasetAnalyticsPage({
         <div className="mt-4 grid grid-cols-1 gap-4">
           <Suspense fallback={<ListCardSkeleton />}>
             <StockRiskCard datasetId={dataset.id} />
+          </Suspense>
+        </div>
+      </div>
+
+      <div className="mt-8" id="sentiment">
+        <h2 className="font-semibold text-lg">Customer sentiment</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4">
+          <Suspense fallback={<ListCardSkeleton />}>
+            <SentimentAlertsCard datasetId={dataset.id} />
           </Suspense>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { InlineImportCard } from "@/components/imports/inline-import-card";
 import { TrafficTable } from "@/components/traffic/traffic-table";
 import { requireDataset } from "@/lib/datasets/dal";
-import { listProducts } from "@/lib/products/dal";
+import { listProductOptions } from "@/lib/products/dal";
 import { hasAnyTraffic, pagedTraffic } from "@/lib/traffic/dal";
 import { trafficListParamsSchema } from "@/lib/validations/traffic";
 
@@ -35,7 +35,7 @@ export default async function TrafficPage({
       sort,
       dir,
     }),
-    listProducts(dataset.id),
+    listProductOptions(dataset.id),
     hasAnyTraffic(dataset.id),
   ]);
 
