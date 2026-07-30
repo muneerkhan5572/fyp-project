@@ -10,7 +10,9 @@ const RECENT_REVIEWS_LIMIT = 5;
 
 export async function scoreReviewTexts(
   texts: string[],
-): Promise<({ label: "positive" | "negative"; score: number } | null)[]> {
+): Promise<
+  ({ label: "positive" | "negative" | "neutral"; score: number } | null)[]
+> {
   if (texts.length === 0) {
     return [];
   }
@@ -24,11 +26,14 @@ export async function scoreReviewTexts(
 }
 
 function signedScore(
-  label: "positive" | "negative" | null,
+  label: "positive" | "negative" | "neutral" | null,
   score: string | null,
 ): number | null {
   if (label === null || score === null) {
     return null;
+  }
+  if (label === "neutral") {
+    return 0;
   }
   const magnitude = Number(score);
   return label === "positive" ? magnitude : -magnitude;
@@ -39,12 +44,13 @@ export type ProductSentimentSummary = {
   scoredCount: number;
   positiveCount: number;
   negativeCount: number;
+  neutralCount: number;
   averageScore: number | null;
   recentReviews: {
     id: string;
     reviewText: string;
     rating: number | null;
-    sentimentLabel: "positive" | "negative" | null;
+    sentimentLabel: "positive" | "negative" | "neutral" | null;
     reviewDate: string | null;
   }[];
 };
@@ -75,6 +81,8 @@ export const getProductSentiment = cache(
       positiveCount: rows.filter((row) => row.sentimentLabel === "positive")
         .length,
       negativeCount: rows.filter((row) => row.sentimentLabel === "negative")
+        .length,
+      neutralCount: rows.filter((row) => row.sentimentLabel === "neutral")
         .length,
       averageScore:
         signedScores.length > 0

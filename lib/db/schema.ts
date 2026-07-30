@@ -279,6 +279,7 @@ export const reviewSource = pgEnum("review_source", ["scraped"]);
 export const reviewSentimentLabel = pgEnum("review_sentiment_label", [
   "positive",
   "negative",
+  "neutral",
 ]);
 
 export const reviews = pgTable(

@@ -18,6 +18,10 @@ export function SentimentCard({
     sentiment.scoredCount > 0
       ? Math.round((sentiment.positiveCount / sentiment.scoredCount) * 100)
       : 0;
+  const neutralPercent =
+    sentiment.scoredCount > 0
+      ? Math.round((sentiment.neutralCount / sentiment.scoredCount) * 100)
+      : 0;
 
   return (
     <div>
@@ -27,15 +31,19 @@ export function SentimentCard({
           {sentiment.totalCount === 1 ? "" : "s"} scored
         </span>
         <span className="font-medium">
-          {sentiment.positiveCount} positive · {sentiment.negativeCount}{" "}
-          negative
+          {sentiment.positiveCount} positive · {sentiment.neutralCount} neutral
+          · {sentiment.negativeCount} negative
         </span>
       </div>
       {sentiment.scoredCount > 0 ? (
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-destructive/30">
+        <div className="mt-2 flex h-2 w-full overflow-hidden rounded-full bg-destructive/30">
           <div
             className="h-full bg-primary"
             style={{ width: `${positivePercent}%` }}
+          />
+          <div
+            className="h-full bg-muted-foreground/40"
+            style={{ width: `${neutralPercent}%` }}
           />
         </div>
       ) : null}
@@ -49,7 +57,9 @@ export function SentimentCard({
                   variant={
                     review.sentimentLabel === "positive"
                       ? "secondary"
-                      : "destructive"
+                      : review.sentimentLabel === "negative"
+                        ? "destructive"
+                        : "outline"
                   }
                 >
                   {review.sentimentLabel}

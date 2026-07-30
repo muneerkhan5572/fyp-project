@@ -10,6 +10,10 @@ export function SentimentBadge({
     return null;
   }
 
+  if (Math.abs(sentiment.averageScore) < 0.05) {
+    return <Badge variant="outline">Mixed sentiment</Badge>;
+  }
+
   if (sentiment.averageScore < 0) {
     return <Badge variant="destructive">Negative sentiment</Badge>;
   }
