@@ -9,6 +9,7 @@ import {
 import { CategoryBreakdownCard } from "@/components/analytics/category-breakdown-card";
 import { ConversionRateCard } from "@/components/analytics/conversion-rate-card";
 import { DateRangeSelect } from "@/components/analytics/date-range-select";
+import { MarketingRecommendationsCard } from "@/components/analytics/marketing-recommendations-card";
 import { MoversCard } from "@/components/analytics/movers-card";
 import { ProfitByProductCard } from "@/components/analytics/profit-by-product-card";
 import { RevenueUnitsCard } from "@/components/analytics/revenue-units-card";
@@ -141,6 +142,15 @@ export default async function DatasetAnalyticsPage({
           </Suspense>
           <Suspense fallback={<ListCardSkeleton />}>
             <MoversCard dataset={dataset} kind="slow-mover" />
+          </Suspense>
+        </div>
+      </div>
+
+      <div className="mt-8" id="marketing-recommendations">
+        <h2 className="font-semibold text-lg">Marketing recommendations</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4">
+          <Suspense fallback={<ListCardSkeleton />}>
+            <MarketingRecommendationsCard dataset={dataset} />
           </Suspense>
         </div>
       </div>
