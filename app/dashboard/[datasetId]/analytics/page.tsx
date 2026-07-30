@@ -137,12 +137,16 @@ export default async function DatasetAnalyticsPage({
       <div className="mt-8" id="demand-classification">
         <h2 className="font-semibold text-lg">Demand classification</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Suspense fallback={<ListCardSkeleton />}>
-            <MoversCard dataset={dataset} kind="high-demand" />
-          </Suspense>
-          <Suspense fallback={<ListCardSkeleton />}>
-            <MoversCard dataset={dataset} kind="slow-mover" />
-          </Suspense>
+          <div className="scroll-mt-6" id="high-demand">
+            <Suspense fallback={<ListCardSkeleton />}>
+              <MoversCard dataset={dataset} kind="high-demand" />
+            </Suspense>
+          </div>
+          <div className="scroll-mt-6" id="slow-mover">
+            <Suspense fallback={<ListCardSkeleton />}>
+              <MoversCard dataset={dataset} kind="slow-mover" />
+            </Suspense>
+          </div>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useFileDrop } from "@/hooks/use-file-drop";
 import { detectMapping } from "@/lib/imports/flexible/auto-detect";
 import type {
   FieldKey,
@@ -45,12 +46,7 @@ export function UploadFlexibleCard({ datasetId }: UploadFlexibleCardProps) {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
+  const processFile = (file: File) => {
     Papa.parse<Record<string, string>>(file, {
       header: true,
       preview: PREVIEW_ROW_COUNT,
@@ -82,6 +78,16 @@ export function UploadFlexibleCard({ datasetId }: UploadFlexibleCardProps) {
     });
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    processFile(file);
+  };
+
+  const { isDraggingOver, dropzoneProps } = useFileDrop(processFile);
+
   if (preview) {
     return (
       <MappingForm
@@ -100,7 +106,10 @@ export function UploadFlexibleCard({ datasetId }: UploadFlexibleCardProps) {
   }
 
   return (
-    <Card>
+    <Card
+      className={cn(isDraggingOver && "bg-muted/50 ring-2 ring-primary")}
+      {...dropzoneProps}
+    >
       <CardHeader>
         <CardTitle>Any CSV</CardTitle>
         <CardDescription>

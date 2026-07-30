@@ -190,6 +190,12 @@ async function runProductsImport(
   );
 }
 
+const NO_PRODUCTS_MATCHED_ERROR: ImportRowError = {
+  row: 0,
+  message:
+    "No matching products found in this dataset. Import your products CSV first, then re-import this file.",
+};
+
 export async function resolveSkuMap(
   executor: DbExecutor,
   datasetId: string,
@@ -254,23 +260,27 @@ async function runSalesImport(
     revenue: number;
   }[] = [];
 
-  for (const { row, data } of parsedRows) {
-    const productId = skuMap.get(data.sku);
-    if (!productId) {
-      errors.push({
+  if (skuMap.size === 0 && parsedRows.length > 0) {
+    errors.push(NO_PRODUCTS_MATCHED_ERROR);
+  } else {
+    for (const { row, data } of parsedRows) {
+      const productId = skuMap.get(data.sku);
+      if (!productId) {
+        errors.push({
+          row,
+          field: "sku",
+          message: "SKU not found in this dataset — import products first.",
+        });
+        continue;
+      }
+      validRows.push({
         row,
-        field: "sku",
-        message: "SKU not found in this dataset — import products first.",
+        productId,
+        saleDate: data.date,
+        quantity: data.quantity,
+        revenue: data.revenue,
       });
-      continue;
     }
-    validRows.push({
-      row,
-      productId,
-      saleDate: data.date,
-      quantity: data.quantity,
-      revenue: data.revenue,
-    });
   }
 
   if (validRows.length > 0) {
@@ -357,22 +367,26 @@ async function runTrafficImport(
     views: number;
   }[] = [];
 
-  for (const { row, data } of parsedRows) {
-    const productId = skuMap.get(data.sku);
-    if (!productId) {
-      errors.push({
+  if (skuMap.size === 0 && parsedRows.length > 0) {
+    errors.push(NO_PRODUCTS_MATCHED_ERROR);
+  } else {
+    for (const { row, data } of parsedRows) {
+      const productId = skuMap.get(data.sku);
+      if (!productId) {
+        errors.push({
+          row,
+          field: "sku",
+          message: "SKU not found in this dataset — import products first.",
+        });
+        continue;
+      }
+      validRows.push({
         row,
-        field: "sku",
-        message: "SKU not found in this dataset — import products first.",
+        productId,
+        trafficDate: data.date,
+        views: data.views,
       });
-      continue;
     }
-    validRows.push({
-      row,
-      productId,
-      trafficDate: data.date,
-      views: data.views,
-    });
   }
 
   if (validRows.length > 0) {
@@ -458,23 +472,27 @@ async function runReviewsImport(
     rating: number | null;
   }[] = [];
 
-  for (const { row, data } of parsedRows) {
-    const productId = skuMap.get(data.sku);
-    if (!productId) {
-      errors.push({
+  if (skuMap.size === 0 && parsedRows.length > 0) {
+    errors.push(NO_PRODUCTS_MATCHED_ERROR);
+  } else {
+    for (const { row, data } of parsedRows) {
+      const productId = skuMap.get(data.sku);
+      if (!productId) {
+        errors.push({
+          row,
+          field: "sku",
+          message: "SKU not found in this dataset — import products first.",
+        });
+        continue;
+      }
+      validRows.push({
         row,
-        field: "sku",
-        message: "SKU not found in this dataset — import products first.",
+        productId,
+        reviewDate: data.review_date ?? null,
+        reviewText: data.review_text,
+        rating: data.rating ?? null,
       });
-      continue;
     }
-    validRows.push({
-      row,
-      productId,
-      reviewDate: data.review_date ?? null,
-      reviewText: data.review_text,
-      rating: data.rating ?? null,
-    });
   }
 
   if (validRows.length > 0) {

@@ -12,10 +12,10 @@ import { toast } from "sonner";
 import { uploadCsv } from "@/app/actions/imports";
 import { BackButton } from "@/components/dashboard/back-button";
 import { UploadFlexibleCard } from "@/components/imports/flexible/upload-flexible-card";
+import { ImportChoiceCard } from "@/components/imports/import-choice-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { IMPORT_TYPE_LABELS } from "@/lib/imports/csv-config";
 import type { ImportType } from "@/lib/imports/run-import";
-import { cn } from "@/lib/utils";
 
 const EXACT_CHOICES: {
   value: ImportType;
@@ -38,15 +38,7 @@ export function ImportWizard({ datasetId }: ImportWizardProps) {
   const [uploadingType, setUploadingType] = useState<ImportType | null>(null);
   const inputRefs = useRef<Partial<Record<ImportType, HTMLInputElement>>>({});
 
-  const handleFileChange = (
-    type: ImportType,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
+  const handleFileSelected = (type: ImportType, file: File) => {
     setUploadingType(type);
     const formData = new FormData();
     formData.set("type", type);
@@ -82,37 +74,18 @@ export function ImportWizard({ datasetId }: ImportWizardProps) {
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {EXACT_CHOICES.map((choice) => (
-        <label
-          className={cn(
-            "flex cursor-pointer",
-            isPending &&
-              uploadingType !== choice.value &&
-              "pointer-events-none opacity-50",
-          )}
+        <ImportChoiceCard
+          disabled={isPending && uploadingType !== choice.value}
+          hint={choice.hint}
+          icon={choice.icon}
+          inputRef={(element) => {
+            inputRefs.current[choice.value] = element ?? undefined;
+          }}
+          isUploading={uploadingType === choice.value}
           key={choice.value}
-        >
-          <Card className="w-full transition-colors hover:bg-muted/50">
-            <CardContent className="flex flex-col items-start gap-2">
-              <choice.icon className="size-5 text-muted-foreground" />
-              <p className="font-medium text-base">
-                {IMPORT_TYPE_LABELS[choice.value]}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {uploadingType === choice.value ? "Uploading..." : choice.hint}
-              </p>
-            </CardContent>
-          </Card>
-          <input
-            accept=".csv,text/csv"
-            className="sr-only"
-            disabled={isPending}
-            onChange={(event) => handleFileChange(choice.value, event)}
-            ref={(element) => {
-              inputRefs.current[choice.value] = element ?? undefined;
-            }}
-            type="file"
-          />
-        </label>
+          label={IMPORT_TYPE_LABELS[choice.value]}
+          onFile={(file) => handleFileSelected(choice.value, file)}
+        />
       ))}
       <Card
         className="cursor-pointer transition-colors hover:bg-muted/50"

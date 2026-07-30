@@ -1,3 +1,4 @@
+import { TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { ImportStatusBadge } from "@/components/imports/import-status-badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -40,6 +41,16 @@ export function ImportReport({ datasetId, importRow }: ImportReportProps) {
         </div>
         <ImportStatusBadge status={importRow.status} />
       </div>
+
+      {importRow.status === "failed" ? (
+        <div className="mt-4 flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
+          <TriangleAlertIcon className="mt-0.5 size-4 shrink-0 text-destructive" />
+          <p>
+            {importRow.errors[0]?.message ??
+              "This import failed — no rows were saved."}
+          </p>
+        </div>
+      ) : null}
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         <div className="rounded-md border p-3">

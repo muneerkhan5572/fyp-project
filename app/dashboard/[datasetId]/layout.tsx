@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { DashboardTopbar } from "@/components/dashboard/dashboard-topbar";
+import { HashScrollRestoration } from "@/components/dashboard/hash-scroll-restoration";
 import { DatasetSidebarContent } from "@/components/datasets/dataset-sidebar-content";
 import { DatasetSidebarSkeleton } from "@/components/datasets/dataset-sidebar-skeleton";
 import {
@@ -30,6 +31,7 @@ export default async function DatasetLayout({
       </Sidebar>
       <SidebarInset>
         <DashboardTopbar leading={<SidebarTrigger />} title={dataset.name} />
+        <HashScrollRestoration />
         <div className="flex-1 p-4 md:p-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>

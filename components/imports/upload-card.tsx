@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useFileDrop } from "@/hooks/use-file-drop";
 import type { ImportType } from "@/lib/imports/run-import";
 import { cn } from "@/lib/utils";
 
@@ -37,11 +38,7 @@ export function UploadCard({
   const [fileName, setFileName] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
+  const processFile = (file: File) => {
     setFileName(file.name);
 
     const formData = new FormData();
@@ -60,8 +57,23 @@ export function UploadCard({
     });
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    processFile(file);
+  };
+
+  const { isDraggingOver, dropzoneProps } = useFileDrop(processFile, {
+    disabled: isPending,
+  });
+
   return (
-    <Card>
+    <Card
+      className={cn(isDraggingOver && "bg-muted/50 ring-2 ring-primary")}
+      {...dropzoneProps}
+    >
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}

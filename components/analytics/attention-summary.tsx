@@ -4,6 +4,7 @@ import { getStockRisk } from "@/lib/analytics/stock-risk";
 import { classifyProducts } from "@/lib/analytics/velocity";
 import { datasetSectionHref } from "@/lib/datasets/routes";
 import type { Dataset } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 export async function AttentionSummary({ dataset }: { dataset: Dataset }) {
   const [stockRisk, classified] = await Promise.all([
@@ -39,12 +40,12 @@ export async function AttentionSummary({ dataset }: { dataset: Dataset }) {
     {
       label: "High demand",
       count: highDemandCount,
-      href: `${analyticsHref}#demand-classification`,
+      href: `${analyticsHref}#high-demand`,
     },
     {
       label: "Slow movers",
       count: slowMoverCount,
-      href: `${analyticsHref}#demand-classification`,
+      href: `${analyticsHref}#slow-mover`,
     },
   ].filter((pill) => pill.count > 0);
 
@@ -58,7 +59,12 @@ export async function AttentionSummary({ dataset }: { dataset: Dataset }) {
         ) : (
           pills.map((pill) => (
             <Link
-              className="flex items-center gap-2 rounded-full border bg-muted/40 px-3 py-1.5 text-sm hover:bg-muted"
+              className={cn(
+                "flex items-center gap-2 rounded-full border bg-muted/40 px-3 py-1.5 text-sm",
+                pill.label === "High demand" || pill.label === "Slow movers"
+                  ? "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  : "hover:bg-muted",
+              )}
               href={pill.href}
               key={pill.label}
             >
