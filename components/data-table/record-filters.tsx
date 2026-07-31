@@ -1,7 +1,8 @@
 "use client";
 
-import { SearchIcon, XIcon } from "lucide-react";
+import { Mic, MicOff, SearchIcon, SparklesIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   ALL_PRODUCTS,
   type ProductOption,
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { useQueryParams } from "@/hooks/use-query-params";
+import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { cn } from "@/lib/utils";
 
 type RecordFiltersProps = {
@@ -18,6 +20,7 @@ type RecordFiltersProps = {
   search?: boolean;
   searchPlaceholder?: string;
   dateRange?: boolean;
+  semanticSearch?: boolean;
 };
 
 export function RecordFilters({
@@ -25,6 +28,7 @@ export function RecordFilters({
   search = false,
   searchPlaceholder = "Search...",
   dateRange = false,
+  semanticSearch = false,
 }: RecordFiltersProps) {
   const { searchParams, isPending, updateParams, clearParams } =
     useQueryParams();
@@ -32,6 +36,7 @@ export function RecordFilters({
   const productId = searchParams.get("productId") ?? ALL_PRODUCTS;
   const from = searchParams.get("from") ?? "";
   const to = searchParams.get("to") ?? "";
+  const isSemantic = searchParams.get("searchMode") !== "lexical";
   const [searchValue, setSearchValue] = useState(
     () => searchParams.get("search") ?? "",
   );
@@ -45,6 +50,22 @@ export function RecordFilters({
   const debouncedSearch = useDebouncedCallback((value: string) => {
     updateParams({ search: value || undefined }, "replace");
   }, 350);
+
+  const { isSupported, isListening, start, stop } = useSpeechRecognition();
+
+  function handleMicClick() {
+    if (isListening) {
+      stop();
+      return;
+    }
+    start(
+      (transcript) => {
+        setSearchValue(transcript);
+        debouncedSearch(transcript);
+      },
+      (message) => toast.error(message),
+    );
+  }
 
   function handleClear() {
     setSearchValue("");
@@ -62,7 +83,7 @@ export function RecordFilters({
         <div className="relative min-w-40 flex-1">
           <SearchIcon className="absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="pl-7"
+            className={cn("pl-7", semanticSearch && "pr-16")}
             onChange={(event) => {
               setSearchValue(event.target.value);
               debouncedSearch(event.target.value);
@@ -70,6 +91,57 @@ export function RecordFilters({
             placeholder={searchPlaceholder}
             value={searchValue}
           />
+          {semanticSearch ? (
+            <div className="absolute top-0.5 right-1.5 flex items-center gap-0.5">
+              <Button
+                aria-label={
+                  isSemantic
+                    ? "Semantic search is on"
+                    : "Semantic search is off"
+                }
+                aria-pressed={isSemantic}
+                className={cn(
+                  "size-5",
+                  isSemantic
+                    ? "text-primary hover:text-primary"
+                    : "text-muted-foreground",
+                )}
+                onClick={() =>
+                  updateParams(
+                    { searchMode: isSemantic ? "lexical" : undefined },
+                    "push",
+                  )
+                }
+                size="icon"
+                variant="ghost"
+              >
+                <SparklesIcon className="size-3.5" />
+              </Button>
+              {isSupported ? (
+                <Button
+                  aria-label={
+                    isListening ? "Stop voice search" : "Voice search"
+                  }
+                  aria-pressed={isListening}
+                  className={cn(
+                    "size-7",
+                    isListening
+                      ? "text-destructive hover:text-destructive"
+                      : "text-muted-foreground",
+                  )}
+                  onClick={handleMicClick}
+                  size="icon"
+                  variant="ghost"
+                >
+                  {isListening ? (
+                    <MicOff className="size-5 animate-pulse" />
+                  ) : (
+                    <Mic className="size-5" />
+                  )}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : null}
       {products ? (

@@ -17,7 +17,7 @@ export default async function SalesPage({
   searchParams,
 }: SalesPageProps) {
   const { datasetId } = await params;
-  const { page, productId, from, to, search, sort, dir } =
+  const { page, productId, from, to, search, searchMode, sort, dir } =
     salesListParamsSchema.parse(await searchParams);
   const dataset = await requireDataset(datasetId);
 
@@ -26,7 +26,16 @@ export default async function SalesPage({
     products,
     anySales,
   ] = await Promise.all([
-    pagedSales(dataset.id, { page, productId, from, to, search, sort, dir }),
+    pagedSales(dataset.id, {
+      page,
+      productId,
+      from,
+      to,
+      search,
+      searchMode,
+      sort,
+      dir,
+    }),
     listProductOptions(dataset.id),
     hasAnySales(dataset.id),
   ]);
@@ -50,7 +59,7 @@ export default async function SalesPage({
           currentDir={dir}
           currentSort={sort}
           datasetId={dataset.id}
-          filters={{ productId, from, to, search, sort, dir }}
+          filters={{ productId, from, to, search, searchMode, sort, dir }}
           hasAnyRecords={anySales}
           page={currentPage}
           pageCount={pageCount}

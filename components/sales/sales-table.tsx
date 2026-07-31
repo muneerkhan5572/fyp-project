@@ -136,6 +136,7 @@ export function SalesTable({
           products={products}
           search
           searchPlaceholder="Search by product name or SKU..."
+          semanticSearch
         />
         <Button
           disabled={products.length === 0}

@@ -66,6 +66,7 @@ export const salesListParamsSchema = z.object({
   from: z.preprocess(emptyToUndefined, dateString.optional()).catch(undefined),
   to: z.preprocess(emptyToUndefined, dateString.optional()).catch(undefined),
   search: searchParam,
+  searchMode: z.enum(["semantic", "lexical"]).catch("semantic"),
   sort: sortParam(SALES_SORT_FIELDS, "saleDate"),
   dir: dirParam("desc"),
 });

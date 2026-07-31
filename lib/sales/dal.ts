@@ -12,6 +12,7 @@ export type PagedSalesParams = {
   from?: string;
   to?: string;
   search?: string;
+  searchMode?: "semantic" | "lexical";
   sort?: "saleDate" | "productName" | "quantity" | "revenue";
   dir?: "asc" | "desc";
 };
@@ -42,7 +43,11 @@ export const pagedSales = cache(
     let semanticError: string | undefined;
 
     if (query) {
-      const match = await matchProductIdsForSearch(datasetId, query);
+      const match = await matchProductIdsForSearch(
+        datasetId,
+        query,
+        params.searchMode,
+      );
       semanticError = match.semanticError;
       if (match.productIds.length === 0) {
         return {
