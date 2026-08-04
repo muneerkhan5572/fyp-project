@@ -25,6 +25,7 @@ export async function DatasetSidebarContent({
             products: setupState.productCount,
             sales: setupState.salesCount,
             traffic: setupState.trafficCount,
+            reviews: setupState.reviewCount,
           }}
           datasetId={datasetId}
         />

@@ -2,7 +2,7 @@ import "server-only";
 import { count, eq } from "drizzle-orm";
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { products, sales, trafficRecords } from "@/lib/db/schema";
+import { products, reviews, sales, trafficRecords } from "@/lib/db/schema";
 import { hasAnyForecast } from "@/lib/forecasts/dal";
 
 export type SetupStep =
@@ -16,13 +16,18 @@ export type DatasetSetupState = {
   productCount: number;
   salesCount: number;
   trafficCount: number;
+  reviewCount: number;
   hasForecast: boolean;
   nextStep: SetupStep;
   isComplete: boolean;
 };
 
 async function countRows(
-  table: typeof products | typeof sales | typeof trafficRecords,
+  table:
+    | typeof products
+    | typeof sales
+    | typeof trafficRecords
+    | typeof reviews,
   datasetId: string,
 ) {
   const [row] = await db
@@ -35,11 +40,12 @@ async function countRows(
 
 export const getDatasetSetupState = cache(
   async (datasetId: string): Promise<DatasetSetupState> => {
-    const [productCount, salesCount, trafficCount, hasForecast] =
+    const [productCount, salesCount, trafficCount, reviewCount, hasForecast] =
       await Promise.all([
         countRows(products, datasetId),
         countRows(sales, datasetId),
         countRows(trafficRecords, datasetId),
+        countRows(reviews, datasetId),
         hasAnyForecast(datasetId),
       ]);
 
@@ -56,6 +62,7 @@ export const getDatasetSetupState = cache(
       productCount,
       salesCount,
       trafficCount,
+      reviewCount,
       hasForecast,
       nextStep,
       isComplete: nextStep === "complete",

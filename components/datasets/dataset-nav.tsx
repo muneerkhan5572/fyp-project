@@ -3,6 +3,7 @@
 import {
   BarChart3Icon,
   LayoutDashboardIcon,
+  MessageSquareTextIcon,
   PackageIcon,
   ReceiptIcon,
   SettingsIcon,
@@ -25,6 +26,7 @@ type NavCounts = {
   products: number;
   sales: number;
   traffic: number;
+  reviews: number;
 };
 
 const NAV_GROUPS = [
@@ -44,6 +46,12 @@ const NAV_GROUPS = [
         label: "Traffic",
         icon: TrendingUpIcon,
         count: "traffic",
+      },
+      {
+        href: "/reviews",
+        label: "Reviews",
+        icon: MessageSquareTextIcon,
+        count: "reviews",
       },
     ],
   },
