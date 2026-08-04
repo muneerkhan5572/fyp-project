@@ -57,6 +57,7 @@ export function ResetPasswordForm({
                   autoComplete="new-password"
                   field={field}
                   label="New Password"
+                  submitOnEnter
                   type="password"
                 />
               )}
@@ -67,6 +68,7 @@ export function ResetPasswordForm({
                   autoComplete="new-password"
                   field={field}
                   label="Confirm Password"
+                  submitOnEnter
                   type="password"
                 />
               )}

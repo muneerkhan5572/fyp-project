@@ -16,6 +16,7 @@ type TextFieldProps = {
   min?: number | string;
   step?: number | string;
   inputMode?: React.ComponentProps<typeof Input>["inputMode"];
+  submitOnEnter?: boolean;
 };
 
 export function TextField({
@@ -28,6 +29,7 @@ export function TextField({
   min,
   step,
   inputMode,
+  submitOnEnter = false,
 }: TextFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -56,7 +58,7 @@ export function TextField({
           onBlur={field.handleBlur}
           onChange={(event) => field.handleChange(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && !submitOnEnter) {
               event.preventDefault();
             }
           }}

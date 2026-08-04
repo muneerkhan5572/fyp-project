@@ -64,6 +64,7 @@ export function ForgotPasswordForm({
                   field={field}
                   label="Email"
                   placeholder="m@example.com"
+                  submitOnEnter
                   type="email"
                 />
               )}

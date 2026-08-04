@@ -58,6 +58,7 @@ export function LoginForm({
                     field={field}
                     label="Email"
                     placeholder="m@example.com"
+                    submitOnEnter
                     type="email"
                   />
                 )}
@@ -76,6 +77,7 @@ export function LoginForm({
                         Forgot your password?
                       </Link>
                     }
+                    submitOnEnter
                     type="password"
                   />
                 )}
