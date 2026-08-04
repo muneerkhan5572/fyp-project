@@ -6,7 +6,7 @@ export async function sendResetEmail(to: string, token: string): Promise<void> {
   const resetUrl = `${env.APP_URL}/reset-password?token=${token}`;
 
   await transport.sendMail({
-    from: env.SMTP_FROM,
+    from: env.GMAIL_SMTP_USER,
     to,
     subject: "Reset your password",
     text: `Reset your password using the link below. It expires in 1 hour.\n\n${resetUrl}\n\nIf you did not request this, you can safely ignore this email.`,

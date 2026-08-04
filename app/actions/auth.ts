@@ -13,6 +13,7 @@ import {
 import { db } from "@/lib/db";
 import { passwordResetTokens, users } from "@/lib/db/schema";
 import { sendResetEmail } from "@/lib/email/send-reset-email";
+import { sendWelcomeEmail } from "@/lib/email/send-welcome-email";
 import {
   type ForgotPasswordInput,
   forgotPasswordSchema,
@@ -87,6 +88,9 @@ export async function signup(input: SignupInput): Promise<AuthActionState> {
   }
 
   await createSession(user.id);
+  try {
+    await sendWelcomeEmail(email, parsed.data.name);
+  } catch {}
   redirect("/dashboard");
 }
 
