@@ -41,7 +41,7 @@ export default async function DashboardPage() {
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <DatasetCreateDialog forceOpen />
+              <DatasetCreateDialog />
             </EmptyContent>
           </Empty>
         ) : (

@@ -87,11 +87,10 @@ export async function signup(input: SignupInput): Promise<AuthActionState> {
     return { error: "Something went wrong creating your account." };
   }
 
-  await createSession(user.id);
   try {
     await sendWelcomeEmail(email, parsed.data.name);
   } catch {}
-  redirect("/dashboard");
+  redirect("/login?registered=1");
 }
 
 export async function forgotPassword(

@@ -19,8 +19,9 @@ import { loginSchema } from "@/lib/validations/auth";
 
 export function LoginForm({
   className,
+  justRegistered,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { justRegistered?: boolean }) {
   const form = useForm({
     defaultValues: { email: "", password: "" },
     validators: { onSubmit: loginSchema },
@@ -51,6 +52,11 @@ export function LoginForm({
             }}
           >
             <FieldGroup>
+              {justRegistered ? (
+                <FieldDescription className="text-center">
+                  Account created! Please sign in.
+                </FieldDescription>
+              ) : null}
               <form.Field name="email">
                 {(field) => (
                   <TextField
