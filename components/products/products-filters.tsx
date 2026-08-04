@@ -65,14 +65,14 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
           placeholder="Search by name or SKU..."
           value={searchValue}
         />
-        <div className="absolute top-0.5 right-1.5 flex items-center gap-0.5">
+        <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 items-center gap-0.5">
           <Button
             aria-label={
               isSemantic ? "Semantic search is on" : "Semantic search is off"
             }
             aria-pressed={isSemantic}
             className={cn(
-              "size-5",
+              "size-6",
               isSemantic
                 ? "text-primary hover:text-primary"
                 : "text-muted-foreground",
@@ -93,7 +93,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
               aria-label={isListening ? "Stop voice search" : "Voice search"}
               aria-pressed={isListening}
               className={cn(
-                "size-7",
+                "size-6",
                 isListening
                   ? "text-destructive hover:text-destructive"
                   : "text-muted-foreground",
@@ -103,9 +103,9 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
               variant="ghost"
             >
               {isListening ? (
-                <MicOff className="size-5 animate-pulse" />
+                <MicOff className="size-3.5 animate-pulse" />
               ) : (
-                <Mic className="size-5" />
+                <Mic className="size-3.5" />
               )}
             </Button>
           ) : null}
