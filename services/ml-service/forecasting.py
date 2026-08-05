@@ -189,15 +189,15 @@ def _forecast_product(
 
         row_frame = pd.DataFrame([row], columns=feature_columns)
         predicted_quantity, lower_bound, upper_bound = _predict_with_bounds(model, row_frame)
-        rounded_quantity = round(predicted_quantity, 2)
+        rounded_quantity = round(predicted_quantity)
 
         predictions.append(
             {
                 "date": target_date.isoformat(),
                 "predictedQuantity": rounded_quantity,
                 "predictedRevenue": round(rounded_quantity * product.price, 2),
-                "lowerBound": round(lower_bound, 2),
-                "upperBound": round(upper_bound, 2),
+                "lowerBound": round(lower_bound),
+                "upperBound": round(upper_bound),
             }
         )
 
