@@ -194,3 +194,22 @@ export const hasAnyReviews = cache(async (datasetId: string) => {
 
   return Boolean(row);
 });
+
+export type ReviewSentimentCounts = {
+  total: number;
+  done: number;
+};
+
+export const getReviewSentimentCounts = cache(
+  async (datasetId: string): Promise<ReviewSentimentCounts> => {
+    const [row] = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        done: sql<number>`count(*) filter (where ${reviews.sentimentLabel} is not null)::int`,
+      })
+      .from(reviews)
+      .where(eq(reviews.datasetId, datasetId));
+
+    return row ?? { total: 0, done: 0 };
+  },
+);

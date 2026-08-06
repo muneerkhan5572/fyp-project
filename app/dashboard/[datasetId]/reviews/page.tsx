@@ -1,10 +1,12 @@
 import { PageHeader } from "@/components/dashboard/page-header";
 import { DatasetBreadcrumbs } from "@/components/datasets/dataset-breadcrumbs";
 import { InlineImportCard } from "@/components/imports/inline-import-card";
+import { ReviewSentimentProgress } from "@/components/reviews/review-sentiment-progress";
 import { ReviewsTable } from "@/components/reviews/reviews-table";
 import { requireDataset } from "@/lib/datasets/dal";
 import { listProductOptions } from "@/lib/products/dal";
 import {
+  getReviewSentimentCounts,
   hasAnyReviews,
   listReviewsForProducts,
   pagedReviewedProducts,
@@ -38,6 +40,7 @@ export default async function ReviewsPage({
     { rows: productRows, total, page: currentPage, pageCount, semanticError },
     products,
     anyReviews,
+    sentimentCounts,
   ] = await Promise.all([
     pagedReviewedProducts(dataset.id, {
       page,
@@ -52,6 +55,7 @@ export default async function ReviewsPage({
     }),
     listProductOptions(dataset.id),
     hasAnyReviews(dataset.id),
+    getReviewSentimentCounts(dataset.id),
   ]);
 
   const reviewRows = await listReviewsForProducts(
@@ -84,6 +88,11 @@ export default async function ReviewsPage({
         title="Reviews"
       />
       <InlineImportCard datasetId={dataset.id} type="reviews" />
+      <ReviewSentimentProgress
+        datasetId={dataset.id}
+        initialDone={sentimentCounts.done}
+        initialTotal={sentimentCounts.total}
+      />
       <div>
         <ReviewsTable
           currentDir={dir}

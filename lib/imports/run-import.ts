@@ -1,6 +1,7 @@
 import "server-only";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { scoreReviewTexts } from "@/lib/analytics/sentiment";
+import { after } from "next/server";
+import { scoreUnscoredReviewSentiment } from "@/lib/analytics/sentiment";
 import { db } from "@/lib/db";
 import {
   type ImportRowError,
@@ -10,6 +11,7 @@ import {
   sales,
   trafficRecords,
 } from "@/lib/db/schema";
+import { chunk } from "@/lib/imports/chunk";
 import { parseCsv } from "@/lib/imports/parse-csv";
 import {
   PRODUCT_REQUIRED_HEADERS,
@@ -43,13 +45,7 @@ export type RunImportResult = {
   errors: ImportRowError[];
 };
 
-export function chunk<T>(items: T[], size: number): T[][] {
-  const chunks: T[][] = [];
-  for (let i = 0; i < items.length; i += size) {
-    chunks.push(items.slice(i, i + size));
-  }
-  return chunks;
-}
+export { chunk };
 
 async function writeImportRow(
   executor: DbExecutor,
@@ -578,12 +574,8 @@ async function runReviewsImport(
   }
 
   if (validRows.length > 0) {
-    const sentiments = await scoreReviewTexts(
-      validRows.map((entry) => entry.reviewText),
-    );
-
-    return db.transaction(async (tx) => {
-      const result = await writeImportRow(
+    const result = await db.transaction(async (tx) => {
+      const writeResult = await writeImportRow(
         tx,
         importId,
         datasetId,
@@ -595,13 +587,7 @@ async function runReviewsImport(
         errors,
       );
 
-      for (const batch of chunk(
-        validRows.map((row, index) => ({
-          ...row,
-          sentiment: sentiments[index],
-        })),
-        BATCH_SIZE,
-      )) {
+      for (const batch of chunk(validRows, BATCH_SIZE)) {
         await tx
           .insert(reviews)
           .values(
@@ -611,10 +597,8 @@ async function runReviewsImport(
               reviewDate: entry.reviewDate,
               reviewText: entry.reviewText,
               rating: entry.rating,
-              sentimentLabel: entry.sentiment?.label ?? null,
-              sentimentScore: entry.sentiment
-                ? entry.sentiment.score.toString()
-                : null,
+              sentimentLabel: null,
+              sentimentScore: null,
               importId,
             })),
           )
@@ -623,8 +607,12 @@ async function runReviewsImport(
           });
       }
 
-      return result;
+      return writeResult;
     });
+
+    after(() => scoreUnscoredReviewSentiment(datasetId));
+
+    return result;
   }
 
   return writeImportRow(

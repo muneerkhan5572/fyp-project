@@ -1,12 +1,14 @@
 import "server-only";
-import { and, desc, eq, isNotNull } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull } from "drizzle-orm";
 import { cache } from "react";
 import { db } from "@/lib/db";
 import { products, reviews } from "@/lib/db/schema";
+import { chunk } from "@/lib/imports/chunk";
 import { requestSentiment } from "@/lib/ml/sentiment-client";
 
 const MIN_REVIEWS_FOR_ALERT = 3;
 const RECENT_REVIEWS_LIMIT = 5;
+const SENTIMENT_BATCH_SIZE = 50;
 
 export async function scoreReviewTexts(
   texts: string[],
@@ -22,6 +24,39 @@ export async function scoreReviewTexts(
   } catch (error) {
     console.error("Failed to score review sentiment:", error);
     return texts.map(() => null);
+  }
+}
+
+export async function scoreUnscoredReviewSentiment(
+  datasetId: string,
+): Promise<void> {
+  const pending = await db
+    .select({ id: reviews.id, reviewText: reviews.reviewText })
+    .from(reviews)
+    .where(
+      and(eq(reviews.datasetId, datasetId), isNull(reviews.sentimentLabel)),
+    );
+
+  if (pending.length === 0) {
+    return;
+  }
+
+  for (const batch of chunk(pending, SENTIMENT_BATCH_SIZE)) {
+    const results = await scoreReviewTexts(batch.map((row) => row.reviewText));
+
+    for (let i = 0; i < batch.length; i++) {
+      const result = results[i];
+      if (!result) {
+        continue;
+      }
+      await db
+        .update(reviews)
+        .set({
+          sentimentLabel: result.label,
+          sentimentScore: result.score.toString(),
+        })
+        .where(eq(reviews.id, batch[i].id));
+    }
   }
 }
 
