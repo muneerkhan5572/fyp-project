@@ -1,10 +1,13 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 import { verifySession } from "@/lib/auth/dal";
 import { getOwnedDataset } from "@/lib/datasets/dal";
+import { db } from "@/lib/db";
+import { imports } from "@/lib/db/schema";
 import { importMappingSchema } from "@/lib/imports/flexible/mapping-schema";
 import { runFlexibleImport } from "@/lib/imports/flexible/run-flexible-import";
 import { type ImportType, runImport } from "@/lib/imports/run-import";
@@ -15,6 +18,7 @@ const importTypeSchema = z.enum(["products", "sales", "traffic", "reviews"], {
 
 export type ImportActionState = {
   error?: string;
+  success?: string;
 };
 
 export async function uploadCsv(
@@ -89,4 +93,23 @@ export async function uploadFlexibleCsv(
   revalidatePath(`/dashboard/${dataset.id}`, "layout");
 
   redirect(`/dashboard/${dataset.id}/import?importId=${result.importId}`);
+}
+
+export async function deleteImport(
+  datasetId: string,
+  input: { id: string },
+): Promise<ImportActionState> {
+  const { userId } = await verifySession();
+  const dataset = await getOwnedDataset(datasetId, userId);
+  if (!dataset) {
+    return { error: "Dataset not found." };
+  }
+
+  await db
+    .delete(imports)
+    .where(and(eq(imports.id, input.id), eq(imports.datasetId, dataset.id)));
+
+  revalidatePath(`/dashboard/${dataset.id}/import`);
+
+  return { success: "Import removed from history." };
 }

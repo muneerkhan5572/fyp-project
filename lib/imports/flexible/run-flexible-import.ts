@@ -62,9 +62,10 @@ export async function runFlexibleImport(
   fileName: string,
   content: string,
 ): Promise<RunImportResult> {
+  const importId = crypto.randomUUID();
   const parsed = parseRaw(content);
   if (!parsed.success) {
-    return writeFlexibleImportRow(datasetId, fileName, mapping, {
+    return writeFlexibleImportRow(importId, datasetId, fileName, mapping, {
       totalRows: 0,
       importedRows: 0,
       failedRows: 0,
@@ -77,7 +78,7 @@ export async function runFlexibleImport(
 
   const { rows } = parsed.data;
   if (rows.length === 0) {
-    return writeFlexibleImportRow(datasetId, fileName, mapping, {
+    return writeFlexibleImportRow(importId, datasetId, fileName, mapping, {
       totalRows: 0,
       importedRows: 0,
       failedRows: 0,
@@ -181,6 +182,7 @@ export async function runFlexibleImport(
               cost: data.cost !== undefined ? data.cost.toString() : null,
               stock: data.stock ?? null,
               embedding: embedding ?? null,
+              importId,
             })),
           )
           .onConflictDoUpdate({
@@ -193,6 +195,7 @@ export async function runFlexibleImport(
               cost: sql`excluded.cost`,
               stock: sql`excluded.stock`,
               embedding: sql`excluded.embedding`,
+              importId: sql`excluded.import_id`,
               updatedAt: sql`now()`,
             },
           });
@@ -216,6 +219,7 @@ export async function runFlexibleImport(
             saleDate: entry.date,
             quantity: entry.quantity,
             revenue: entry.revenue.toString(),
+            importId,
           };
         })
         .filter((value): value is NonNullable<typeof value> => value !== null);
@@ -229,6 +233,7 @@ export async function runFlexibleImport(
             set: {
               quantity: sql`excluded.quantity`,
               revenue: sql`excluded.revenue`,
+              importId: sql`excluded.import_id`,
             },
           });
       }
@@ -241,7 +246,7 @@ export async function runFlexibleImport(
         skuAssignments.size
       : 0;
 
-  return writeFlexibleImportRow(datasetId, fileName, mapping, {
+  return writeFlexibleImportRow(importId, datasetId, fileName, mapping, {
     totalRows: rows.length,
     importedRows: validRows.length,
     failedRows: rows.length - validRows.length,
@@ -253,6 +258,7 @@ export async function runFlexibleImport(
 }
 
 async function writeFlexibleImportRow(
+  importId: string,
   datasetId: string,
   fileName: string,
   mapping: ImportMapping,
@@ -293,23 +299,21 @@ async function writeFlexibleImportRow(
     salesRowsAggregated,
   };
 
-  const [row] = await db
-    .insert(imports)
-    .values({
-      datasetId,
-      type: "sales",
-      fileName,
-      totalRows,
-      importedRows,
-      failedRows,
-      errors: cappedErrors,
-      status,
-      meta,
-    })
-    .returning({ id: imports.id });
+  await db.insert(imports).values({
+    id: importId,
+    datasetId,
+    type: "sales",
+    fileName,
+    totalRows,
+    importedRows,
+    failedRows,
+    errors: cappedErrors,
+    status,
+    meta,
+  });
 
   return {
-    importId: row.id,
+    importId,
     status,
     totalRows,
     importedRows,

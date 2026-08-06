@@ -1,0 +1,301 @@
+sku,review_date,review_text,rating
+PROD-0001,2026-06-04,Customer service was great when I had a question. (order #114948),5
+PROD-0001,2026-04-27,"Poor quality control, would not buy again. (order #224066)",2
+PROD-0001,2026-01-03,"Better than I expected, glad I bought it. (order #222238)",5
+PROD-0001,2026-06-14,Instructions were unclear and setup was frustrating. (order #286509),2
+PROD-0001,2026-07-07,"Absolutely love this, works exactly as described. (order #593422)",5
+PROD-0001,2026-04-21,"Works fine so far, will update after more use. (order #348692)",3
+PROD-0001,2026-04-28,"Not what I expected from the photos, feels cheap. (order #52631)",2
+PROD-0002,2026-06-09,"Great quality for the price, highly recommend. (order #177868)",5
+PROD-0002,2026-06-03,"Perfect fit for what I needed, five stars. (order #102559)",4
+PROD-0002,2026-06-17,Instructions were unclear and setup was frustrating. (order #501558),2
+PROD-0002,2026-05-26,Fast shipping and the product feels premium. (order #21458),4
+PROD-0002,2026-03-14,"Great quality for the price, highly recommend. (order #315841)",4
+PROD-0002,2026-01-17,Fast shipping and the product feels premium. (order #576222),5
+PROD-0002,2026-07-10,"Better than I expected, glad I bought it. (order #983434)",5
+PROD-0003,2026-05-25,"Average product, average experience overall. (order #58394)",3
+PROD-0003,2026-07-19,Instructions were unclear and setup was frustrating. (order #815379),1
+PROD-0003,2026-02-14,"Exceeded my expectations, will buy again. (order #687786)",5
+PROD-0003,2026-03-08,"Solid build quality, no complaints so far. (order #639073)",5
+PROD-0003,2026-06-04,Instructions were unclear and setup was frustrating. (order #915877),2
+PROD-0003,2026-06-05,"Absolutely love this, works exactly as described. (order #755491)",4
+PROD-0003,2026-02-21,"Absolutely love this, works exactly as described. (order #656123)",5
+PROD-0003,2026-02-10,"It's okay, does the job but nothing special. (order #235773)",3
+PROD-0003,2026-03-05,"Perfect fit for what I needed, five stars. (order #775252)",4
+PROD-0003,2026-06-06,"Great quality for the price, highly recommend. (order #632363)",4
+PROD-0004,2026-02-15,"Great quality for the price, highly recommend. (order #760305)",4
+PROD-0004,2026-04-01,"Not what I expected from the photos, feels cheap. (order #297350)",1
+PROD-0004,2026-07-07,"It's okay, does the job but nothing special. (order #397101)",3
+PROD-0004,2026-02-23,"Better than I expected, glad I bought it. (order #209194)",4
+PROD-0004,2026-07-13,Fast shipping and the product feels premium. (order #885726),5
+PROD-0004,2026-06-29,"Perfect fit for what I needed, five stars. (order #742785)",5
+PROD-0004,2026-07-01,Fast shipping and the product feels premium. (order #843582),5
+PROD-0005,2026-03-24,"Average product, average experience overall. (order #574263)",3
+PROD-0005,2026-05-19,"Perfect fit for what I needed, five stars. (order #547871)",5
+PROD-0005,2026-02-07,"Better than I expected, glad I bought it. (order #553267)",4
+PROD-0005,2026-05-13,Fast shipping and the product feels premium. (order #507847),5
+PROD-0005,2026-02-08,"Works fine so far, will update after more use. (order #153203)",3
+PROD-0005,2026-06-26,"Not bad, though delivery took longer than expected. (order #99590)",3
+PROD-0006,2026-06-16,"Absolutely love this, works exactly as described. (order #574014)",5
+PROD-0006,2026-01-20,"Better than I expected, glad I bought it. (order #223166)",4
+PROD-0006,2026-03-22,"Exceeded my expectations, will buy again. (order #242868)",4
+PROD-0006,2026-03-27,"Exceeded my expectations, will buy again. (order #741028)",4
+PROD-0006,2026-05-07,"Absolutely love this, works exactly as described. (order #235935)",4
+PROD-0006,2026-04-03,"Better than I expected, glad I bought it. (order #387388)",5
+PROD-0006,2026-01-22,"Absolutely love this, works exactly as described. (order #595910)",4
+PROD-0007,2026-05-11,Decent value but packaging could be better. (order #183501),3
+PROD-0007,2026-06-22,"Broke after a few days of normal use, disappointed. (order #288197)",2
+PROD-0007,2026-04-07,"Great quality for the price, highly recommend. (order #142386)",5
+PROD-0007,2026-05-23,"Better than I expected, glad I bought it. (order #416758)",4
+PROD-0007,2026-05-09,"Poor quality control, would not buy again. (order #346893)",1
+PROD-0007,2026-05-20,"Exceeded my expectations, will buy again. (order #894836)",4
+PROD-0007,2026-05-27,"Great quality for the price, highly recommend. (order #589115)",4
+PROD-0007,2026-03-12,Decent value but packaging could be better. (order #214952),3
+PROD-0007,2026-02-25,"Works fine so far, will update after more use. (order #5273)",3
+PROD-0008,2026-04-23,"Not what I expected from the photos, feels cheap. (order #992613)",1
+PROD-0008,2026-02-13,"Not bad, though delivery took longer than expected. (order #307605)",3
+PROD-0008,2026-04-03,"Perfect fit for what I needed, five stars. (order #556231)",5
+PROD-0008,2026-06-15,"Arrived damaged, requesting a refund. (order #842923)",1
+PROD-0008,2026-03-01,"Not bad, though delivery took longer than expected. (order #505839)",3
+PROD-0008,2026-03-26,Fast shipping and the product feels premium. (order #67667),4
+PROD-0008,2026-07-20,"Broke after a few days of normal use, disappointed. (order #454518)",1
+PROD-0009,2026-07-16,Fast shipping and the product feels premium. (order #960034),5
+PROD-0009,2026-06-23,"Poor quality control, would not buy again. (order #253816)",1
+PROD-0009,2026-07-16,"Absolutely love this, works exactly as described. (order #993315)",5
+PROD-0009,2026-05-15,"Not what I expected from the photos, feels cheap. (order #613558)",1
+PROD-0009,2026-01-07,"Perfect fit for what I needed, five stars. (order #580130)",5
+PROD-0009,2026-06-18,"Not bad, though delivery took longer than expected. (order #308947)",3
+PROD-0009,2026-03-01,"Broke after a few days of normal use, disappointed. (order #115649)",2
+PROD-0010,2026-01-30,"It's okay, does the job but nothing special. (order #782519)",3
+PROD-0010,2026-02-03,"Absolutely love this, works exactly as described. (order #693954)",5
+PROD-0010,2026-02-07,Decent value but packaging could be better. (order #438704),3
+PROD-0010,2026-04-16,"Better than I expected, glad I bought it. (order #285028)",4
+PROD-0011,2026-01-10,"Arrived damaged, requesting a refund. (order #623572)",1
+PROD-0011,2026-06-02,Fast shipping and the product feels premium. (order #724903),4
+PROD-0011,2026-06-26,Fast shipping and the product feels premium. (order #795133),4
+PROD-0011,2026-01-30,Fast shipping and the product feels premium. (order #89835),4
+PROD-0011,2026-04-07,"Not what I expected from the photos, feels cheap. (order #171596)",2
+PROD-0011,2026-07-09,"Not what I expected from the photos, feels cheap. (order #786378)",2
+PROD-0012,2026-01-21,"Average product, average experience overall. (order #370296)",3
+PROD-0012,2026-01-01,"Better than I expected, glad I bought it. (order #945315)",4
+PROD-0012,2026-03-25,"Broke after a few days of normal use, disappointed. (order #340522)",2
+PROD-0012,2026-05-17,"It's okay, does the job but nothing special. (order #710680)",3
+PROD-0012,2026-03-10,"Absolutely love this, works exactly as described. (order #109518)",5
+PROD-0012,2026-06-26,"Perfect fit for what I needed, five stars. (order #633180)",5
+PROD-0012,2026-02-07,"Great quality for the price, highly recommend. (order #6638)",4
+PROD-0012,2026-07-02,"It's okay, does the job but nothing special. (order #988919)",3
+PROD-0013,2026-06-26,"Perfect fit for what I needed, five stars. (order #62247)",5
+PROD-0013,2026-05-17,"Perfect fit for what I needed, five stars. (order #443597)",5
+PROD-0013,2026-07-27,"Poor quality control, would not buy again. (order #922917)",1
+PROD-0013,2026-06-19,"Poor quality control, would not buy again. (order #682817)",2
+PROD-0013,2026-07-21,"Perfect fit for what I needed, five stars. (order #709111)",5
+PROD-0013,2026-03-20,Customer service was great when I had a question. (order #465177),4
+PROD-0013,2026-04-22,"It's okay, does the job but nothing special. (order #693688)",3
+PROD-0013,2026-01-26,Customer service was great when I had a question. (order #942958),5
+PROD-0014,2026-06-13,"Average product, average experience overall. (order #104943)",3
+PROD-0014,2026-07-29,"Solid build quality, no complaints so far. (order #713275)",5
+PROD-0014,2026-03-10,"Works fine so far, will update after more use. (order #140005)",3
+PROD-0014,2026-04-17,"Great quality for the price, highly recommend. (order #936857)",5
+PROD-0014,2026-07-23,"Exceeded my expectations, will buy again. (order #793469)",4
+PROD-0014,2026-05-14,"Better than I expected, glad I bought it. (order #256416)",4
+PROD-0015,2026-04-27,"Better than I expected, glad I bought it. (order #900136)",5
+PROD-0015,2026-04-11,"It's okay, does the job but nothing special. (order #833425)",3
+PROD-0015,2026-03-08,"It's okay, does the job but nothing special. (order #309569)",3
+PROD-0015,2026-02-07,"Absolutely love this, works exactly as described. (order #510735)",4
+PROD-0015,2026-07-13,Fast shipping and the product feels premium. (order #326416),5
+PROD-0016,2026-03-20,"Solid build quality, no complaints so far. (order #431085)",4
+PROD-0016,2026-05-05,"Absolutely love this, works exactly as described. (order #845985)",4
+PROD-0016,2026-05-08,"Broke after a few days of normal use, disappointed. (order #410239)",2
+PROD-0016,2026-03-20,"Broke after a few days of normal use, disappointed. (order #111251)",1
+PROD-0016,2026-05-09,"Not bad, though delivery took longer than expected. (order #512339)",3
+PROD-0016,2026-01-17,"Exceeded my expectations, will buy again. (order #44262)",5
+PROD-0017,2026-02-10,"Arrived damaged, requesting a refund. (order #754754)",1
+PROD-0017,2026-01-26,Decent value but packaging could be better. (order #186225),3
+PROD-0017,2026-01-17,"Works fine so far, will update after more use. (order #963596)",3
+PROD-0017,2026-04-04,"Not what I expected from the photos, feels cheap. (order #120660)",1
+PROD-0017,2026-04-18,Fast shipping and the product feels premium. (order #747019),4
+PROD-0018,2026-01-15,"Perfect fit for what I needed, five stars. (order #143692)",4
+PROD-0018,2026-03-07,Fast shipping and the product feels premium. (order #686543),5
+PROD-0018,2026-07-17,"Exceeded my expectations, will buy again. (order #922439)",4
+PROD-0018,2026-01-08,"Not what I expected from the photos, feels cheap. (order #193068)",1
+PROD-0018,2026-03-26,"Exceeded my expectations, will buy again. (order #547061)",5
+PROD-0019,2026-06-06,"Solid build quality, no complaints so far. (order #995821)",5
+PROD-0019,2026-02-09,Fast shipping and the product feels premium. (order #545886),5
+PROD-0019,2026-05-10,Decent value but packaging could be better. (order #49157),3
+PROD-0019,2026-03-18,"Not bad, though delivery took longer than expected. (order #345369)",3
+PROD-0019,2026-04-23,Customer service was great when I had a question. (order #304891),4
+PROD-0019,2026-02-17,"Absolutely love this, works exactly as described. (order #810622)",4
+PROD-0019,2026-06-29,"Exceeded my expectations, will buy again. (order #907371)",5
+PROD-0019,2026-06-05,"Poor quality control, would not buy again. (order #615299)",1
+PROD-0020,2026-01-08,"Exceeded my expectations, will buy again. (order #383913)",5
+PROD-0020,2026-03-21,"Broke after a few days of normal use, disappointed. (order #710781)",1
+PROD-0020,2026-07-10,"Average product, average experience overall. (order #40944)",3
+PROD-0020,2026-06-03,"Absolutely love this, works exactly as described. (order #995605)",5
+PROD-0020,2026-04-11,"Better than I expected, glad I bought it. (order #829154)",4
+PROD-0021,2026-06-07,"Broke after a few days of normal use, disappointed. (order #429672)",2
+PROD-0021,2026-03-06,"Better than I expected, glad I bought it. (order #204918)",4
+PROD-0021,2026-01-01,"Broke after a few days of normal use, disappointed. (order #16584)",1
+PROD-0021,2026-03-27,"Poor quality control, would not buy again. (order #536167)",2
+PROD-0021,2026-07-01,Decent value but packaging could be better. (order #649685),3
+PROD-0022,2026-01-24,"Exceeded my expectations, will buy again. (order #932640)",4
+PROD-0022,2026-02-28,"Solid build quality, no complaints so far. (order #1284)",5
+PROD-0022,2026-05-06,Instructions were unclear and setup was frustrating. (order #686447),2
+PROD-0022,2026-06-23,"Poor quality control, would not buy again. (order #127215)",2
+PROD-0023,2026-03-06,"Not what I expected from the photos, feels cheap. (order #672757)",1
+PROD-0023,2026-04-26,"Broke after a few days of normal use, disappointed. (order #736430)",2
+PROD-0023,2026-03-23,Customer service was great when I had a question. (order #779528),5
+PROD-0023,2026-06-12,Instructions were unclear and setup was frustrating. (order #322650),2
+PROD-0023,2026-01-27,"Exceeded my expectations, will buy again. (order #682591)",4
+PROD-0023,2026-03-11,Decent value but packaging could be better. (order #8469),3
+PROD-0024,2026-01-23,"Not what I expected from the photos, feels cheap. (order #913828)",1
+PROD-0024,2026-05-13,"Perfect fit for what I needed, five stars. (order #444420)",5
+PROD-0024,2026-03-03,"Exceeded my expectations, will buy again. (order #556781)",4
+PROD-0024,2026-07-20,"Perfect fit for what I needed, five stars. (order #463263)",4
+PROD-0024,2026-01-07,Fast shipping and the product feels premium. (order #275965),5
+PROD-0024,2026-03-03,"Not bad, though delivery took longer than expected. (order #859744)",3
+PROD-0024,2026-02-05,"It's okay, does the job but nothing special. (order #198009)",3
+PROD-0024,2026-06-16,"Better than I expected, glad I bought it. (order #451829)",5
+PROD-0025,2026-01-28,Customer service was great when I had a question. (order #985546),4
+PROD-0025,2026-03-22,"Arrived damaged, requesting a refund. (order #578241)",1
+PROD-0025,2026-02-09,"Perfect fit for what I needed, five stars. (order #528917)",4
+PROD-0025,2026-05-10,Decent value but packaging could be better. (order #752277),3
+PROD-0025,2026-05-31,Fast shipping and the product feels premium. (order #800860),5
+PROD-0026,2026-01-16,Instructions were unclear and setup was frustrating. (order #595852),2
+PROD-0026,2026-06-28,"Exceeded my expectations, will buy again. (order #192721)",5
+PROD-0026,2026-01-20,"Not what I expected from the photos, feels cheap. (order #540965)",1
+PROD-0026,2026-03-13,"Average product, average experience overall. (order #384745)",3
+PROD-0026,2026-07-13,Fast shipping and the product feels premium. (order #422884),4
+PROD-0026,2026-01-18,"Solid build quality, no complaints so far. (order #652602)",5
+PROD-0027,2026-05-11,"Perfect fit for what I needed, five stars. (order #520442)",4
+PROD-0027,2026-01-03,Decent value but packaging could be better. (order #411725),3
+PROD-0027,2026-01-15,"Broke after a few days of normal use, disappointed. (order #516623)",2
+PROD-0027,2026-02-07,"Better than I expected, glad I bought it. (order #465312)",5
+PROD-0028,2026-07-15,"Exceeded my expectations, will buy again. (order #880340)",4
+PROD-0028,2026-01-12,"It's okay, does the job but nothing special. (order #775460)",3
+PROD-0028,2026-07-07,Fast shipping and the product feels premium. (order #668830),5
+PROD-0028,2026-07-14,"Broke after a few days of normal use, disappointed. (order #299169)",2
+PROD-0028,2026-07-22,"Exceeded my expectations, will buy again. (order #346122)",5
+PROD-0029,2026-02-19,"Better than I expected, glad I bought it. (order #819292)",4
+PROD-0029,2026-07-16,Decent value but packaging could be better. (order #169659),3
+PROD-0029,2026-07-12,Customer service was great when I had a question. (order #800787),5
+PROD-0029,2026-01-12,Decent value but packaging could be better. (order #16920),3
+PROD-0029,2026-06-29,"Perfect fit for what I needed, five stars. (order #344896)",5
+PROD-0029,2026-06-20,Customer service was great when I had a question. (order #513758),4
+PROD-0029,2026-07-08,"Solid build quality, no complaints so far. (order #627267)",5
+PROD-0029,2026-04-06,"Solid build quality, no complaints so far. (order #506855)",5
+PROD-0030,2026-06-15,"Perfect fit for what I needed, five stars. (order #948700)",5
+PROD-0030,2026-06-01,"It's okay, does the job but nothing special. (order #279584)",3
+PROD-0030,2026-01-03,Customer service was great when I had a question. (order #115526),5
+PROD-0030,2026-06-05,"Exceeded my expectations, will buy again. (order #283084)",5
+PROD-0030,2026-07-04,"Not bad, though delivery took longer than expected. (order #63742)",3
+PROD-0030,2026-06-15,Fast shipping and the product feels premium. (order #284175),5
+PROD-0031,2026-03-14,"It's okay, does the job but nothing special. (order #937103)",3
+PROD-0031,2026-04-22,"It's okay, does the job but nothing special. (order #899195)",3
+PROD-0031,2026-05-25,"It's okay, does the job but nothing special. (order #809953)",3
+PROD-0031,2026-05-21,"Great quality for the price, highly recommend. (order #914710)",5
+PROD-0031,2026-05-11,Customer service was great when I had a question. (order #729071),5
+PROD-0031,2026-03-05,"Broke after a few days of normal use, disappointed. (order #460081)",2
+PROD-0032,2026-03-21,"Average product, average experience overall. (order #556098)",3
+PROD-0032,2026-02-15,"Average product, average experience overall. (order #195276)",3
+PROD-0032,2026-05-05,"Great quality for the price, highly recommend. (order #817750)",5
+PROD-0032,2026-04-10,"Exceeded my expectations, will buy again. (order #364907)",4
+PROD-0032,2026-05-10,"Perfect fit for what I needed, five stars. (order #971347)",4
+PROD-0033,2026-05-10,"Absolutely love this, works exactly as described. (order #686736)",4
+PROD-0033,2026-03-10,Decent value but packaging could be better. (order #67733),3
+PROD-0033,2026-07-17,"Not what I expected from the photos, feels cheap. (order #735093)",1
+PROD-0033,2026-05-14,Customer service was great when I had a question. (order #903534),4
+PROD-0034,2026-02-04,"Not what I expected from the photos, feels cheap. (order #429561)",2
+PROD-0034,2026-02-08,"Not bad, though delivery took longer than expected. (order #751527)",3
+PROD-0034,2026-06-02,"Perfect fit for what I needed, five stars. (order #798820)",5
+PROD-0034,2026-04-12,"Solid build quality, no complaints so far. (order #696007)",5
+PROD-0034,2026-07-20,"Absolutely love this, works exactly as described. (order #637171)",5
+PROD-0035,2026-07-11,Customer service was great when I had a question. (order #448592),4
+PROD-0035,2026-02-15,Instructions were unclear and setup was frustrating. (order #683366),1
+PROD-0035,2026-05-14,"Perfect fit for what I needed, five stars. (order #655508)",4
+PROD-0035,2026-05-11,"Great quality for the price, highly recommend. (order #16552)",5
+PROD-0036,2026-04-24,"Works fine so far, will update after more use. (order #763156)",3
+PROD-0036,2026-03-27,"Absolutely love this, works exactly as described. (order #133359)",4
+PROD-0036,2026-04-09,"Perfect fit for what I needed, five stars. (order #563990)",4
+PROD-0036,2026-04-14,"Poor quality control, would not buy again. (order #86604)",2
+PROD-0037,2026-01-13,"Broke after a few days of normal use, disappointed. (order #686125)",2
+PROD-0037,2026-01-26,"It's okay, does the job but nothing special. (order #696579)",3
+PROD-0037,2026-04-19,"Better than I expected, glad I bought it. (order #836100)",5
+PROD-0037,2026-01-01,Fast shipping and the product feels premium. (order #406538),5
+PROD-0037,2026-01-01,Fast shipping and the product feels premium. (order #249763),4
+PROD-0038,2026-05-31,"Solid build quality, no complaints so far. (order #904709)",4
+PROD-0038,2026-01-29,Instructions were unclear and setup was frustrating. (order #373937),2
+PROD-0038,2026-05-23,"Absolutely love this, works exactly as described. (order #64868)",5
+PROD-0038,2026-01-24,"Perfect fit for what I needed, five stars. (order #666872)",5
+PROD-0038,2026-03-22,"Not what I expected from the photos, feels cheap. (order #30888)",2
+PROD-0038,2026-06-10,"Exceeded my expectations, will buy again. (order #664965)",4
+PROD-0038,2026-01-28,"Perfect fit for what I needed, five stars. (order #686477)",4
+PROD-0038,2026-02-22,"Average product, average experience overall. (order #80990)",3
+PROD-0039,2026-01-11,"Better than I expected, glad I bought it. (order #729530)",4
+PROD-0039,2026-06-04,"Absolutely love this, works exactly as described. (order #131974)",4
+PROD-0039,2026-07-19,Fast shipping and the product feels premium. (order #253911),4
+PROD-0039,2026-04-22,Customer service was great when I had a question. (order #869794),4
+PROD-0040,2026-03-29,"Absolutely love this, works exactly as described. (order #814712)",5
+PROD-0040,2026-02-23,"Solid build quality, no complaints so far. (order #780587)",5
+PROD-0040,2026-02-03,"Solid build quality, no complaints so far. (order #52784)",4
+PROD-0040,2026-04-18,Decent value but packaging could be better. (order #157164),3
+PROD-0041,2026-05-18,"Poor quality control, would not buy again. (order #497114)",1
+PROD-0041,2026-04-13,"Works fine so far, will update after more use. (order #420111)",3
+PROD-0041,2026-07-30,"Exceeded my expectations, will buy again. (order #923436)",4
+PROD-0041,2026-02-20,"Not bad, though delivery took longer than expected. (order #214213)",3
+PROD-0041,2026-05-31,Instructions were unclear and setup was frustrating. (order #740850),1
+PROD-0042,2026-03-02,"Works fine so far, will update after more use. (order #728076)",3
+PROD-0042,2026-06-27,"Better than I expected, glad I bought it. (order #262675)",5
+PROD-0042,2026-04-24,"Works fine so far, will update after more use. (order #994692)",3
+PROD-0042,2026-01-29,"Broke after a few days of normal use, disappointed. (order #848187)",1
+PROD-0042,2026-02-01,"Not what I expected from the photos, feels cheap. (order #339347)",2
+PROD-0042,2026-07-26,"Great quality for the price, highly recommend. (order #797767)",5
+PROD-0042,2026-07-28,Instructions were unclear and setup was frustrating. (order #310158),1
+PROD-0042,2026-04-24,"Solid build quality, no complaints so far. (order #590884)",4
+PROD-0043,2026-01-05,Fast shipping and the product feels premium. (order #468616),5
+PROD-0043,2026-02-20,"Absolutely love this, works exactly as described. (order #830068)",4
+PROD-0043,2026-03-05,"Average product, average experience overall. (order #990118)",3
+PROD-0043,2026-02-23,"Solid build quality, no complaints so far. (order #395994)",5
+PROD-0043,2026-03-27,"Great quality for the price, highly recommend. (order #894532)",4
+PROD-0043,2026-02-21,"Great quality for the price, highly recommend. (order #578537)",5
+PROD-0044,2026-04-16,"Works fine so far, will update after more use. (order #122889)",3
+PROD-0044,2026-07-12,"Solid build quality, no complaints so far. (order #636940)",4
+PROD-0044,2026-06-20,"Absolutely love this, works exactly as described. (order #308362)",5
+PROD-0044,2026-02-23,"Great quality for the price, highly recommend. (order #824919)",4
+PROD-0044,2026-06-28,"Absolutely love this, works exactly as described. (order #212583)",4
+PROD-0044,2026-02-08,"Broke after a few days of normal use, disappointed. (order #781996)",1
+PROD-0045,2026-06-13,"Solid build quality, no complaints so far. (order #456122)",5
+PROD-0045,2026-05-01,"Broke after a few days of normal use, disappointed. (order #823091)",2
+PROD-0045,2026-04-03,"Not bad, though delivery took longer than expected. (order #393497)",3
+PROD-0045,2026-04-25,"Exceeded my expectations, will buy again. (order #350674)",5
+PROD-0045,2026-03-27,"Great quality for the price, highly recommend. (order #28674)",5
+PROD-0046,2026-02-24,"Works fine so far, will update after more use. (order #684708)",3
+PROD-0046,2026-06-22,"Exceeded my expectations, will buy again. (order #181994)",4
+PROD-0046,2026-07-09,"Better than I expected, glad I bought it. (order #33991)",4
+PROD-0046,2026-07-24,"Works fine so far, will update after more use. (order #246423)",3
+PROD-0046,2026-03-10,"Works fine so far, will update after more use. (order #406047)",3
+PROD-0047,2026-01-11,"It's okay, does the job but nothing special. (order #845656)",3
+PROD-0047,2026-06-20,"Works fine so far, will update after more use. (order #860200)",3
+PROD-0047,2026-05-29,"Not what I expected from the photos, feels cheap. (order #367191)",2
+PROD-0047,2026-02-23,"Arrived damaged, requesting a refund. (order #436572)",2
+PROD-0047,2026-07-19,Customer service was great when I had a question. (order #773051),5
+PROD-0047,2026-05-10,"Arrived damaged, requesting a refund. (order #504930)",1
+PROD-0048,2026-04-19,"Average product, average experience overall. (order #14727)",3
+PROD-0048,2026-07-05,"Broke after a few days of normal use, disappointed. (order #979779)",1
+PROD-0048,2026-06-06,"Poor quality control, would not buy again. (order #221987)",2
+PROD-0048,2026-07-02,"Absolutely love this, works exactly as described. (order #866347)",5
+PROD-0048,2026-06-29,Customer service was great when I had a question. (order #83068),4
+PROD-0049,2026-04-11,Instructions were unclear and setup was frustrating. (order #728983),2
+PROD-0049,2026-05-09,"Solid build quality, no complaints so far. (order #246185)",4
+PROD-0049,2026-06-07,"Poor quality control, would not buy again. (order #188019)",2
+PROD-0049,2026-01-24,"Poor quality control, would not buy again. (order #677365)",2
+PROD-0049,2026-04-01,"Exceeded my expectations, will buy again. (order #784586)",5
+PROD-0049,2026-06-06,"Perfect fit for what I needed, five stars. (order #156307)",5
+PROD-0049,2026-03-13,"Great quality for the price, highly recommend. (order #222480)",4
+PROD-0049,2026-03-26,"Absolutely love this, works exactly as described. (order #300856)",4
+PROD-0049,2026-06-26,"Arrived damaged, requesting a refund. (order #837400)",2
+PROD-0050,2026-01-31,"Not what I expected from the photos, feels cheap. (order #912008)",2
+PROD-0050,2026-04-20,"Works fine so far, will update after more use. (order #853701)",3
+PROD-0050,2026-06-30,"Arrived damaged, requesting a refund. (order #967467)",2
+PROD-0050,2026-03-21,Instructions were unclear and setup was frustrating. (order #285165),2
+PROD-0050,2026-07-19,"Great quality for the price, highly recommend. (order #720177)",4
+PROD-0050,2026-04-16,"Average product, average experience overall. (order #767764)",3

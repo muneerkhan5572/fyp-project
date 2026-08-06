@@ -1,9 +1,19 @@
-import { HistoryIcon } from "lucide-react";
+"use client";
+
+import { HistoryIcon, MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { DataTableLinkPagination } from "@/components/data-table/data-table-link-pagination";
+import { ImportDeleteDialog } from "@/components/imports/import-delete-dialog";
 import { ImportHistoryFilters } from "@/components/imports/import-history-filters";
 import { ImportStatusBadge } from "@/components/imports/import-status-badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Empty,
   EmptyContent,
@@ -54,6 +64,11 @@ export function ImportHistoryTable({
   pathname,
   filters,
 }: ImportHistoryTableProps) {
+  const [deletingImport, setDeletingImport] = useState<Pick<
+    Import,
+    "id" | "fileName"
+  > | null>(null);
+
   const hasAnyImports = total > 0 || Object.values(filters).some(Boolean);
 
   if (!hasAnyImports) {
@@ -96,6 +111,7 @@ export function ImportHistoryTable({
               <TableHead className="text-right">Failed</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Uploaded</TableHead>
+              <TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -124,13 +140,36 @@ export function ImportHistoryTable({
                   <TableCell className="text-muted-foreground text-xs">
                     {dateFormatter.format(row.createdAt)}
                   </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={<Button size="icon" variant="ghost" />}
+                      >
+                        <MoreVerticalIcon />
+                        <span className="sr-only">Import actions</span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() =>
+                            setDeletingImport({
+                              id: row.id,
+                              fileName: row.fileName,
+                            })
+                          }
+                          variant="destructive"
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
                   className="h-24 text-center text-muted-foreground"
-                  colSpan={7}
+                  colSpan={8}
                 >
                   No imports match these filters.
                 </TableCell>
@@ -147,6 +186,17 @@ export function ImportHistoryTable({
         pathname={pathname}
         total={total}
       />
+
+      {deletingImport ? (
+        <ImportDeleteDialog
+          datasetId={datasetId}
+          importRow={deletingImport}
+          onOpenChange={(open) => {
+            if (!open) setDeletingImport(null);
+          }}
+          open
+        />
+      ) : null}
     </div>
   );
 }

@@ -52,6 +52,8 @@ export function chunk<T>(items: T[], size: number): T[][] {
 }
 
 async function writeImportRow(
+  executor: DbExecutor,
+  importId: string,
   datasetId: string,
   type: ImportType,
   fileName: string,
@@ -69,22 +71,20 @@ async function writeImportRow(
 
   const cappedErrors = errors.slice(0, MAX_ERRORS);
 
-  const [row] = await db
-    .insert(imports)
-    .values({
-      datasetId,
-      type,
-      fileName,
-      totalRows,
-      importedRows,
-      failedRows,
-      errors: cappedErrors,
-      status,
-    })
-    .returning({ id: imports.id });
+  await executor.insert(imports).values({
+    id: importId,
+    datasetId,
+    type,
+    fileName,
+    totalRows,
+    importedRows,
+    failedRows,
+    errors: cappedErrors,
+    status,
+  });
 
   return {
-    importId: row.id,
+    importId,
     status,
     totalRows,
     importedRows,
@@ -98,11 +98,20 @@ async function runProductsImport(
   fileName: string,
   content: string,
 ): Promise<RunImportResult> {
+  const importId = crypto.randomUUID();
   const parsed = parseCsv(content, PRODUCT_REQUIRED_HEADERS);
   if (!parsed.success) {
-    return writeImportRow(datasetId, "products", fileName, 0, 0, 0, [
-      { row: 0, message: parsed.error },
-    ]);
+    return writeImportRow(
+      db,
+      importId,
+      datasetId,
+      "products",
+      fileName,
+      0,
+      0,
+      0,
+      [{ row: 0, message: parsed.error }],
+    );
   }
 
   const { rows } = parsed.data;
@@ -139,7 +148,19 @@ async function runProductsImport(
       ),
     );
 
-    await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
+      const result = await writeImportRow(
+        tx,
+        importId,
+        datasetId,
+        "products",
+        fileName,
+        rows.length,
+        validRows.length,
+        rows.length - validRows.length,
+        errors,
+      );
+
       for (const batch of chunk(
         validRows.map((row, index) => ({
           ...row,
@@ -160,6 +181,7 @@ async function runProductsImport(
               cost: data.cost !== undefined ? data.cost.toString() : null,
               stock: data.stock ?? null,
               embedding: embedding ?? null,
+              importId,
             })),
           )
           .onConflictDoUpdate({
@@ -172,14 +194,19 @@ async function runProductsImport(
               cost: sql`excluded.cost`,
               stock: sql`excluded.stock`,
               embedding: sql`excluded.embedding`,
+              importId: sql`excluded.import_id`,
               updatedAt: sql`now()`,
             },
           });
       }
+
+      return result;
     });
   }
 
   return writeImportRow(
+    db,
+    importId,
     datasetId,
     "products",
     fileName,
@@ -216,9 +243,10 @@ async function runSalesImport(
   fileName: string,
   content: string,
 ): Promise<RunImportResult> {
+  const importId = crypto.randomUUID();
   const parsed = parseCsv(content, SALE_REQUIRED_HEADERS);
   if (!parsed.success) {
-    return writeImportRow(datasetId, "sales", fileName, 0, 0, 0, [
+    return writeImportRow(db, importId, datasetId, "sales", fileName, 0, 0, 0, [
       { row: 0, message: parsed.error },
     ]);
   }
@@ -284,7 +312,19 @@ async function runSalesImport(
   }
 
   if (validRows.length > 0) {
-    await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
+      const result = await writeImportRow(
+        tx,
+        importId,
+        datasetId,
+        "sales",
+        fileName,
+        rows.length,
+        validRows.length,
+        rows.length - validRows.length,
+        errors,
+      );
+
       for (const batch of chunk(validRows, BATCH_SIZE)) {
         await tx
           .insert(sales)
@@ -295,6 +335,7 @@ async function runSalesImport(
               saleDate: entry.saleDate,
               quantity: entry.quantity,
               revenue: entry.revenue.toString(),
+              importId,
             })),
           )
           .onConflictDoUpdate({
@@ -302,13 +343,18 @@ async function runSalesImport(
             set: {
               quantity: sql`excluded.quantity`,
               revenue: sql`excluded.revenue`,
+              importId: sql`excluded.import_id`,
             },
           });
       }
+
+      return result;
     });
   }
 
   return writeImportRow(
+    db,
+    importId,
     datasetId,
     "sales",
     fileName,
@@ -324,11 +370,20 @@ async function runTrafficImport(
   fileName: string,
   content: string,
 ): Promise<RunImportResult> {
+  const importId = crypto.randomUUID();
   const parsed = parseCsv(content, TRAFFIC_REQUIRED_HEADERS);
   if (!parsed.success) {
-    return writeImportRow(datasetId, "traffic", fileName, 0, 0, 0, [
-      { row: 0, message: parsed.error },
-    ]);
+    return writeImportRow(
+      db,
+      importId,
+      datasetId,
+      "traffic",
+      fileName,
+      0,
+      0,
+      0,
+      [{ row: 0, message: parsed.error }],
+    );
   }
 
   const { rows } = parsed.data;
@@ -390,7 +445,19 @@ async function runTrafficImport(
   }
 
   if (validRows.length > 0) {
-    await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
+      const result = await writeImportRow(
+        tx,
+        importId,
+        datasetId,
+        "traffic",
+        fileName,
+        rows.length,
+        validRows.length,
+        rows.length - validRows.length,
+        errors,
+      );
+
       for (const batch of chunk(validRows, BATCH_SIZE)) {
         await tx
           .insert(trafficRecords)
@@ -400,19 +467,25 @@ async function runTrafficImport(
               productId: entry.productId,
               trafficDate: entry.trafficDate,
               views: entry.views,
+              importId,
             })),
           )
           .onConflictDoUpdate({
             target: [trafficRecords.productId, trafficRecords.trafficDate],
             set: {
               views: sql`excluded.views`,
+              importId: sql`excluded.import_id`,
             },
           });
       }
+
+      return result;
     });
   }
 
   return writeImportRow(
+    db,
+    importId,
     datasetId,
     "traffic",
     fileName,
@@ -428,11 +501,20 @@ async function runReviewsImport(
   fileName: string,
   content: string,
 ): Promise<RunImportResult> {
+  const importId = crypto.randomUUID();
   const parsed = parseCsv(content, REVIEW_REQUIRED_HEADERS);
   if (!parsed.success) {
-    return writeImportRow(datasetId, "reviews", fileName, 0, 0, 0, [
-      { row: 0, message: parsed.error },
-    ]);
+    return writeImportRow(
+      db,
+      importId,
+      datasetId,
+      "reviews",
+      fileName,
+      0,
+      0,
+      0,
+      [{ row: 0, message: parsed.error }],
+    );
   }
 
   const { rows } = parsed.data;
@@ -500,7 +582,19 @@ async function runReviewsImport(
       validRows.map((entry) => entry.reviewText),
     );
 
-    await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
+      const result = await writeImportRow(
+        tx,
+        importId,
+        datasetId,
+        "reviews",
+        fileName,
+        rows.length,
+        validRows.length,
+        rows.length - validRows.length,
+        errors,
+      );
+
       for (const batch of chunk(
         validRows.map((row, index) => ({
           ...row,
@@ -521,16 +615,21 @@ async function runReviewsImport(
               sentimentScore: entry.sentiment
                 ? entry.sentiment.score.toString()
                 : null,
+              importId,
             })),
           )
           .onConflictDoNothing({
             target: [reviews.productId, reviews.reviewText],
           });
       }
+
+      return result;
     });
   }
 
   return writeImportRow(
+    db,
+    importId,
     datasetId,
     "reviews",
     fileName,

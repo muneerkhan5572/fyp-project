@@ -102,6 +102,9 @@ export const products = pgTable(
     }),
     externalSource: text("external_source"),
     externalId: text("external_id"),
+    importId: uuid("import_id").references(() => imports.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -136,6 +139,9 @@ export const sales = pgTable(
     saleDate: date("sale_date", { mode: "string" }).notNull(),
     quantity: integer("quantity").notNull(),
     revenue: numeric("revenue", { precision: 14, scale: 2 }).notNull(),
+    importId: uuid("import_id").references(() => imports.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -164,6 +170,9 @@ export const trafficRecords = pgTable(
       .references(() => products.id, { onDelete: "cascade" }),
     trafficDate: date("traffic_date", { mode: "string" }).notNull(),
     views: integer("views").notNull(),
+    importId: uuid("import_id").references(() => imports.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -298,6 +307,9 @@ export const reviews = pgTable(
     sentimentLabel: reviewSentimentLabel("sentiment_label"),
     sentimentScore: numeric("sentiment_score", { precision: 5, scale: 4 }),
     source: reviewSource("source").notNull().default("scraped"),
+    importId: uuid("import_id").references(() => imports.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
