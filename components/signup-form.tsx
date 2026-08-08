@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { signup } from "@/app/actions/auth";
 import { TextField } from "@/components/form/text-field";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,83 +30,91 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   });
 
   return (
-    <Card {...props}>
-      <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>
-          Enter your information below to create your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <FieldGroup>
-            <form.Field name="name">
-              {(field) => (
-                <TextField
-                  autoComplete="name"
-                  field={field}
-                  label="Full Name"
-                  placeholder="John Doe"
-                  submitOnEnter
-                />
-              )}
-            </form.Field>
-            <form.Field name="email">
-              {(field) => (
-                <TextField
-                  autoComplete="email"
-                  field={field}
-                  label="Email"
-                  placeholder="m@example.com"
-                  submitOnEnter
-                  type="email"
-                />
-              )}
-            </form.Field>
-            <form.Field name="password">
-              {(field) => (
-                <TextField
-                  autoComplete="new-password"
-                  field={field}
-                  label="Password"
-                  submitOnEnter
-                  type="password"
-                />
-              )}
-            </form.Field>
-            <form.Field name="confirmPassword">
-              {(field) => (
-                <TextField
-                  autoComplete="new-password"
-                  field={field}
-                  label="Confirm Password"
-                  submitOnEnter
-                  type="password"
-                />
-              )}
-            </form.Field>
-            <Field>
-              <form.Subscribe selector={(state) => state.isSubmitting}>
-                {(isSubmitting) => (
-                  <Button disabled={isSubmitting} type="submit">
-                    {isSubmitting ? "Creating account..." : "Create Account"}
-                  </Button>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <Logo className="size-8 text-primary" />
+        <span className="font-semibold text-lg">
+          E-commerce Product Demand Prediction
+        </span>
+      </div>
+      <Card {...props}>
+        <CardHeader>
+          <CardTitle>Create an account</CardTitle>
+          <CardDescription>
+            Enter your information below to create your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.Field name="name">
+                {(field) => (
+                  <TextField
+                    autoComplete="name"
+                    field={field}
+                    label="Full Name"
+                    placeholder="John Doe"
+                    submitOnEnter
+                  />
                 )}
-              </form.Subscribe>
-              <FieldDescription className="px-6 text-center">
-                Already have an account? <Link href="/login">Sign in</Link>
-              </FieldDescription>
-            </Field>
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+              </form.Field>
+              <form.Field name="email">
+                {(field) => (
+                  <TextField
+                    autoComplete="email"
+                    field={field}
+                    label="Email"
+                    placeholder="m@example.com"
+                    submitOnEnter
+                    type="email"
+                  />
+                )}
+              </form.Field>
+              <form.Field name="password">
+                {(field) => (
+                  <TextField
+                    autoComplete="new-password"
+                    field={field}
+                    label="Password"
+                    submitOnEnter
+                    type="password"
+                  />
+                )}
+              </form.Field>
+              <form.Field name="confirmPassword">
+                {(field) => (
+                  <TextField
+                    autoComplete="new-password"
+                    field={field}
+                    label="Confirm Password"
+                    submitOnEnter
+                    type="password"
+                  />
+                )}
+              </form.Field>
+              <Field>
+                <form.Subscribe selector={(state) => state.isSubmitting}>
+                  {(isSubmitting) => (
+                    <Button disabled={isSubmitting} type="submit">
+                      {isSubmitting ? "Creating account..." : "Create Account"}
+                    </Button>
+                  )}
+                </form.Subscribe>
+                <FieldDescription className="px-6 text-center">
+                  Already have an account? <Link href="/login">Sign in</Link>
+                </FieldDescription>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

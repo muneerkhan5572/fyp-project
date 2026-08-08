@@ -9,8 +9,8 @@ export async function sendWelcomeEmail(
   await transport.sendMail({
     from: env.GMAIL_SMTP_USER,
     to,
-    subject: "Welcome to Sales Analytics",
-    text: `Hi ${name},\n\nWelcome to Sales Analytics! Your account is ready — sign in to start organizing your datasets and exploring your dashboards.\n\n${env.APP_URL}/login`,
-    html: `<p>Hi ${name},</p><p>Welcome to Sales Analytics! Your account is ready — sign in to start organizing your datasets and exploring your dashboards.</p><p><a href="${env.APP_URL}/login">Go to login</a></p>`,
+    subject: "Welcome to E-commerce Product Demand Prediction",
+    text: `Hi ${name},\n\nWelcome to E-commerce Product Demand Prediction! Your account is ready — sign in to start organizing your datasets and exploring your dashboards.\n\n${env.APP_URL}/login`,
+    html: `<p>Hi ${name},</p><p>Welcome to E-commerce Product Demand Prediction! Your account is ready — sign in to start organizing your datasets and exploring your dashboards.</p><p><a href="${env.APP_URL}/login">Go to login</a></p>`,
   });
 }

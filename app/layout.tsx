@@ -21,9 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sales Analytics",
+  title: "EPDP",
   description:
-    "Upload sales and traffic data, track trends, and classify slow-movers and high-demand products.",
+    "E-commerce Product Demand Prediction (EPDP) — upload sales and traffic data, track trends, and classify slow-movers and high-demand products.",
 };
 
 export default function RootLayout({

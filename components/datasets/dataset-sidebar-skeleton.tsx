@@ -1,4 +1,4 @@
-import { ChevronsUpDownIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import {
   SidebarContent,
   SidebarGroup,
@@ -20,9 +20,15 @@ export function DatasetSidebarSkeleton() {
   return (
     <>
       <SidebarHeader>
-        <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2">
-          <Skeleton className="h-4 w-24" />
-          <ChevronsUpDownIcon className="text-muted-foreground" />
+        <div className="flex items-center justify-between gap-2.5 rounded-lg border px-3 py-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <Skeleton className="size-8 shrink-0 rounded-md" />
+            <div className="flex min-w-0 flex-col gap-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-14" />
+            </div>
+          </div>
+          <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
         </div>
       </SidebarHeader>
       <SidebarContent>

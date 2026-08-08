@@ -1,4 +1,4 @@
-# Sales Analytics
+# E-commerce Product Demand Prediction (EPDP)
 
 A sales prediction / analytics platform (final year project) — **not a
 storefront**. Store owners sign up, organize their data into named datasets,

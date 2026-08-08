@@ -1,5 +1,5 @@
 {
-  "name": "fyp-project",
+  "name": "ecommerce-product-demand-prediction",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@11.13.0",

@@ -30,7 +30,7 @@ export default async function DatasetLayout({
         </Suspense>
       </Sidebar>
       <SidebarInset>
-        <DashboardTopbar leading={<SidebarTrigger />} title={dataset.name} />
+        <DashboardTopbar leading={<SidebarTrigger />} />
         <HashScrollRestoration />
         <div className="flex-1 p-4 md:p-6">{children}</div>
       </SidebarInset>

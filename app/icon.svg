@@ -1,0 +1,16 @@
+<svg
+  fill="none"
+  stroke="#1d5f52"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2.25"
+  viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>EPDP</title>
+  <path d="M4 20V16" />
+  <path d="M10 20V12" />
+  <path d="M16 20V7" />
+  <path d="M3 15L9 9L13 12L21 4" />
+  <path d="M21 10V4H15" />
+</svg>

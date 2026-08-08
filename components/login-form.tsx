@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { login } from "@/app/actions/auth";
 import { TextField } from "@/components/form/text-field";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,6 +36,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <Logo className="size-8 text-primary" />
+        <span className="font-semibold text-lg">
+          E-commerce Product Demand Prediction
+        </span>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
