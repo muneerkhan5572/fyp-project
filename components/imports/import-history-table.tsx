@@ -1,6 +1,6 @@
 "use client";
 
-import { HistoryIcon, MoreVerticalIcon } from "lucide-react";
+import { HistoryIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DataTableLinkPagination } from "@/components/data-table/data-table-link-pagination";
@@ -8,12 +8,6 @@ import { ImportDeleteDialog } from "@/components/imports/import-delete-dialog";
 import { ImportHistoryFilters } from "@/components/imports/import-history-filters";
 import { ImportStatusBadge } from "@/components/imports/import-status-badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Empty,
   EmptyContent,
@@ -141,27 +135,20 @@ export function ImportHistoryTable({
                     {dateFormatter.format(row.createdAt)}
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={<Button size="icon" variant="ghost" />}
-                      >
-                        <MoreVerticalIcon />
-                        <span className="sr-only">Import actions</span>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            setDeletingImport({
-                              id: row.id,
-                              fileName: row.fileName,
-                            })
-                          }
-                          variant="destructive"
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button
+                      className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() =>
+                        setDeletingImport({
+                          id: row.id,
+                          fileName: row.fileName,
+                        })
+                      }
+                      size="icon"
+                      variant="ghost"
+                    >
+                      <Trash2Icon />
+                      <span className="sr-only">Delete import</span>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
