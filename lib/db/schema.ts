@@ -211,14 +211,6 @@ export type ImportRowError = {
   message: string;
 };
 
-export type ImportMeta = {
-  mode: "flexible";
-  dateFormat: string;
-  productsUpserted: number;
-  namesCollapsed: number;
-  salesRowsAggregated: number;
-};
-
 export const imports = pgTable(
   "imports",
   {
@@ -233,7 +225,7 @@ export const imports = pgTable(
     failedRows: integer("failed_rows").notNull(),
     errors: jsonb("errors").$type<ImportRowError[]>().notNull().default([]),
     status: importStatus("status").notNull(),
-    meta: jsonb("meta").$type<ImportMeta | null>(),
+    meta: jsonb("meta"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
