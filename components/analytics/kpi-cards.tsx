@@ -11,7 +11,7 @@ const currency = new Intl.NumberFormat("en-US", {
 const compactNumber = new Intl.NumberFormat("en-US", { notation: "compact" });
 
 const decimalNumber = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 1,
 });
 
 const percentNumber = new Intl.NumberFormat("en-US", {

@@ -9,10 +9,7 @@ import {
 import { CHART_COLORS } from "@/components/charts/palette";
 import type { Forecast } from "@/lib/db/schema";
 
-const compactNumber = new Intl.NumberFormat("en-US", {
-  notation: "compact",
-  maximumFractionDigits: 0,
-});
+const compactNumber = new Intl.NumberFormat("en-US", { notation: "compact" });
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
