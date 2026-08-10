@@ -8,7 +8,13 @@ const globalForDb = globalThis as unknown as {
 };
 
 const client =
-  globalForDb.client ?? postgres(env.DATABASE_URL, { prepare: false });
+  globalForDb.client ??
+  postgres(env.DATABASE_URL, {
+    prepare: false,
+    connect_timeout: 10,
+    idle_timeout: 20,
+    max_lifetime: 60 * 30,
+  });
 
 if (env.NODE_ENV !== "production") {
   globalForDb.client = client;
