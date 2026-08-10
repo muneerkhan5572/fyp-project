@@ -48,12 +48,15 @@ export default async function ProductDetailPage({
   const { range: rangeParam } = await searchParams;
   const dataset = await requireDataset(datasetId);
 
-  const product = await getProduct(dataset.id, productId);
+  const [product, classified, stockRisk] = await Promise.all([
+    getProduct(dataset.id, productId),
+    classifyProducts(dataset),
+    getStockRisk(dataset.id),
+  ]);
   if (!product) {
     notFound();
   }
 
-  const classified = await classifyProducts(dataset);
   const classification = classified.find(
     (entry) => entry.productId === product.id,
   ) ?? {
@@ -65,13 +68,14 @@ export default async function ProductDetailPage({
     classificationSource: "rule" as const,
   };
 
-  const stockRisk = await getStockRisk(dataset.id);
   const productStockRisk =
     stockRisk.find((entry) => entry.productId === product.id) ?? null;
 
-  const sentiment = await getProductSentiment(product.id);
-
-  const { maxDate } = await getProductDateBounds(product.id);
+  const [sentiment, { maxDate }, forecast] = await Promise.all([
+    getProductSentiment(product.id),
+    getProductDateBounds(product.id),
+    getLatestForecast(dataset.id, product.id),
+  ]);
 
   if (!maxDate) {
     return (
@@ -140,7 +144,6 @@ export default async function ProductDetailPage({
   }));
   const hasSales = totals.units > 0 || totals.revenue > 0;
   const hasViews = totals.views > 0;
-  const forecast = await getLatestForecast(dataset.id, product.id);
 
   return (
     <div>
@@ -297,14 +300,14 @@ function ProductHeader({
         {classification.velocitySource === "forecast" &&
         classification.predictedVelocity !== null ? (
           <span className="text-xs">
-            predicted velocity: {Math.round(classification.predictedVelocity)}{" "}
+            predicted velocity: {classification.predictedVelocity.toFixed(2)}{" "}
             units/day · historical:{" "}
-            {Math.round(classification.historicalVelocity)} units/day over last{" "}
+            {classification.historicalVelocity.toFixed(2)} units/day over last{" "}
             {windowDays} days
           </span>
         ) : (
           <span className="text-xs">
-            velocity: {Math.round(classification.velocity)} units/day over last{" "}
+            velocity: {classification.velocity.toFixed(2)} units/day over last{" "}
             {windowDays} days
           </span>
         )}

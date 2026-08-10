@@ -17,7 +17,7 @@ const client =
   postgres(env.DATABASE_URL, {
     prepare: false,
     connect_timeout: 30,
-    idle_timeout: 20,
+    idle_timeout: 120,
     max_lifetime: 60 * 30,
   });
 
