@@ -17,7 +17,7 @@ export function parseRangePreset(value: string | undefined): RangePreset {
   if (value === "30d" || value === "90d" || value === "1y" || value === "all") {
     return value;
   }
-  return "30d";
+  return "all";
 }
 
 export function addDaysToDateString(date: string, days: number): string {
