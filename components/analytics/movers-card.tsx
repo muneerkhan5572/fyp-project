@@ -52,7 +52,7 @@ export async function MoversCard({
                   {product.name}
                 </Link>
                 <span className="shrink-0 text-muted-foreground text-xs">
-                  {product.velocity.toFixed(2)} units/day
+                  {Math.round(product.velocity)} units/day
                   {product.velocitySource === "forecast" ? " (predicted)" : ""}
                   {product.classificationSource === "ml" ? " · ML" : ""}
                 </span>

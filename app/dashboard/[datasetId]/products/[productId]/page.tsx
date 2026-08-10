@@ -297,14 +297,14 @@ function ProductHeader({
         {classification.velocitySource === "forecast" &&
         classification.predictedVelocity !== null ? (
           <span className="text-xs">
-            predicted velocity: {classification.predictedVelocity.toFixed(2)}{" "}
+            predicted velocity: {Math.round(classification.predictedVelocity)}{" "}
             units/day · historical:{" "}
-            {classification.historicalVelocity.toFixed(2)} units/day over last{" "}
+            {Math.round(classification.historicalVelocity)} units/day over last{" "}
             {windowDays} days
           </span>
         ) : (
           <span className="text-xs">
-            velocity: {classification.velocity.toFixed(2)} units/day over last{" "}
+            velocity: {Math.round(classification.velocity)} units/day over last{" "}
             {windowDays} days
           </span>
         )}

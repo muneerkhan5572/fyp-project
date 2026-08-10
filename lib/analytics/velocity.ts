@@ -172,7 +172,15 @@ export const classifyProducts = cache(
     }));
 
     return [...classifiedCandidates, ...classifiedNoData].map(
-      ({ totalSalesRows: _totalSalesRows, ...product }) => product,
+      ({ totalSalesRows: _totalSalesRows, ...product }) => ({
+        ...product,
+        velocity: Math.round(product.velocity),
+        historicalVelocity: Math.round(product.historicalVelocity),
+        predictedVelocity:
+          product.predictedVelocity === null
+            ? null
+            : Math.round(product.predictedVelocity),
+      }),
     );
   },
 );
